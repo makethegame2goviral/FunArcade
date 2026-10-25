@@ -1,935 +1,680 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Neon Arcade</title>
 <style>
 :root {
-  --bg:#090b18;
-  --panel:#11152a;
-  --muted:#9ba4c7;
-  --line:#272d4d;
-  --purple:#8b6cff;
-  --cyan:#31d8f3;
-  --pink:#ff5ac8;
-  --green:#56e6ad;
+  --bg:#090b18; --panel:#131832; --panel2:#1b2242;
+  --purple:#8b6cff; --cyan:#31d8f3; --pink:#ff5ac8;
+  --green:#56e6ad; --text:#f5f6ff; --muted:#a5afd1;
 }
-* { box-sizing:border-box }
-body {
-  margin:0;
-  background:var(--bg);
-  color:#f5f6ff;
-  font-family:Inter,system-ui,-apple-system,sans-serif;
+*{box-sizing:border-box}
+body{
+  margin:0;background:radial-gradient(ellipse at top,#20204b,var(--bg) 60%);
+  color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh
 }
-button,input,select { font:inherit }
-button { cursor:pointer }
-.layout {
-  display:grid;
-  grid-template-columns:230px minmax(0,1fr);
-  min-height:100vh;
+button,input,select{font:inherit}
+button{cursor:pointer}
+header{text-align:center;padding:28px 16px 12px}
+.logo{font-size:clamp(28px,5vw,45px);font-weight:1000;letter-spacing:-2px}
+.logo span{color:var(--cyan);text-shadow:0 0 22px #31d8f377}
+.subtitle{color:var(--muted);font-size:13px}
+main{max-width:1100px;margin:auto;padding:16px}
+nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0 25px}
+button,.btn{
+  border:1px solid #394267;border-radius:12px;padding:11px 15px;
+  background:var(--panel2);color:white;font-weight:750;
+  transition:.18s
 }
-.sidebar {
-  border-right:1px solid var(--line);
-  padding:24px 15px;
-  background:#0b0e1d;
-  display:flex;
-  flex-direction:column;
-  gap:25px;
+button:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.primary{background:linear-gradient(110deg,var(--purple),#398af6);border:0}
+.secondary{background:#171c35}
+input,select{
+  background:#090e21;color:white;border:1px solid #394267;
+  border-radius:10px;padding:12px;width:100%;margin:6px 0 12px
 }
-.brand {
-  padding:8px;
-  font-weight:900;
-  font-size:20px;
+label{font-size:12px;color:var(--muted)}
+h1,h2,h3{letter-spacing:-.5px}
+.hero,.panel,.game{
+  background:linear-gradient(145deg,#171c3a,#0f1328);
+  border:1px solid #30385e;border-radius:20px;padding:22px;margin-bottom:16px
 }
-.brand em { color:var(--cyan);font-style:normal }
-.logo {
-  display:inline-grid;
-  place-items:center;
-  width:35px;
-  height:35px;
-  margin-right:8px;
-  border-radius:11px;
-  background:linear-gradient(140deg,var(--purple),var(--cyan));
+.hero{text-align:center;padding:35px 20px;background:
+  radial-gradient(ellipse at top,#7557ff30,transparent 70%),
+  linear-gradient(145deg,#171c3a,#0f1328)}
+.hero h1{font-size:clamp(27px,5vw,43px);margin:8px}
+.hero p,.muted{color:var(--muted);line-height:1.6;font-size:13px}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
+.gamecard{
+  background:linear-gradient(145deg,#1b2243,#10152b);
+  border:1px solid #30385e;border-radius:16px;padding:18px;
+  text-align:left;color:white;min-height:160px
 }
-.navlabel {
-  color:#697398;
-  text-transform:uppercase;
-  font-size:10px;
-  letter-spacing:1.5px;
-  padding:0 10px 8px;
+.gamecard .emoji{font-size:36px}
+.gamecard h3{margin:12px 0 5px}
+.gamecard p{font-size:12px;color:var(--muted);line-height:1.5}
+.gamecard small{color:var(--cyan)}
+.gamearea{text-align:center}
+.big{font-size:clamp(25px,5vw,39px);font-weight:950;overflow-wrap:anywhere}
+.secret{
+  min-height:155px;display:grid;place-items:center;
+  margin:18px 0;padding:22px;border:1px solid #6558a9;
+  border-radius:18px;background:radial-gradient(ellipse at top,#8b6cff35,transparent 70%),#111731;
+  user-select:none
 }
-.nav { display:grid;gap:5px }
-.nav button {
-  text-align:left;
-  border:0;
-  background:transparent;
-  color:#aab2d1;
-  padding:12px;
-  border-radius:10px;
-}
-.nav button:hover,.nav button.active {
-  background:#20203d;
-  color:white;
-}
-main { min-width:0;padding:25px clamp(15px,3vw,38px) }
-.topbar {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:25px;
-}
-.search { flex:1;max-width:400px }
-.search input,.input {
-  width:100%;
-  background:#090d1d;
-  color:white;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:12px;
-  outline:none;
-}
-.topactions { display:flex;gap:8px;align-items:center }
-.iconbtn,.outlinebtn {
-  border:1px solid var(--line);
-  background:var(--panel);
-  color:#dce2ff;
-  border-radius:10px;
-  padding:10px 12px;
-}
-.hero {
-  border:1px solid #3a3274;
-  border-radius:22px;
-  padding:clamp(24px,4vw,42px);
-  background:
-    radial-gradient(ellipse at 85% 35%,#6441cb38,transparent 40%),
-    linear-gradient(115deg,#17152f,#10172d 70%,#0d1e32);
-  margin-bottom:24px;
-}
-.eyebrow {
-  color:var(--cyan);
-  font-size:11px;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  font-weight:900;
-}
-h1 {
-  font-size:clamp(30px,4vw,46px);
-  line-height:1.1;
-  letter-spacing:-1.5px;
-}
-.gradient {
-  background:linear-gradient(90deg,#b5a0ff,#42dff7);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-}
-.hero p,.pagehead p {
-  color:#aeb8da;
-  line-height:1.7;
-  font-size:14px;
-}
-.btn {
-  border:0;
-  border-radius:10px;
-  padding:12px 16px;
-  font-weight:800;
-  color:white;
-  background:linear-gradient(110deg,#7656ff,#348bf4);
-}
-.btn.secondary {
-  background:#202642;
-  border:1px solid #363d61;
-  color:#dce2ff;
-}
-.heroactions { display:flex;gap:10px;flex-wrap:wrap }
-.stats {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;
-}
-.stat,.card,.panel {
-  border:1px solid var(--line);
-  border-radius:15px;
-  background:linear-gradient(145deg,#141932,#0f1326);
-  padding:16px;
-}
-.statlabel { font-size:11px;color:#a3add0 }
-.statnum { font-size:25px;font-weight:900;margin:9px 0 5px }
-.small { font-size:11px;color:var(--muted) }
-.up { color:var(--green);font-size:10px }
-.sectionhead {
-  display:flex;
-  align-items:end;
-  justify-content:space-between;
-  gap:10px;
-  margin:28px 0 14px;
-}
-.sectionhead h2 { font-size:19px;margin:0 }
-.sectionhead p { font-size:12px;color:var(--muted);margin:5px 0 0 }
-.textbtn {
-  border:0;
-  background:none;
-  color:var(--cyan);
-  font-weight:800;
-}
-.games {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px;
-}
-.gamecard { padding:0;overflow:hidden;cursor:pointer }
-.gamecard:hover { border-color:var(--purple) }
-.gameart {
-  height:115px;
-  display:grid;
-  place-items:center;
-  font-size:45px;
-  background:linear-gradient(135deg,#241b50,#151b3d);
-}
-.gameart span { filter:drop-shadow(0 6px 15px #0008) }
-.art-impostor { background:linear-gradient(135deg,#411a53,#1a1d42) }
-.art-duel { background:linear-gradient(135deg,#102c4d,#1d1850) }
-.art-quiz { background:linear-gradient(135deg,#332051,#162b4b) }
-.art-draw { background:linear-gradient(135deg,#123b4a,#241949) }
-.art-memory { background:linear-gradient(135deg,#35204c,#132b4a) }
-.gameinfo { padding:13px }
-.gametitle { font-size:14px;font-weight:850 }
-.gameinfo p { color:var(--muted);font-size:11px;line-height:1.5;min-height:32px }
-.tags { display:flex;justify-content:space-between;gap:8px;align-items:center }
-.tag { font-size:10px;border:1px solid #34395e;border-radius:6px;padding:4px 7px;color:#b9c2e7 }
-.twocol,.contentgrid {
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:14px;
-}
-.page { display:none }
-.page.active { display:block }
-.pagehead { margin:8px 0 22px }
-.pagehead h1 { font-size:32px }
-.leaderrow {
-  display:grid;
-  grid-template-columns:30px minmax(0,1fr) auto;
-  align-items:center;
-  gap:10px;
-  padding:12px 0;
-  border-bottom:1px solid #252b49;
-}
-.rank { font-weight:900;color:#9ba5c9 }
-.player { display:flex;align-items:center;gap:9px;min-width:0 }
-.playername { font-size:12px;font-weight:800 }
-.avatar {
-  width:35px;
-  height:35px;
-  border-radius:11px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(140deg,#9b67ff,#24d7ed);
-  color:white;
-  font-weight:900;
-  flex-shrink:0;
-}
-.score { text-align:right;font-size:12px;font-weight:900 }
-.score small { display:block;color:var(--muted);font-size:10px }
-.friendrow {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:11px 0;
-  border-bottom:1px solid #252b49;
-}
-.friendrow .player { flex:1 }
-.pill { font-size:10px;color:#8cecc7;background:#173b39;padding:5px 7px;border-radius:7px }
-.room {
-  padding:18px;
-  border:1px solid var(--line);
-  background:#12172d;
-  border-radius:15px;
-}
-.room h3 { margin:12px 0 6px }
-.room p,.muted { color:var(--muted);font-size:12px;line-height:1.6 }
-.fieldlabel { display:block;font-size:12px;color:#bac4e7;margin-top:10px }
-.input { margin:6px 0 12px }
-.notice {
-  padding:12px;
-  border-radius:10px;
-  background:#24203e;
-  color:#c8c0ff;
-  font-size:11px;
-  line-height:1.6;
-  margin:12px 0;
-}
-.chatbox {
-  height:280px;
-  overflow:auto;
-  border:1px solid var(--line);
-  background:#0b1021;
-  border-radius:12px;
-  padding:13px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.message { font-size:12px;color:#dfe5ff;line-height:1.5 }
-.message b { color:#a99aff }
-.modalback {
-  position:fixed;
-  inset:0;
-  background:#050714d9;
-  backdrop-filter:blur(8px);
-  z-index:10;
-  display:none;
-  place-items:center;
-  padding:16px;
-}
-.modalback.show { display:grid }
-.modal {
-  width:min(490px,100%);
-  max-height:90vh;
-  overflow:auto;
-  background:#11162c;
-  border:1px solid #3b3c6c;
-  border-radius:20px;
-  padding:23px;
-}
-.modalhead { display:flex;justify-content:space-between;align-items:center }
-.modalhead h2 { margin:0;font-size:21px }
-.close {
-  border:0;
-  background:#242943;
-  color:white;
-  border-radius:9px;
-  padding:8px 11px;
-}
-.tabs { display:flex;gap:7px;background:#090d1d;padding:5px;border-radius:11px;margin:18px 0 }
-.tabs button {
-  flex:1;border:0;border-radius:8px;padding:10px;background:transparent;color:#aab3d2;
-}
-.tabs button.active { background:#292449;color:white }
-.toast {
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:#1c2540;
-  border:1px solid #4e5483;
-  color:white;
-  border-radius:12px;
-  padding:13px 17px;
-  z-index:30;
-  display:none;
-  max-width:calc(100% - 40px);
-  font-size:13px;
-}
-.toast.show { display:block }
-.gameplay {
-  background:#0a1024;
-  border:1px solid #323960;
-  border-radius:15px;
-  padding:18px;
-  text-align:center;
-}
-.word { font-size:30px;font-weight:900;letter-spacing:2px;padding:22px;color:#bcaaff }
-.choicegrid { display:grid;grid-template-columns:repeat(2,1fr);gap:9px }
-.choicegrid button {
-  background:#171d38;
-  color:white;
-  border:1px solid #343c65;
-  border-radius:11px;
-  padding:13px;
-}
-.choicegrid button:hover { border-color:var(--cyan) }
-.tic {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  max-width:270px;
-  margin:18px auto;
-}
-.tic button {
-  aspect-ratio:1;
-  border:1px solid #343b66;
-  background:#171d38;
-  border-radius:12px;
-  color:#b7a2ff;
-  font-size:32px;
-  font-weight:900;
-}
-.footnote { color:#6f789e;font-size:10px;margin-top:24px;line-height:1.6 }
-.mobilemenu { display:none }
-@media(max-width:1000px) {
-  .layout { grid-template-columns:75px minmax(0,1fr) }
-  .sidebar { padding:20px 8px }
-  .brand { font-size:0;text-align:center }
-  .brand em { display:none }
-  .navlabel { display:none }
-  .nav button { text-align:center;font-size:0 }
-  .nav button::first-letter { font-size:18px }
-  .stats { grid-template-columns:repeat(2,minmax(0,1fr)) }
-  .games { grid-template-columns:repeat(2,minmax(0,1fr)) }
-  .twocol { grid-template-columns:1fr }
-}
-@media(max-width:620px) {
-  .layout { display:block }
-  .sidebar { display:none }
-  main { padding:17px 13px 35px }
-  .topbar { margin-bottom:18px }
-  .mobilemenu { display:inline-block }
-  .topactions .iconbtn { display:none }
-  .hero { padding:23px 18px }
-  .stats { gap:9px }
-  .stat { padding:12px }
-  .statnum { font-size:22px }
-  .games { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px }
-  .gameart { height:90px;font-size:38px }
-  .gameinfo { padding:10px }
-  .gameinfo p { font-size:10px }
-  .twocol,.contentgrid { grid-template-columns:1fr }
-  .pagehead h1 { font-size:28px }
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0}
+.grid button{min-height:48px}
+.progress{height:7px;background:#252b4b;border-radius:10px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan))}
+.notice{background:#10162d;border:1px solid #30385e;padding:13px;border-radius:12px;text-align:left;color:var(--muted);font-size:12px;line-height:1.7}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
+.row>*{flex:1}
+.result{padding:16px;background:#10162d;border:1px solid #394267;border-radius:12px;margin:14px 0;line-height:1.7}
+.tic{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:330px;margin:18px auto}
+.tic button{aspect-ratio:1;font-size:35px;font-weight:900;background:#1a2140}
+.memory{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:400px;margin:18px auto}
+.memory button{aspect-ratio:1;font-size:25px;padding:3px}
+canvas{width:100%;height:300px;background:white;border-radius:12px;touch-action:none;cursor:crosshair}
+footer{text-align:center;color:#697398;font-size:11px;padding:20px}
+@media(max-width:520px){
+  main{padding:12px}.hero,.panel,.game{padding:16px}
+  .grid{grid-template-columns:1fr 1fr}
+  .secret{min-height:135px}
 }
 </style>
 </head>
 <body>
-<div class="layout">
-<aside class="sidebar">
-  <div class="brand"><span class="logo">✦</span>NEON <em>ARCADE</em></div>
-  <div>
-    <div class="navlabel">Workspace</div>
-    <nav class="nav">
-      <button class="active" data-page="home">⌂ Übersicht</button>
-      <button data-page="games">▦ Alle Spiele</button>
-      <button data-page="leaderboard">♛ Rangliste</button>
-    </nav>
-  </div>
-  <div>
-    <div class="navlabel">Community</div>
-    <nav class="nav">
-      <button data-page="friends">♧ Freunde</button>
-      <button data-page="groups">◎ Gruppen & Räume</button>
-      <button data-page="chat">▤ Chat</button>
-    </nav>
-  </div>
-  <div>
-    <div class="navlabel">Dein Bereich</div>
-    <nav class="nav"><button data-page="profile">◉ Mein Profil</button></nav>
-  </div>
-  <div style="margin-top:auto" class="panel">
-    <div class="player">
-      <div class="avatar" id="sideAvatar">?</div>
-      <div><b id="sideName">Gastspieler</b><div class="small">Level <span id="sideLevel">1</span></div></div>
-    </div>
-  </div>
-</aside>
-
-<main>
-<header class="topbar">
-  <button class="iconbtn mobilemenu" onclick="navTo('home')">☰</button>
-  <div class="search"><input id="searchInput" placeholder="Spiele suchen …" aria-label="Spiele suchen"></div>
-  <div class="topactions">
-    <button class="outlinebtn" id="loginTop" onclick="openAuth()">Anmelden ↗</button>
-    <div class="player" id="userPill" style="display:none">
-      <div class="avatar" id="topAvatar">N</div>
-      <span id="topName">Spieler</span>
-    </div>
-  </div>
+<header>
+  <div class="logo">NEON <span>ARCADE</span></div>
+  <div class="subtitle">Play together. Bluff together. Win together.</div>
 </header>
 
-<section class="page active" id="page-home">
-  <div class="hero">
-    <div class="eyebrow">✦ Deine nächste Runde beginnt hier</div>
-    <h1>Play beyond<br><span class="gradient">the ordinary.</span></h1>
-    <p>Dein Hub für Partyspiele, wilde Duelle und deine Crew. Sammle XP, erklimme die Ranglisten und finde heraus, wer wirklich der Beste ist.</p>
-    <div class="heroactions">
-      <button class="btn" onclick="navTo('games')">▶ Spiele entdecken</button>
-      <button class="btn secondary" onclick="openAuth()">Profil erstellen ↗</button>
+<main>
+  <section class="hero">
+    <div>✨ DEINE ARCADE · DEINE REGELN</div>
+    <h1>Ready. Set. <span style="color:var(--cyan)">Play!</span></h1>
+    <p>Neun Spiele für deine Crew – vom geheimen Impostor bis zum großen Werwolf-Finale.</p>
+    <div class="row">
+      <button class="primary" onclick="document.getElementById('library').scrollIntoView({behavior:'smooth'})">Spiele entdecken ↓</button>
+      <button onclick="showStats()">🏆 Meine Punkte</button>
     </div>
-  </div>
-  <div class="stats">
-    <div class="stat"><div class="statlabel">Dein Level</div><div class="statnum" id="statLevel">01</div><div class="up">✦ Starte deine Reise</div></div>
-    <div class="stat"><div class="statlabel">Gesamt-XP</div><div class="statnum" id="statXP">0</div><div class="up">+ XP durch Siege</div></div>
-    <div class="stat"><div class="statlabel">Gespielte Runden</div><div class="statnum" id="statPlayed">0</div><div class="small">Jede Runde zählt</div></div>
-    <div class="stat"><div class="statlabel">Deine Siege</div><div class="statnum" id="statWins">0</div><div class="small">Auf zum nächsten Sieg</div></div>
-  </div>
-  <div class="sectionhead"><div><h2>🔥 Im Spotlight</h2><p>Spiele für deine Crew</p></div><button class="textbtn" onclick="navTo('games')">Alle Spiele →</button></div>
-  <div class="games" id="featuredGames"></div>
-  <div class="sectionhead"><div><h2>🏆 Globale Rangliste</h2><p>Wer führt die Arcade an?</p></div><button class="textbtn" onclick="navTo('leaderboard')">Alle ansehen →</button></div>
-  <div class="twocol">
-    <div class="panel" id="homeLeaders"></div>
-    <div class="panel">
-      <div class="sectionhead" style="margin-top:0"><div><h2>Deine Crew</h2><p>Freunde und Mitspieler</p></div><button class="textbtn" onclick="navTo('friends')">Mehr →</button></div>
-      <div id="homeFriends"></div>
-      <div class="notice">💡 Erstelle einen privaten Raum und lade deine Freunde per Code ein.</div>
-      <button class="btn secondary" style="width:100%" onclick="navTo('groups')">＋ Raum erstellen</button>
+  </section>
+
+  <section class="panel">
+    <div class="row">
+      <div><label>Spielername (optional)</label><input id="playerName" placeholder="Dein Name"></div>
+      <div><label>Deine Punkte</label><div class="big" id="score">0 XP</div></div>
+      <div><label>Gespielte Runden</label><div class="big" id="played">0</div></div>
     </div>
-  </div>
-  <div class="footnote">NEON ARCADE · Demo-Version. Online-Accounts, globale Ranglisten und Chats benötigen eine Server-Anbindung.</div>
-</section>
+  </section>
 
-<section class="page" id="page-games">
-  <div class="pagehead"><div class="eyebrow">ARCADE LIBRARY</div><h1>Alle <span class="gradient">Spiele.</span></h1><p>Such dir dein nächstes Match aus.</p></div>
-  <div class="games" id="allGames"></div>
-</section>
+  <h2 id="library">🎮 Alle Spiele</h2>
+  <section class="games" id="games"></section>
 
-<section class="page" id="page-leaderboard">
-  <div class="pagehead"><div class="eyebrow">HALL OF FAME</div><h1>Globale <span class="gradient">Rangliste.</span></h1><p>Verdiene XP und klettere nach oben.</p></div>
-  <div class="panel"><div id="fullLeaders"></div><div class="notice">Die angezeigten Beispielspieler sind Demo-Daten.</div></div>
-</section>
-
-<section class="page" id="page-friends">
-  <div class="pagehead"><div class="eyebrow">YOUR SQUAD</div><h1>Deine <span class="gradient">Freunde.</span></h1><p>Füge Spieler zu deiner lokalen Demo-Freundesliste hinzu.</p></div>
-  <div class="panel">
-    <h3>Spieler hinzufügen</h3>
-    <form id="friendForm" style="display:flex;gap:8px">
-      <input class="input" id="friendInput" placeholder="Spielername" style="margin:0" required>
-      <button class="btn">＋ Hinzufügen</button>
-    </form>
-    <div class="notice">Die Freundesliste ist in dieser Demo nur lokal verfügbar.</div>
-    <h3>Deine Freunde</h3><div id="friendsList"></div>
-  </div>
-</section>
-
-<section class="page" id="page-groups">
-  <div class="pagehead"><div class="eyebrow">PARTY UP</div><h1>Gruppen & <span class="gradient">Räume.</span></h1><p>Erstelle eine Lobby und teile den Code.</p></div>
-  <div class="contentgrid">
-    <div class="room">
-      <span class="tag">PRIVATE LOBBY</span><h3>Neuen Raum erstellen</h3>
-      <label class="fieldlabel">Spiel</label>
-      <select class="input" id="roomGame"><option>Impostor</option><option>Werwolf</option><option>Quiz Battle</option><option>Tic-Tac-Toe</option><option>Memory Clash</option></select>
-      <label class="fieldlabel">Raumname</label><input class="input" id="roomName" placeholder="Meine Crew">
-      <button class="btn" style="width:100%" onclick="createRoom()">＋ Raum erstellen</button>
+  <section class="game" id="game" style="display:none">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="gameTitle">Spiel</h2>
+      <button onclick="closeGame()">✕ Schließen</button>
     </div>
-    <div class="room">
-      <span class="tag">JOIN LOBBY</span><h3>Raum beitreten</h3>
-      <label class="fieldlabel">Raumcode</label><input class="input" id="joinCode" placeholder="z. B. NOVA42" maxlength="8">
-      <button class="btn secondary" style="width:100%" onclick="joinRoom()">Beitreten →</button>
-    </div>
-  </div>
-  <div class="sectionhead"><h2>Aktive Räume</h2></div><div class="contentgrid" id="roomsList"></div>
-</section>
-
-<section class="page" id="page-chat">
-  <div class="pagehead"><div class="eyebrow">COMMUNITY COMMS</div><h1>Dein <span class="gradient">Chat.</span></h1><p>Lokaler Demo-Chat in diesem Browser.</p></div>
-  <div class="panel">
-    <div class="chatbox" id="chatMessages"><div class="message"><b>NEON BOT</b><br>Willkommen im Chat! Starte eine Runde mit deiner Crew.</div></div>
-    <form id="chatForm" style="display:flex;gap:8px;margin-top:12px">
-      <input class="input" id="chatInput" placeholder="Nachricht schreiben …" style="margin:0" required>
-      <button class="btn">Senden ➤</button>
-    </form>
-    <div class="notice">Nachrichten sind noch nicht auf anderen Geräten sichtbar.</div>
-  </div>
-</section>
-
-<section class="page" id="page-profile">
-  <div class="pagehead"><div class="eyebrow">PLAYER CARD</div><h1>Dein <span class="gradient">Profil.</span></h1><p>Dein Name. Deine Stats. Deine Story.</p></div>
-  <div class="panel">
-    <div class="player" style="margin-bottom:20px">
-      <div class="avatar" id="profileAvatar" style="width:60px;height:60px">?</div>
-      <div><h2 id="profileName">Gastspieler</h2><div class="small" id="profileStatus">Noch nicht angemeldet</div></div>
-      <button class="btn" style="margin-left:auto" onclick="openAuth()">Anmelden</button>
-    </div>
-    <div class="stats">
-      <div class="stat"><div class="statlabel">Level</div><div class="statnum" id="profileLevel">1</div></div>
-      <div class="stat"><div class="statlabel">XP</div><div class="statnum" id="profileXP">0</div></div>
-      <div class="stat"><div class="statlabel">Spiele</div><div class="statnum" id="profilePlayed">0</div></div>
-      <div class="stat"><div class="statlabel">Siege</div><div class="statnum" id="profileWins">0</div></div>
-    </div>
-    <div class="notice">Demo-Profil: Die Daten werden nur in diesem Browser gespeichert. Für echte Online-Accounts ist eine sichere Authentifizierung nötig.</div>
-    <button class="btn secondary" onclick="logout()">Abmelden</button>
-  </div>
-</section>
+    <p id="gameDesc" class="muted"></p>
+    <div class="gamearea" id="area"></div>
+  </section>
 </main>
-</div>
 
-<div class="modalback" id="authModal">
-  <div class="modal">
-    <div class="modalhead"><h2>Willkommen bei <span class="gradient">NEON.</span></h2><button class="close" onclick="closeModal('authModal')">✕</button></div>
-    <p class="muted">Erstelle dein Spielerprofil und starte deine Arcade-Reise.</p>
-    <div class="tabs"><button id="tabSignup" class="active" onclick="setAuthMode('signup')">Account erstellen</button><button id="tabLogin" onclick="setAuthMode('login')">Anmelden</button></div>
-    <form id="authForm">
-      <label class="fieldlabel">Spielername</label><input class="input" id="authName" minlength="3" maxlength="18" autocomplete="username" required>
-      <label class="fieldlabel">Passwort</label><input class="input" id="authPassword" type="password" minlength="8" autocomplete="new-password" required>
-      <div class="notice">Dies ist nur eine Demo-Anmeldung. Verwende hier kein Passwort, das du auch für andere Konten nutzt.</div>
-      <button class="btn" id="authSubmit" style="width:100%">Account erstellen ↗</button>
-    </form>
-  </div>
-</div>
-
-<div class="modalback" id="gameModal">
-  <div class="modal">
-    <div class="modalhead"><h2 id="gameModalTitle">Spiel</h2><button class="close" onclick="closeModal('gameModal')">✕</button></div>
-    <p class="muted" id="gameModalDesc"></p><div id="gameArea"></div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
+<footer>NEON ARCADE · Lokale Spielesammlung · Keine Online-Verbindung erforderlich</footer>
 
 <script>
-const games = [
- {id:'werewolf',name:'Werwolf',emoji:'🌕',desc:'Geheime Rollen, Diskussionen und Abstimmungen.',mode:'5–20 Spieler',art:'',kind:'roles'},
- {id:'impostor',name:'Impostor',emoji:'🕵️',desc:'Finde heraus, wer das geheime Wort nicht kennt.',mode:'3–12 Spieler',art:'art-impostor',kind:'impostor'},
- {id:'duel',name:'Tic-Tac-Toe',emoji:'❎',desc:'Der schnelle Klassiker für zwei Spieler.',mode:'1 vs 1',art:'art-duel',kind:'tic'},
- {id:'quiz',name:'Quiz Battle',emoji:'⚡',desc:'Teste dein Wissen mit kurzen Quizfragen.',mode:'Solo / Duell',art:'art-quiz',kind:'quiz'},
- {id:'draw',name:'Zeichnen & Raten',emoji:'🎨',desc:'Kritzele einen Begriff und lass andere raten.',mode:'Gruppe',art:'art-draw',kind:'soon'},
- {id:'memory',name:'Memory Clash',emoji:'🧠',desc:'Merke dir Karten und finde alle Paare.',mode:'Solo',art:'art-memory',kind:'memory'},
- {id:'rps',name:'Schere-Stein-Papier',emoji:'✊',desc:'Ein schnelles Duell gegen den Computer.',mode:'1 vs 1',art:'art-duel',kind:'rps'},
- {id:'truth',name:'Party Fragen',emoji:'🎲',desc:'Lustige, harmlose Fragen für die Runde.',mode:'Gruppe',art:'art-quiz',kind:'truth'}
+const games=[
+ {id:'impostor',emoji:'🕵️',name:'Impostor',desc:'Geheimes Wort, Bluffen und Abstimmen.',mode:'3–12 Spieler'},
+ {id:'werewolf',emoji:'🌕',name:'Werwolf',desc:'Geheime Rollen, Nachtaktionen und Dorfabstimmung.',mode:'5–20 Spieler'},
+ {id:'tic',emoji:'❎',name:'Tic-Tac-Toe',desc:'Klassisches Duell für zwei Personen.',mode:'2 Spieler'},
+ {id:'quiz',emoji:'⚡',name:'Quiz Battle',desc:'Teste dein Wissen mit Quizfragen.',mode:'Solo'},
+ {id:'draw',emoji:'🎨',name:'Zeichnen & Raten',desc:'Zeichne einen Begriff und lass die Crew raten.',mode:'Party'},
+ {id:'memory',emoji:'🧠',name:'Memory Clash',desc:'Finde alle Kartenpaare.',mode:'Solo'},
+ {id:'rps',emoji:'✊',name:'Schere-Stein-Papier',desc:'Duell gegen den Computer.',mode:'1 vs CPU'},
+ {id:'word',emoji:'🔤',name:'Wortduell',desc:'Errate ein geheimes Wort Buchstabe für Buchstabe.',mode:'Solo'},
+ {id:'truth',emoji:'🎲',name:'Party Fragen',desc:'Lustige Fragen und harmlose Aufgaben.',mode:'Party'}
 ];
 
-const demoLeaders = [
- {name:'VoidRunner',xp:12840,level:24,avatar:'V'},
- {name:'LunaByte',xp:10920,level:22,avatar:'L'},
- {name:'PixelNova',xp:9860,level:20,avatar:'P'},
- {name:'Kai.exe',xp:8720,level:18,avatar:'K'},
- {name:'EchoStorm',xp:7450,level:16,avatar:'E'},
- {name:'FrostyGG',xp:6320,level:14,avatar:'F'},
- {name:'NeonFox',xp:5180,level:12,avatar:'N'}
-];
-
-let user=null;
-let authMode='signup';
-let stats={xp:0,played:0,wins:0};
-let friends=['PixelNova','LunaByte','Kai.exe'];
-let rooms=[];
-let ticBoard=Array(9).fill('');
-let ticTurn='X';
-let ticDone=false;
-let quizIndex=0;
-
-const questions=[
- {q:'Welcher Planet ist der größte?',a:['Mars','Jupiter','Venus','Merkur'],correct:1},
- {q:'Wie viele Seiten hat ein Hexagon?',a:['5','6','7','8'],correct:1},
- {q:'Was ist die Hauptstadt von Japan?',a:['Seoul','Peking','Tokio','Bangkok'],correct:2},
- {q:'Welche Farbe entsteht aus Blau und Gelb?',a:['Lila','Grün','Orange','Rosa'],correct:1}
-];
-const words=['KOMET','PIXEL','DRACHE','GALAXIS','ROBOTER','KAKTUS'];
-
-function esc(s){
- return String(s).replace(/[&<>"']/g,c=>({
-  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
- }[c]));
-}
-function toast(s){
- const t=document.getElementById('toast');
- t.textContent=s;
- t.classList.add('show');
- clearTimeout(window.toastTimer);
- window.toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
-}
-function navTo(p){
- document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
- document.getElementById('page-'+p).classList.add('active');
- document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
- window.scrollTo({top:0,behavior:'smooth'});
- if(p==='leaderboard')renderLeaders();
- if(p==='friends')renderFriends();
- if(p==='groups')renderRooms();
-}
-document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>navTo(b.dataset.page)));
-
-function card(g){
- return `<article class="card gamecard" onclick="launchGame('${g.id}')">
- <div class="gameart ${g.art}"><span>${g.emoji}</span></div>
- <div class="gameinfo"><div class="gametitle">${g.name}</div>
- <p>${g.desc}</p><div class="tags"><span class="tag">${g.mode}</span><span style="color:var(--cyan)">▶</span></div></div></article>`;
-}
-document.getElementById('featuredGames').innerHTML=games.slice(0,6).map(card).join('');
-document.getElementById('allGames').innerHTML=games.map(card).join('');
-
-function allLeaders(){
- let a=demoLeaders.map(x=>({...x}));
- if(user)a.push({name:user.name,xp:stats.xp,level:Math.floor(stats.xp/500)+1,avatar:user.name[0].toUpperCase(),mine:true});
- return a.sort((x,y)=>y.xp-x.xp);
-}
-function leaderHtml(arr){
- return arr.map((p,i)=>`<div class="leaderrow">
- <div class="rank">${String(i+1).padStart(2,'0')}</div>
- <div class="player"><div class="avatar">${esc(p.avatar)}</div>
- <div><div class="playername">${esc(p.name)} ${p.mine?'<span class="tag">DU</span>':''}</div><div class="small">Level ${p.level}</div></div></div>
- <div class="score">${p.xp.toLocaleString('de-DE')}<small>XP</small></div></div>`).join('');
-}
-function renderLeaders(){
- document.getElementById('homeLeaders').innerHTML=leaderHtml(allLeaders().slice(0,4));
- document.getElementById('fullLeaders').innerHTML=leaderHtml(allLeaders());
-}
-function renderFriends(){
- document.getElementById('friendsList').innerHTML=friends.length
- ? friends.map((f,i)=>`<div class="friendrow"><div class="avatar">${esc(f[0].toUpperCase())}</div><div class="player"><div><div class="playername">${esc(f)}</div><div class="small">${i%2?'Zuletzt online':'Bereit zum Spielen'}</div></div></div><span class="pill">${i%2?'Offline':'Online'}</span></div>`).join('')
- : '<p class="muted">Noch keine Freunde.</p>';
- document.getElementById('homeFriends').innerHTML=friends.slice(0,3).map(f=>`<div class="friendrow"><div class="avatar">${esc(f[0].toUpperCase())}</div><div class="player"><div class="playername">${esc(f)}</div></div></div>`).join('');
-}
-function addFriend(name){
- const v=name.trim();
- if(!v)return toast('Gib einen Spielernamen ein.');
- if(user&&v.toLowerCase()===user.name.toLowerCase())return toast('Das bist du selbst!');
- if(friends.some(x=>x.toLowerCase()===v.toLowerCase()))return toast('Dieser Name steht schon in deiner Liste.');
- friends.unshift(v);
- renderFriends();
- toast(v+' wurde lokal hinzugefügt.');
-}
-document.getElementById('friendForm').addEventListener('submit',e=>{
- e.preventDefault();
- const input=document.getElementById('friendInput');
- addFriend(input.value);
- input.value='';
-});
-
-function createRoom(){
- const name=document.getElementById('roomName').value.trim()||'Meine Crew';
- const game=document.getElementById('roomGame').value;
- const code=Math.random().toString(36).slice(2,8).toUpperCase();
- rooms.unshift({name,game,code,players:1});
- renderRooms();
- toast('Raum erstellt! Code: '+code);
-}
-function joinRoom(){
- const c=document.getElementById('joinCode').value.trim().toUpperCase();
- const r=rooms.find(x=>x.code===c);
- if(!c)return toast('Bitte gib einen Raumcode ein.');
- if(r){r.players++;renderRooms();toast('Du bist dem Raum beigetreten!');}
- else toast('Raum nicht gefunden. Demo-Räume sind nur lokal.');
-}
-function renderRooms(){
- document.getElementById('roomsList').innerHTML=rooms.length
- ? rooms.map(r=>`<div class="room"><span class="tag">${esc(r.game)}</span><h3>${esc(r.name)}</h3><p>${r.players} Spieler · Code: <b>${r.code}</b></p><button class="btn secondary" onclick="copyCode('${r.code}')">Code kopieren</button> <button class="btn" onclick="launchGame('${r.game==='Werwolf'?'werewolf':r.game==='Impostor'?'impostor':r.game==='Tic-Tac-Toe'?'duel':'quiz'}')">Spielen →</button></div>`).join('')
- : '<div class="room"><h3>Noch keine Räume</h3><p>Erstelle deine erste Lobby.</p></div>';
-}
-function copyCode(code){
- if(navigator.clipboard&&navigator.clipboard.writeText){
-  navigator.clipboard.writeText(code).then(()=>toast('Code kopiert: '+code)).catch(()=>toast('Raumcode: '+code));
- } else toast('Raumcode: '+code);
-}
-
-function openAuth(){document.getElementById('authModal').classList.add('show');}
-function closeModal(id){document.getElementById(id).classList.remove('show');}
-function setAuthMode(m){
- authMode=m;
- document.getElementById('tabSignup').classList.toggle('active',m==='signup');
- document.getElementById('tabLogin').classList.toggle('active',m==='login');
- document.getElementById('authSubmit').textContent=m==='signup'?'Account erstellen ↗':'Anmelden ↗';
- document.getElementById('authPassword').autocomplete=m==='signup'?'new-password':'current-password';
-}
-document.getElementById('authForm').addEventListener('submit',e=>{
- e.preventDefault();
- const name=document.getElementById('authName').value.trim();
- const pass=document.getElementById('authPassword').value;
- if(name.length<3||pass.length<8)return toast('Name: mindestens 3 Zeichen, Passwort: mindestens 8 Zeichen.');
- if(authMode==='login'&&!localStorage.getItem('neon_stats_'+name))return toast('Demo-Profil nicht gefunden. Erstelle zuerst ein Profil.');
- user={name};
- stats=JSON.parse(localStorage.getItem('neon_stats_'+name)||'{"xp":0,"played":0,"wins":0}');
- localStorage.setItem('neon_demo_user',name);
- localStorage.setItem('neon_stats_'+name,JSON.stringify(stats));
- syncUI();
- closeModal('authModal');
- toast('Willkommen, '+name+'! Demo-Profil geladen.');
-});
-function logout(){
- user=null;stats={xp:0,played:0,wins:0};
- localStorage.removeItem('neon_demo_user');
- syncUI();
- toast('Demo-Profil abgemeldet.');
-}
-function syncUI(){
- const logged=!!user;
- document.getElementById('loginTop').style.display=logged?'none':'block';
- document.getElementById('userPill').style.display=logged?'flex':'none';
- const name=logged?user.name:'Gastspieler';
- const ini=logged?name[0].toUpperCase():'?';
- ['sideName','topName','profileName'].forEach(id=>document.getElementById(id).textContent=name);
- ['sideAvatar','topAvatar','profileAvatar'].forEach(id=>document.getElementById(id).textContent=ini);
- const level=Math.floor(stats.xp/500)+1;
- document.getElementById('sideLevel').textContent=level;
- document.getElementById('statLevel').textContent=String(level).padStart(2,'0');
- document.getElementById('statXP').textContent=stats.xp.toLocaleString('de-DE');
- document.getElementById('statPlayed').textContent=stats.played;
- document.getElementById('statWins').textContent=stats.wins;
- document.getElementById('profileLevel').textContent=level;
- document.getElementById('profileXP').textContent=stats.xp;
- document.getElementById('profilePlayed').textContent=stats.played;
- document.getElementById('profileWins').textContent=stats.wins;
- document.getElementById('profileStatus').textContent=logged?'Demo-Profil · lokal auf diesem Gerät':'Noch nicht angemeldet';
- renderLeaders();renderFriends();
-}
-function addResult(win,xp=30){
- if(!user){toast('Melde dich an, um Demo-Stats zu speichern.');return;}
- stats.played++;
- if(win)stats.wins++;
- stats.xp+=xp;
- localStorage.setItem('neon_stats_'+user.name,JSON.stringify(stats));
- syncUI();
- toast((win?'Sieg! ':'Runde gespielt! ')+`+${xp} XP`);
-}
-
-function launchGame(id){
- const g=games.find(x=>x.id===id)||games[0];
- document.getElementById('gameModalTitle').textContent=g.emoji+' '+g.name;
- document.getElementById('gameModalDesc').textContent=g.desc;
- const area=document.getElementById('gameArea');
-
- if(g.kind==='tic'){
-  ticBoard=Array(9).fill('');ticTurn='X';ticDone=false;drawTic();
- } else if(g.kind==='impostor'){
-  const w=words[Math.floor(Math.random()*words.length)];
-  area.innerHTML=`<div class="gameplay"><div class="eyebrow">PASS & PLAY</div><h3>Wer ist der Impostor?</h3><p class="muted">Reicht das Gerät reihum weiter. Jede Person sieht ihre Karte einzeln.</p><div class="word" id="secretWord">••••••</div><p id="secretHint" class="muted">Tippe, um deine Karte aufzudecken.</p><button class="btn" id="revealWord" onclick="revealSecret('${w}')">Karte ansehen 👁</button><button class="btn secondary" onclick="launchGame('impostor')">Neue Runde ↻</button></div>`;
- } else if(g.kind==='roles'){
-  area.innerHTML=`<div class="gameplay"><h3>Werwolf – Rollen verteilen</h3><p class="muted">Mindestens fünf Personen. Reiche das Gerät weiter.</p><label class="fieldlabel">Anzahl Spieler</label><input class="input" type="number" id="wolfCount" value="6" min="5" max="20"><button class="btn" onclick="dealRoles()">Rollen verteilen</button><div id="roleResult"></div></div>`;
- } else if(g.kind==='quiz'){
-  quizIndex=0;showQuiz();
- } else if(g.kind==='rps'){
-  area.innerHTML=`<div class="gameplay"><h3>Wähle deinen Zug</h3><p class="muted">Du gegen den Computer.</p><div class="choicegrid"><button onclick="playRps('✊')">✊ Stein</button><button onclick="playRps('✋')">✋ Papier</button><button onclick="playRps('✌️')">✌️ Schere</button></div><div id="rpsResult" class="word" style="font-size:18px"></div></div>`;
- } else if(g.kind==='memory'){
-  area.innerHTML=`<div class="gameplay"><h3>Memory Mini</h3><p class="muted">Finde alle passenden Paare.</p><div id="memoryBoard" class="choicegrid"></div><p id="memoryStatus" class="muted"></p><button class="btn secondary" onclick="launchGame('memory')">Neu mischen ↻</button></div>`;
-  startMemory();
- } else if(g.kind==='truth'){
-  showPartyQuestion();
- } else {
-  area.innerHTML=`<div class="gameplay"><div class="word">${g.emoji}</div><h3>Spielmodus in Vorbereitung</h3><p class="muted">Dieses Spiel wird später vollständig umgesetzt.</p><button class="btn" onclick="addResult(false,10)">Demo ausprobieren · +10 XP</button></div>`;
+let xp=Number(localStorage.getItem('neon_xp')||0);
+let rounds=Number(localStorage.getItem('neon_rounds')||0);
+let currentGame='';
+let state={};
+const $=id=>document.getElementById(id);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{
+ for(let i=a.length-1;i>0;i--){
+  let j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
  }
- document.getElementById('gameModal').classList.add('show');
+ return a;
+};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({
+ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+
+function updateStats(){
+ $('score').textContent=xp+' XP';
+ $('played').textContent=rounds;
+ localStorage.setItem('neon_xp',xp);
+ localStorage.setItem('neon_rounds',rounds);
 }
-function revealSecret(w){
- const impostor=Math.random()<.22;
- document.getElementById('secretWord').textContent=impostor?'IMPOSTOR':w;
- document.getElementById('secretHint').textContent=impostor?'Du kennst das geheime Wort nicht. Finde es heraus!':'Merke dir das Wort und gib das Gerät weiter.';
- const b=document.getElementById('revealWord');
- b.textContent='Verstanden ✓';
- b.onclick=()=>{
-  document.getElementById('secretWord').textContent='••••••';
-  document.getElementById('secretHint').textContent='Gib das Gerät an die nächste Person weiter.';
-  b.textContent='Nächste Karte →';
-  b.onclick=()=>launchGame('impostor');
- };
+function reward(points=20){
+ xp+=points;rounds++;updateStats();
 }
-function dealRoles(){
- const n=Math.max(5,Math.min(20,Number(document.getElementById('wolfCount').value)||6));
- const roles=Array(n).fill('Dorfbewohner');
- roles[Math.floor(Math.random()*n)]='Werwolf';
- if(n>=7){let i=Math.floor(Math.random()*n);while(roles[i]==='Werwolf')i=Math.floor(Math.random()*n);roles[i]='Seher';}
- window.wolfRoles=roles;
- window.wolfIndex=0;
- document.getElementById('roleResult').innerHTML='<p class="muted">Rollen vorbereitet.</p><button class="btn" onclick="revealRole()">Rolle für Spieler 1 ansehen</button><div id="roleCard" class="word" style="font-size:18px"></div>';
+function showStats(){
+ alert('Dein Arcade-Stand\n\n'+xp+' XP\n'+rounds+' gespielte Runden');
 }
-function revealRole(){
- const r=window.wolfRoles;
- const i=window.wolfIndex;
- document.getElementById('roleCard').textContent=`Spieler ${i+1}: ${r[i]}`;
- window.wolfIndex++;
- const b=document.querySelector('#roleResult button');
- b.textContent=window.wolfIndex<r.length?`Weiter zu Spieler ${window.wolfIndex+1} →`:'Rollen fertig ✓';
- b.onclick=()=>{
-  if(window.wolfIndex>=r.length){document.getElementById('roleCard').textContent='Alle Rollen verteilt!';b.disabled=true;}
-  else revealRole();
- };
+function openGame(id){
+ currentGame=id;
+ const g=games.find(x=>x.id===id);
+ $('game').style.display='block';
+ $('gameTitle').textContent=g.emoji+' '+g.name;
+ $('gameDesc').textContent=g.desc;
+ $('game').scrollIntoView({behavior:'smooth'});
+ ({
+  impostor:startImpostor,
+  werewolf:startWerewolf,
+  tic:startTic,
+  quiz:startQuiz,
+  draw:startDraw,
+  memory:startMemory,
+  rps:startRPS,
+  word:startWord,
+  truth:startTruth
+ }[id])();
+}
+function closeGame(){$('game').style.display='none'}
+function renderGames(){
+ $('games').innerHTML=games.map(g=>`
+ <button class="gamecard" onclick="openGame('${g.id}')">
+  <div class="emoji">${g.emoji}</div><h3>${g.name}</h3>
+  <p>${g.desc}</p><small>▶ Spielen · ${g.mode}</small>
+ </button>`).join('');
+}
+function screen(html){$('area').innerHTML=html}
+function btn(label,fn,cls='primary'){
+ return `<button class="${cls}" onclick="${fn}">${label}</button>`;
+}
+
+/* 1. IMPOSTOR */
+function startImpostor(){
+ screen(`<div class="notice">Jede Person sieht ihre Karte geheim. Danach folgen Hinweise, Diskussion und Abstimmung. Wird der Impostor enttarnt, darf er das Wort erraten.</div>
+ <label>Spielerzahl (3–12)</label><input id="impN" type="number" min="3" max="12" value="6">
+ ${btn('Geheime Karten verteilen →','dealImpostor()')}`);
+}
+function dealImpostor(){
+ let n=Math.max(3,Math.min(12,+$('impN').value||6));
+ state={n,i:0,bad:Math.floor(Math.random()*n),word:pick([
+ 'Pizza','Dinosaurier','Schule','Strand','Popcorn','Fahrrad',
+ 'Schokolade','Weltraum','Fußball','Kino','Eiscreme','Roboter',
+ 'Zahnbürste','Wasserfall','Flughafen','Pinguin'
+ ]),shown:false};
+ impCard();
+}
+function impCard(){
+ screen(`<div class="progress"><div style="width:${state.i/state.n*100}%"></div></div>
+ <p>Geheime Karte ${state.i+1} von ${state.n}</p>
+ <div class="secret" onclick="revealImp()"><div><div class="big">🔒</div><p>Tippen zum Aufdecken</p></div></div>
+ ${btn('Karte gesehen – weiter →','nextImp()','secondary')}`);
+ $('area').lastElementChild.disabled=true;
+}
+function revealImp(){
+ if(state.shown)return;
+ state.shown=true;
+ $('area').querySelector('.secret').innerHTML=
+ `<div><div class="big">${state.i===state.bad?'🕵️':'🗝️'}</div>
+ <div class="big">${state.i===state.bad?'DU BIST DER IMPOSTOR':state.word}</div>
+ <p>${state.i===state.bad?'Du kennst das Wort nicht. Bluffe!':'Merke dir das geheime Wort.'}</p></div>`;
+ $('area').lastElementChild.disabled=false;
+}
+function nextImp(){
+ if(!state.shown)return;
+ if(state.i+1<state.n){state.i++;state.shown=false;impCard();return}
+ screen(`<div class="big">💬 Hinweisrunde</div>
+ <p>Jede Person nennt reihum einen Hinweis. Sagt nicht direkt das Wort! Diskutiert, wer blufft.</p>
+ ${btn('Zur Abstimmung →','impVoteScreen()')}`);
+}
+function impVoteScreen(){
+ screen(`<h3>Wer ist der Impostor?</h3><div class="grid">${
+ Array.from({length:state.n},(_,i)=>`<button onclick="impVote(${i})">👤 Spieler ${i+1}</button>`).join('')
+ }</div>`);
+}
+function impVote(i){
+ state.caught=i===state.bad;
+ screen(`<div class="big">${state.caught?'🎯':'😈'}</div>
+ <h3>${state.caught?'Impostor erwischt!':'Falsch abgestimmt!'}</h3>
+ <div class="result">Spieler ${i+1} war ${state.caught?'der Impostor':'unschuldig'}.<br>
+ Das geheime Wort war <b>${state.word}</b>.</div>
+ ${state.caught?`<label>Impostor: Errate das Wort</label><input id="impGuess" placeholder="Dein Tipp">
+ ${btn('Tipp prüfen','finishImp()')}`:btn('Ergebnis ansehen','finishImp()')}`);
+}
+function finishImp(){
+ let guess=($('impGuess')?.value||'').trim().toLowerCase();
+ let crew=state.caught&&guess!==state.word.toLowerCase();
+ screen(`<div class="big">${crew?'🏆':'😈'}</div>
+ <h2>${crew?'Die Crew gewinnt!':'Der Impostor gewinnt!'}</h2>
+ <p>Der Impostor war Spieler ${state.bad+1}. Das Wort war ${state.word}.</p>
+ ${btn('Neue Runde ↻',"openGame('impostor')")}`);
+ reward(crew?45:20);
+}
+
+/* 2. WERWOLF */
+function startWerewolf(){
+ screen(`<div class="notice">
+ 🐺 Werwölfe versuchen, das Dorf zu übernehmen.<br>
+ 🔮 Seherin kann nachts Rollen prüfen.<br>
+ 🧙 Hexe kann ein Opfer retten oder jemanden vergiften.<br>
+ 🏹 Jäger nimmt beim Ausscheiden eine Person mit.<br>
+ 🦹 Dieb tauscht seine Rolle mit einer anderen Person.<br>
+ 😉 Blinzel-Mädchen darf heimlich eine Rolle ansehen.<br>
+ 💘 Amor wählt zwei Verliebte.
+ </div>
+ <label>Spielerzahl (5–20)</label><input id="wolfN" type="number" min="5" max="20" value="8">
+ ${btn('Rollen verdeckt verteilen →','dealWolf()')}`);
+}
+function dealWolf(){
+ let n=Math.max(5,Math.min(20,+$('wolfN').value||8));
+ let roles=Array(n).fill('👤 Dorfbewohner');
+ let special=[];
+ for(let i=0;i<(n>=13?3:2);i++)special.push('🐺 Werwolf');
+ special.push('🔮 Seherin');
+ if(n>=7)special.push('🧙 Hexe');
+ if(n>=8)special.push('🏹 Jäger');
+ if(n>=9)special.push('🦹 Dieb');
+ if(n>=10)special.push('😉 Blinzel-Mädchen');
+ if(n>=11)special.push('💘 Amor');
+ special.forEach((r,i)=>roles[i]=r);
+ state={n,roles:shuffle(roles),i:0,shown:false,out:[],night:1,dead:null,poison:null,usedPoison:false,usedSave:false};
+ wolfCard();
+}
+function wolfCard(){
+ screen(`<div class="progress"><div style="width:${state.i/state.n*100}%"></div></div>
+ <p>Geheime Rolle · Spieler ${state.i+1} von ${state.n}</p>
+ <div class="secret" onclick="revealWolf()"><div><div class="big">🔒</div><p>Nur die Person am Zug schaut!</p></div></div>
+ ${btn('Karte verdecken – weiter →','nextWolf()','secondary')}`);
+ $('area').lastElementChild.disabled=true;
+}
+function revealWolf(){
+ if(state.shown)return;
+ state.shown=true;
+ $('area').querySelector('.secret').innerHTML=
+ `<div><div class="big">${state.roles[state.i].split(' ')[0]}</div>
+ <div class="big">${esc(state.roles[state.i].substring(2))}</div>
+ <p>Merke dir deine Rolle. Verrate sie nicht leichtfertig.</p></div>`;
+ $('area').lastElementChild.disabled=false;
+}
+function nextWolf(){
+ if(!state.shown)return;
+ if(state.i+1<state.n){state.i++;state.shown=false;wolfCard();return}
+ nightIntro();
+}
+function nightIntro(){
+ screen(`<div class="big">🌘 Nacht ${state.night}</div>
+ <p>Alle schließen die Augen. Die Spielleitung führt die Nachtaktionen nacheinander aus.</p>
+ ${btn('Nachtaktionen starten →','nightScreen()')}`);
+}
+function nightScreen(){
+ screen(`<h3>Welche Rolle ist dran?</h3><p class="muted">Wählt die Aktion passend zur Rolle. Nicht vorhandene Rollen überspringen.</p>
+ <div class="grid">
+ ${['🐺 Werwölfe','🔮 Seherin','🧙 Hexe','🦹 Dieb','😉 Blinzel-Mädchen','💘 Amor'].map((r,i)=>`<button onclick="nightRole(${i})">${r}</button>`).join('')}
+ </div>${btn('Nacht beenden →','dayIntro()','secondary')}`);
+}
+function alivePlayers(){return Array.from({length:state.n},(_,i)=>i).filter(i=>!state.out.includes(i))}
+function targetScreen(title,callback,exclude=[]){
+ let alive=alivePlayers().filter(i=>!exclude.includes(i));
+ screen(`<h3>${title}</h3><div class="grid">${
+ alive.map(i=>`<button onclick="${callback}(${i})">👤 Spieler ${i+1}</button>`).join('')
+ }</div>${btn('Überspringen','nightScreen()','secondary')}`);
+}
+function nightRole(k){
+ state.action=k;
+ if(k===0)targetScreen('🐺 Werwölfe wählen ein Opfer','nightTarget');
+ if(k===1||k===4)targetScreen(k===1?'🔮 Seherin prüft eine Rolle':'😉 Heimlicher Blick','peekRole');
+ if(k===2)targetScreen('🧙 Hexe wählt eine Person','witchTarget');
+ if(k===3)targetScreen('🦹 Dieb wählt eine Person zum Tauschen','thiefSwap');
+ if(k===5)targetScreen('💘 Amor wählt die erste verliebte Person','amorFirst');
+}
+function nightTarget(i){state.dead=i;nightScreen()}
+function peekRole(i){
+ screen(`<h3>Geheimer Blick</h3><div class="result">Spieler ${i+1}: <b>${esc(state.roles[i])}</b></div>
+ ${btn('Rolle verdecken →','nightScreen()')}`);
+}
+function witchTarget(i){
+ screen(`<h3>🧙 Hexe</h3><p>Spieler ${i+1} wurde ausgewählt.</p>
+ <div class="grid">
+ ${btn('Diese Person vergiften','poisonPlayer('+i+')')}
+ ${btn('Opfer retten','saveVictim()','secondary')}
+ ${btn('Nichts tun','nightScreen()','secondary')}
+ </div>`);
+}
+function poisonPlayer(i){
+ if(state.usedPoison){alert('Der Gifttrank wurde schon benutzt.');return nightScreen()}
+ state.usedPoison=true;state.poison=i;nightScreen();
+}
+function saveVictim(){
+ if(state.usedSave){alert('Der Heiltrank wurde schon benutzt.');return nightScreen()}
+ state.usedSave=true;state.dead=null;nightScreen();
+}
+function thiefSwap(i){
+ let me=state.roles.findIndex((r,j)=>r.includes('Dieb')&&!state.out.includes(j));
+ if(me<0){screen(`<p>Es gibt keinen lebenden Dieb.</p>${btn('Weiter','nightScreen()')}`);return}
+ [state.roles[me],state.roles[i]]=[state.roles[i],state.roles[me]];
+ screen(`<h3>🦹 Rollentausch</h3><p>Die Rollen von Spieler ${me+1} und Spieler ${i+1} wurden getauscht.</p>
+ ${btn('Weiter →','nightScreen()')}`);
+}
+function amorFirst(i){
+ state.love1=i;
+ targetScreen('💘 Amor wählt die zweite Person','amorSecond',[i]);
+}
+function amorSecond(i){
+ state.lovers=[state.love1,i];
+ screen(`<h3>💘 Verliebte verbunden</h3><p>Spieler ${state.love1+1} und ${i+1} sind heimlich verbunden.</p>
+ ${btn('Weiter →','nightScreen()')}`);
+}
+function dayIntro(){
+ let victims=[state.dead,state.poison].filter(i=>i!==null&&i!==undefined);
+ victims=[...new Set(victims)];
+ victims.forEach(i=>{if(!state.out.includes(i))state.out.push(i)});
+ if(state.lovers&&victims.some(i=>state.lovers.includes(i))){
+  state.lovers.forEach(i=>{if(!state.out.includes(i))state.out.push(i)});
+ }
+ screen(`<div class="big">🌅 Das Dorf erwacht</div>
+ <div class="result">${victims.length?'Nachts ausgeschieden: '+victims.map(i=>'Spieler '+(i+1)).join(', '):'Niemand ist nachts ausgeschieden.'}
+ </div><p>Diskutiert gemeinsam und stimmt ab.</p>
+ ${btn('Zur Abstimmung →','wolfVote()')}`);
+}
+function wolfVote(){
+ let alive=alivePlayers();
+ if(alive.length<=1)return wolfEnd();
+ screen(`<h3>Wen wählt das Dorf raus?</h3><div class="grid">${
+ alive.map(i=>`<button onclick="wolfEliminate(${i})">👤 Spieler ${i+1}</button>`).join('')
+ }</div>`);
+}
+function wolfEliminate(i){
+ if(!state.out.includes(i))state.out.push(i);
+ let role=state.roles[i],hunter=role.includes('Jäger');
+ if(state.lovers&&state.lovers.includes(i)){
+  state.lovers.forEach(j=>{if(!state.out.includes(j))state.out.push(j)});
+ }
+ screen(`<div class="big">${role.split(' ')[0]}</div>
+ <h3>Spieler ${i+1} ist ausgeschieden</h3>
+ <div class="result">Die Rolle war: <b>${esc(role)}</b></div>
+ ${hunter?`<p>🏹 Der Jäger nimmt eine Person mit!</p>
+ <div class="grid">${alivePlayers().map(j=>`<button onclick="hunterShot(${j})">Spieler ${j+1}</button>`).join('')}</div>`
+ :btn('Weiter →','wolfContinue()')}`);
+}
+function hunterShot(i){
+ state.out.push(i);
+ if(state.lovers&&state.lovers.includes(i))state.lovers.forEach(j=>{if(!state.out.includes(j))state.out.push(j)});
+ screen(`<h3>🏹 Der Jäger hat geschossen!</h3>
+ <div class="result">Spieler ${i+1} scheidet aus. Rolle: <b>${esc(state.roles[i])}</b></div>
+ ${btn('Weiter →','wolfContinue()')}`);
+}
+function wolfContinue(){
+ let alive=alivePlayers();
+ let wolves=alive.filter(i=>state.roles[i].includes('Werwolf')).length;
+ if(wolves===0||wolves>=alive.length-wolves){wolfEnd();return}
+ state.night++;state.dead=null;state.poison=null;nightIntro();
+}
+function wolfEnd(){
+ let alive=alivePlayers();
+ let wolves=alive.filter(i=>state.roles[i].includes('Werwolf')).length;
+ let town=wolves===0;
+ screen(`<div class="big">${town?'🏆':'🐺'}</div>
+ <h2>${town?'Das Dorf gewinnt!':'Die Werwölfe gewinnen!'}</h2>
+ <div class="result">Verbliebene Personen: ${alive.length}<br>Werwölfe: ${wolves}</div>
+ ${btn('Neue Runde ↻',"openGame('werewolf')")}`);
+ reward(town?70:25);
+}
+
+/* 3. TIC-TAC-TOE */
+function startTic(){
+ state={board:Array(9).fill(''),turn:'X',done:false};
+ drawTic();
 }
 function drawTic(){
- const area=document.getElementById('gameArea');
- area.innerHTML=`<div class="gameplay"><div class="eyebrow">LOKALES 1 VS 1</div><h3>${ticDone?'Runde beendet':`Am Zug: ${ticTurn==='X'?'Spieler 1 (X)':'Spieler 2 (O)'}`}</h3><div class="tic">${ticBoard.map((v,i)=>`<button ${v||ticDone?'disabled':''} onclick="ticMove(${i})">${v}</button>`).join('')}</div><p class="muted" id="ticStatus">Zwei Spieler an einem Gerät.</p><button class="btn secondary" onclick="launchGame('duel')">Neu starten ↻</button></div>`;
+ let b=state.board;
+ screen(`<h3>${state.done?'Runde beendet':'Am Zug: '+(state.turn==='X'?'Spieler 1 ❎':'Spieler 2 ⭕')}</h3>
+ <div class="tic">${b.map((v,i)=>`<button ${v||state.done?'disabled':''} onclick="ticMove(${i})">${v}</button>`).join('')}</div>
+ <p id="ticMsg" class="muted">Zwei Personen an einem Gerät.</p>
+ ${btn('Neu starten ↻',"openGame('tic')",'secondary')}`);
 }
 function ticMove(i){
- if(ticBoard[i]||ticDone)return;
- ticBoard[i]=ticTurn;
- const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
- const win=lines.some(l=>l.every(j=>ticBoard[j]===ticTurn));
- if(win){
-  ticDone=true;drawTic();
-  document.getElementById('ticStatus').textContent=`${ticTurn==='X'?'Spieler 1':'Spieler 2'} gewinnt!`;
-  addResult(true,50);
- } else if(ticBoard.every(Boolean)){
-  ticDone=true;drawTic();
-  document.getElementById('ticStatus').textContent='Unentschieden!';
-  addResult(false,15);
- } else {
-  ticTurn=ticTurn==='X'?'O':'X';drawTic();
- }
+ if(state.board[i]||state.done)return;
+ state.board[i]=state.turn;
+ let lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+ let win=lines.some(line=>line.every(j=>state.board[j]===state.turn));
+ if(win||state.board.every(Boolean)){
+  state.done=true;drawTic();
+  $('ticMsg').textContent=win?'Spieler '+(state.turn==='X'?'1':'2')+' gewinnt!':'Unentschieden!';
+  if(win)reward(50);else reward(10);
+ }else{state.turn=state.turn==='X'?'O':'X';drawTic()}
 }
-function showQuiz(){
- const q=questions[quizIndex%questions.length];
- document.getElementById('gameArea').innerHTML=`<div class="gameplay"><div class="eyebrow">QUIZ BATTLE · ${quizIndex+1}/${questions.length}</div><h3>${q.q}</h3><div class="choicegrid">${q.a.map((a,i)=>`<button onclick="answerQuiz(${i})">${a}</button>`).join('')}</div><p id="quizResult" class="muted"></p></div>`;
+
+/* 4. QUIZ */
+const questions=[
+ {q:'Welcher Planet ist der größte?',a:['Mars','Jupiter','Venus','Merkur'],c:1},
+ {q:'Wie viele Seiten hat ein Hexagon?',a:['5','6','7','8'],c:1},
+ {q:'Was ist die Hauptstadt von Japan?',a:['Seoul','Peking','Tokio','Bangkok'],c:2},
+ {q:'Welche Farbe entsteht aus Blau und Gelb?',a:['Lila','Grün','Orange','Rosa'],c:1},
+ {q:'Wie viele Minuten hat eine Stunde?',a:['30','45','60','90'],c:2},
+ {q:'Welches Tier ist ein Säugetier?',a:['Hai','Delfin','Forelle','Krabbe'],c:1},
+ {q:'Wie heißt unser Stern?',a:['Mond','Sirius','Sonne','Polarstern'],c:2},
+ {q:'Wie viele Beine hat eine Spinne?',a:['6','8','10','12'],c:1}
+];
+function startQuiz(){
+ state={i:0,score:0,qs:shuffle([...questions]).slice(0,5)};
+ showQuestion();
+}
+function showQuestion(){
+ let q=state.qs[state.i];
+ screen(`<div class="progress"><div style="width:${state.i/state.qs.length*100}%"></div></div>
+ <p>Frage ${state.i+1} von ${state.qs.length}</p><h3>${q.q}</h3>
+ <div class="grid">${q.a.map((a,i)=>`<button onclick="answerQuiz(${i})">${a}</button>`).join('')}</div>
+ <p class="muted">Punkte: ${state.score}</p>`);
 }
 function answerQuiz(i){
- const q=questions[quizIndex%questions.length];
- const ok=i===q.correct;
- document.querySelectorAll('#gameArea .choicegrid button').forEach(b=>b.disabled=true);
- document.getElementById('quizResult').textContent=ok?'Richtig!':'Leider falsch – richtig ist: '+q.a[q.correct];
- quizIndex++;
- if(quizIndex>=questions.length){
-  setTimeout(()=>{addResult(ok,ok?50:10);document.getElementById('gameArea').innerHTML='<div class="gameplay"><h3>Quiz beendet!</h3><button class="btn" onclick="launchGame(\'quiz\')">Nochmal spielen ↻</button></div>';},800);
- } else setTimeout(showQuiz,900);
+ let q=state.qs[state.i],ok=i===q.c;
+ if(ok)state.score++;
+ screen(`<h3>${ok?'✅ Richtig!':'❌ Nicht ganz'}</h3>
+ <div class="result">Die richtige Antwort ist <b>${q.a[q.c]}</b>.</div>
+ ${btn(state.i+1<state.qs.length?'Nächste Frage →':'Ergebnis anzeigen →','nextQuestion()')}`);
 }
-function playRps(m){
- const opts=['✊','✋','✌️'];
- const c=opts[Math.floor(Math.random()*3)];
- const win=m===c?null:(m==='✊'&&c==='✌️'||m==='✋'&&c==='✊'||m==='✌️'&&c==='✋');
- document.getElementById('rpsResult').textContent=`Du ${m} · CPU ${c} — ${win===null?'Unentschieden':win?'Du gewinnst!':'CPU gewinnt'}`;
- addResult(!!win,win?25:10);
+function nextQuestion(){
+ state.i++;
+ if(state.i>=state.qs.length){
+  screen(`<div class="big">⚡ ${state.score}/${state.qs.length}</div>
+  <h2>Quiz beendet!</h2><p>Du hast ${state.score} Fragen richtig beantwortet.</p>
+  ${btn('Nochmal spielen ↻',"openGame('quiz' )")}`);
+  reward(10+state.score*10);return;
+ }
+ showQuestion();
 }
+
+/* 5. ZEICHNEN & RATEN */
+const drawWords=['Katze','Rakete','Pizza','Roboter','Einhorn','Sonne','Dinosaurier','Fahrrad','Krone','Schneemann'];
+function startDraw(){
+ state={word:pick(drawWords)};
+ screen(`<p>Der Zeichner schaut auf den geheimen Begriff und zeichnet ihn. Die anderen raten!</p>
+ <div class="secret"><div><p>GEHEIMBEGRIFF FÜR DEN ZEICHNER</p><div class="big">${state.word}</div></div></div>
+ <label>Zeichenfarbe</label><input id="penColor" type="color" value="#222222">
+ <label>Stiftgröße</label><input id="penSize" type="range" min="2" max="20" value="5">
+ <canvas id="drawCanvas" width="900" height="400"></canvas>
+ <div class="row" style="margin-top:12px">
+ ${btn('Zeichenfläche leeren','clearCanvas()','secondary')}
+ ${btn('Begriff erraten!','drawGuess()')}
+ </div>`);
+ initCanvas();
+}
+let ctx,painting=false,last=null;
+function initCanvas(){
+ let c=$('drawCanvas');ctx=c.getContext('2d');
+ ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);
+ c.onpointerdown=e=>{painting=true;last=canvasPoint(e,c);c.setPointerCapture(e.pointerId)};
+ c.onpointerup=()=>{painting=false;last=null};
+ c.onpointermove=e=>{
+  if(!painting)return;
+  let p=canvasPoint(e,c);
+  ctx.strokeStyle=$('penColor').value;ctx.lineWidth=+$('penSize').value;
+  ctx.lineCap='round';ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;
+ };
+}
+function canvasPoint(e,c){
+ let r=c.getBoundingClientRect();
+ return {x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height};
+}
+function clearCanvas(){
+ ctx.fillStyle='white';ctx.fillRect(0,0,900,400);
+}
+function drawGuess(){
+ screen(`<h3>Was wurde gezeichnet?</h3>
+ <p>Zeigt die Zeichnung allen und lasst sie raten.</p>
+ <input id="drawAnswer" placeholder="Geratener Begriff">
+ ${btn('Antwort prüfen','checkDraw()')}`);
+}
+function checkDraw(){
+ let ans=$('drawAnswer').value.trim().toLowerCase();
+ let ok=ans===state.word.toLowerCase();
+ screen(`<div class="big">${ok?'🎉':'🎨'}</div>
+ <h3>${ok?'Richtig geraten!':'Auflösung'}</h3>
+ <p>Der Begriff war <b>${state.word}</b>.</p>
+ ${btn('Neue Runde ↻',"openGame('draw')")}`);
+ reward(ok?35:10);
+}
+
+/* 6. MEMORY */
+const memIcons=['🌙','⚡','🎮','👾','🍕','🚀','🐸','💎'];
 function startMemory(){
- const a=['🌙','⚡','🎮','👾','🌙','⚡','🎮','👾'].sort(()=>Math.random()-.5);
- window.mem={a,open:[],matched:[],turns:0,locked:false};
- document.getElementById('memoryBoard').innerHTML=a.map((x,i)=>`<button onclick="flipMem(${i})">✦</button>`).join('');
- document.getElementById('memoryStatus').textContent='Paare: 0/4';
+ state={cards:shuffle([...memIcons,...memIcons]),open:[],matched:[],turns:0,locked:false};
+ drawMemory();
 }
-function flipMem(i){
- const m=window.mem;
- if(!m||m.locked||m.matched.includes(i)||m.open.includes(i))return;
- const buttons=document.querySelectorAll('#memoryBoard button');
- m.open.push(i);buttons[i].textContent=m.a[i];
- if(m.open.length===2){
-  m.turns++;
-  const [a,b]=m.open;
-  if(m.a[a]===m.a[b]){
-   m.matched.push(a,b);m.open=[];
-   if(m.matched.length===m.a.length){
-    document.getElementById('memoryStatus').textContent=`Geschafft in ${m.turns} Zügen!`;
-    addResult(true,40);return;
+function drawMemory(){
+ screen(`<p>Finde alle acht Paare. Versuche, möglichst wenige Züge zu machen.</p>
+ <div class="memory">${state.cards.map((v,i)=>`
+ <button ${state.matched.includes(i)?'disabled':''} onclick="flipMemory(${i})">
+ ${state.matched.includes(i)||state.open.includes(i)?v:'✦'}
+ </button>`).join('')}</div>
+ <p class="muted">Paare: ${state.matched.length/2}/8 · Züge: ${state.turns}</p>
+ ${btn('Neu mischen ↻',"openGame('memory')",'secondary')}`);
+}
+function flipMemory(i){
+ if(state.locked||state.matched.includes(i)||state.open.includes(i))return;
+ state.open.push(i);drawMemory();
+ if(state.open.length===2){
+  state.turns++;
+  let [a,b]=state.open;
+  if(state.cards[a]===state.cards[b]){
+   state.matched.push(a,b);state.open=[];drawMemory();
+   if(state.matched.length===state.cards.length){
+    screen(`<div class="big">🧠 Geschafft!</div>
+    <h3>Alle Paare gefunden</h3><p>Du hast ${state.turns} Züge gebraucht.</p>
+    ${btn('Nochmal spielen ↻',"openGame('memory')")}`);
+    reward(40);
    }
-  } else {
-   m.locked=true;
-   setTimeout(()=>{buttons[a].textContent='✦';buttons[b].textContent='✦';m.open=[];m.locked=false;},650);
+  }else{
+   state.locked=true;
+   setTimeout(()=>{state.open=[];state.locked=false;drawMemory()},850);
   }
-  document.getElementById('memoryStatus').textContent=`Paare: ${m.matched.length/2}/4 · Züge: ${m.turns}`;
  }
 }
-function showPartyQuestion(){
- const prompts=[
-  'Erfinde einen Namen für ein Alien-Café.',
-  'Was wäre dein unnötigstes Superkraft-Talent?',
-  'Erzähle eine lustige, harmlose Panne.',
-  'Zeichne einen Hund, ohne den Stift abzusetzen.',
-  'Nenne drei Dinge für einen Weltraumrucksack.'
- ];
- const p=prompts[Math.floor(Math.random()*prompts.length)];
- document.getElementById('gameArea').innerHTML=`<div class="gameplay"><div class="word">🎲</div><h3>${p}</h3><button class="btn" onclick="showPartyQuestion()">Neue Frage ↻</button></div>`;
+
+/* 7. SCHERE-STEIN-PAPIER */
+function startRPS(){
+ screen(`<h3>Du gegen den Computer</h3><p>Wer gewinnt die Runde?</p>
+ <div class="grid">
+ <button onclick="playRPS('Stein')">✊ Stein</button>
+ <button onclick="playRPS('Papier')">✋ Papier</button>
+ <button onclick="playRPS('Schere')">✌️ Schere</button>
+ </div><div id="rpsResult"></div>
+ ${btn('Neues Duell ↻',"openGame('rps')",'secondary')}`);
+}
+function playRPS(m){
+ let c=pick(['Stein','Papier','Schere']);
+ let win=m!==c&&(
+  (m==='Stein'&&c==='Schere')||
+  (m==='Papier'&&c==='Stein')||
+  (m==='Schere'&&c==='Papier')
+ );
+ let tie=m===c;
+ $('rpsResult').innerHTML=`<div class="result">Du: <b>${m}</b><br>Computer: <b>${c}</b><h3>${tie?'Unentschieden':win?'Du gewinnst!':'Computer gewinnt!'}</h3></div>`;
+ reward(win?25:10);
 }
 
-document.getElementById('chatForm').addEventListener('submit',e=>{
- e.preventDefault();
- const input=document.getElementById('chatInput');
- const v=input.value.trim();
- if(!v)return;
- const box=document.getElementById('chatMessages');
- const div=document.createElement('div');
- div.className='message';
- const b=document.createElement('b');
- b.textContent=user?user.name:'Gast';
- div.append(b,document.createElement('br'),document.createTextNode(v));
- box.appendChild(div);
- input.value='';
- box.scrollTop=box.scrollHeight;
-});
-document.getElementById('searchInput').addEventListener('input',e=>{
- const v=e.target.value.toLowerCase();
- navTo('games');
- document.querySelectorAll('#allGames .gamecard').forEach(c=>{
-  c.style.display=c.textContent.toLowerCase().includes(v)?'':'none';
- });
-});
-
-const saved=localStorage.getItem('neon_demo_user');
-if(saved){
- user={name:saved};
- stats=JSON.parse(localStorage.getItem('neon_stats_'+saved)||'{"xp":0,"played":0,"wins":0}');
+/* 8. WORTDUELL */
+const wordBank=['KOMET','PIXEL','DRACHE','GALAXIE','ROBOTER','KAKTUS','SCHOKO','ARCADE','MOND','PIRAT'];
+function startWord(){
+ state={word:pick(wordBank),guessed:[],tries:7,done:false};
+ drawWord();
 }
-syncUI();
-renderRooms();
+function drawWord(){
+ let masked=[...state.word].map(c=>state.guessed.includes(c)?c:'_').join(' ');
+ screen(`<h3>Errate das Wort</h3>
+ <p>Du hast ${state.tries} Fehlversuche.</p>
+ <div class="big" style="letter-spacing:6px">${masked}</div>
+ <div class="grid">${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(c=>
+ `<button ${state.guessed.includes(c)||state.done?'disabled':''} onclick="guessLetter('${c}')">${c}</button>`
+ ).join('')}</div>
+ <p class="muted">Benutzte Buchstaben: ${state.guessed.join(' · ')||'Noch keine'}</p>
+ ${btn('Neues Wort ↻',"openGame('word')",'secondary')}`);
+}
+function guessLetter(c){
+ if(state.done||state.guessed.includes(c))return;
+ state.guessed.push(c);
+ if(!state.word.includes(c))state.tries--;
+ let won=[...state.word].every(x=>state.guessed.includes(x));
+ if(won||state.tries<=0){
+  state.done=true;
+  screen(`<div class="big">${won?'🔤':'💡'}</div>
+  <h3>${won?'Richtig erraten!':'Versuche aufgebraucht'}</h3>
+  <div class="result">Das Wort war <b>${state.word}</b>.</div>
+  ${btn('Weiteres Wort ↻',"openGame('word')")}`);
+  reward(won?35:10);return;
+ }
+ drawWord();
+}
+
+/* 9. PARTY FRAGEN */
+const partyPrompts=[
+ 'Erfinde einen Namen für ein Alien-Café.',
+ 'Welche drei Dinge würdest du auf eine einsame Insel mitnehmen?',
+ 'Erfinde eine neue, völlig unnötige Superkraft.',
+ 'Nenne drei Dinge, die man im Weltraum nicht brauchen kann.',
+ 'Zeichne einen Hund, ohne den Stift abzusetzen.',
+ 'Erfinde einen Namen für einen Roboter-DJ.',
+ 'Was wäre ein besonders seltsamer Name für ein Haustier?',
+ 'Erfinde eine neue Sportart mit einem Kissen.',
+ 'Beschreibe einen Film nur mit drei Wörtern.',
+ 'Nenne drei Dinge, die in einen Drachen-Rucksack gehören.',
+ 'Erfinde eine Werbeanzeige für unsichtbare Socken.',
+ 'Denke dir eine neue Geschmacksrichtung für Eis aus.'
+];
+function startTruth(){
+ state={used:[]};
+ nextTruth();
+}
+function nextTruth(){
+ let available=partyPrompts.map((x,i)=>i).filter(i=>!state.used.includes(i));
+ if(!available.length)state.used=[];
+ let i=pick(partyPrompts.map((x,j)=>j).filter(j=>!state.used.includes(j)));
+ state.used.push(i);
+ screen(`<div class="big">🎲</div><h3>Deine Aufgabe</h3>
+ <div class="result" style="font-size:18px">${partyPrompts[i]}</div>
+ <p class="muted">Gebt das Gerät weiter oder lest die Aufgabe laut vor.</p>
+ ${btn('Nächste Aufgabe →','nextTruth()')}
+ <div style="margin-top:12px">${btn('Runde beenden + Punkte','finishTruth()','secondary')}</div>`);
+}
+function finishTruth(){
+ reward(15);
+ screen(`<div class="big">🎉</div><h3>Gut gespielt!</h3>
+ <p>Du hast eine Party-Runde beendet.</p>
+ ${btn('Weiter spielen ↻',"openGame('truth')")}`);
+}
+
+renderGames();
+updateStats();
 </script>
 </body>
 </html>
