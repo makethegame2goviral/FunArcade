@@ -1027,9 +1027,14 @@ handlers.snake=()=>{
 
  tick();
 };
-/* 11. STERNENFLUCHT */
-handlers.dodge=()=>{
- content(`<h2>⏱️ reaktion</h2><p>Drücke den Knopf, sobald der .</p><div class="big" id="dodgeIcon">🌌</div><h3 id="dodgeText">Bereit?</h3><button class="primary" id="dodgeBtn">Start</button><div class="result" id="result"></div>`);
+/* 11. REAKTION */
+handlers.tap=()=>{
+ content(`<h2>⏱️ Reaktionstest</h2>
+ <p>Drücke den Knopf, sobald das Signal erscheint.</p>
+ <div class="big" id="dodgeIcon">🌌</div>
+ <h3 id="dodgeText">Bereit?</h3>
+ <button class="primary" id="dodgeBtn">Start</button>
+ <div class="result" id="result"></div>`);
 
  let state="ready",timer=null,start=0;
  const btn=$("dodgeBtn");
@@ -1052,21 +1057,31 @@ handlers.dodge=()=>{
   }else if(state==="wait"){
    clearTimeout(timer);
    state="ready";
+   $("dodgeIcon").textContent="🌌";
    $("dodgeText").textContent="Zu früh! Versuche es erneut.";
    btn.textContent="Nochmal";
 
   }else if(state==="go"){
    const ms=Math.round(performance.now()-start);
    state="ready";
+   $("dodgeIcon").textContent="🌌";
    $("dodgeText").textContent=ms+" ms";
 
-   gameResult(ms<250?"Blitzschnell!":ms<400?"Gute Reaktion!":"Versuche es noch einmal.");
+   gameResult(
+    ms<250?"Blitzschnell!":
+    ms<400?"Gute Reaktion!":
+    "Versuche es noch einmal."
+   );
+
    award(ms<300?15:5);
    btn.textContent="Noch eine Runde";
   }
  };
 
- gameCleanup=()=>clearTimeout(timer);
+ gameCleanup=()=>{
+  clearTimeout(timer);
+  btn.onclick=null;
+ };
 };
 
 
