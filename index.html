@@ -9,60 +9,67 @@
 <style>
 :root{--bg:#080b18;--panel:#11172b;--line:#273254;--cyan:#4dfcff;--pink:#ff4fd8;--purple:#9271ff;--text:#f5f7ff;--muted:#a7b0ce}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at top,#1c2046 0%,var(--bg) 65%);color:var(--text);font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
-button,input{font:inherit}
+body{margin:0;background:radial-gradient(ellipse at top,#202450,var(--bg) 70%);color:var(--text);font-family:system-ui,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}
 button{cursor:pointer;border:1px solid #35446e;border-radius:12px;background:#19213b;color:white;padding:11px 15px;transition:.18s}
-button:hover{border-color:var(--cyan);box-shadow:0 0 14px #4dfcff35;transform:translateY(-1px)}
-button.primary{background:linear-gradient(100deg,#5446e8,#b52fd0);border:0;font-weight:800}
-button:disabled{opacity:.45;cursor:not-allowed;transform:none}
-input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#090e20;color:white;margin:6px 0 12px;outline:none}
-input:focus{border-color:var(--cyan)}
-header{padding:20px 5%;display:flex;justify-content:space-between;align-items:center;gap:14px;border-bottom:1px solid #263050;background:#090d1dcc;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
+button:hover{border-color:var(--cyan);box-shadow:0 0 14px #4dfcff35}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:linear-gradient(100deg,#5446e8,#b52fd0);border:0;font-weight:800}
+input,textarea,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#090e20;color:white;margin:6px 0 12px}
+textarea{resize:vertical;min-height:65px}
+header{padding:17px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #263050;background:#090d1ddd;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
 .logo{font-size:23px;font-weight:1000;letter-spacing:1px;color:var(--cyan);text-shadow:0 0 18px #4dfcff66}
 .logo span{color:var(--pink)}
-.wrap{max-width:1150px;margin:auto;padding:24px 18px 65px}
-.hero{padding:35px 0 25px}
-.eyebrow{color:var(--cyan);letter-spacing:3px;font-size:12px;font-weight:900}
-h1{font-size:clamp(34px,7vw,65px);line-height:1.05;margin:12px 0}
-h1 em{font-style:normal;color:var(--pink);text-shadow:0 0 22px #ff4fd844}
-.muted{color:var(--muted)}
-.panel{background:#11172bdd;border:1px solid var(--line);border-radius:18px;padding:20px;margin:15px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.game-card{background:linear-gradient(145deg,#171e39,#0d1225);border:1px solid #29365b;border-radius:17px;padding:19px;min-height:185px;display:flex;flex-direction:column;gap:9px}
-.game-card .emoji{font-size:34px}
-.game-card h3{margin:0;font-size:19px}
-.game-card p{margin:0;color:var(--muted);font-size:13px;flex:1}
-.game-card button{width:100%}
-.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:28px 0 15px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat{padding:13px;background:#0b1022;border:1px solid #273253;border-radius:12px}
-.stat strong{display:block;font-size:22px;color:var(--cyan)}
-.stat small{color:var(--muted)}
-#auth{max-width:460px;margin:25px auto}
-#app{display:none}
 #account{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
 #account button{padding:8px 10px;font-size:13px}
+.wrap{max-width:1450px;margin:auto;padding:24px 18px 65px}
+.hero{text-align:center;padding:40px 0 30px}
+.eyebrow{color:var(--cyan);letter-spacing:3px;font-size:12px;font-weight:900}
+h1{font-size:clamp(38px,7vw,76px);line-height:1.05;margin:12px 0}
+h1 em{font-style:normal;color:var(--pink);text-shadow:0 0 22px #ff4fd844}
+h2{font-size:clamp(23px,3vw,32px)}
+.muted{color:var(--muted)}
+.panel{background:#11172bdd;border:1px solid var(--line);border-radius:18px;padding:20px;margin:15px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:17px}
+.game-card{background:linear-gradient(145deg,#171e39,#0d1225);border:1px solid #29365b;border-radius:20px;padding:24px;min-height:230px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;transition:.2s}
+.game-card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 0 24px #4dfcff20}
+.game-card .emoji{font-size:48px}
+.game-card h3{font-size:23px;margin:0}
+.game-card p{color:var(--muted);font-size:14px;line-height:1.5;flex:1;margin:0}
+.game-card button{width:100%;margin-top:8px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:28px 0 15px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{padding:15px;background:#0b1022;border:1px solid #273253;border-radius:12px}
+.stat strong{display:block;font-size:25px;color:var(--cyan)}
+.stat small{color:var(--muted)}
+#auth{max-width:480px;margin:35px auto}
+#app{display:none}
 #game{display:none}
-#game.fullscreen{display:block;position:fixed;inset:0;z-index:1000;margin:0;border:0;border-radius:0;overflow:auto;background:radial-gradient(ellipse at top,#20204b,#090b18 75%);padding:14px;padding-top:calc(14px + env(safe-area-inset-top));padding-bottom:calc(20px + env(safe-area-inset-bottom))}
-.game-top{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:850px;margin:0 auto 20px}
-.game-content{max-width:850px;margin:auto;text-align:center}
-.game-content h2{font-size:clamp(25px,5vw,38px)}
+#game.fullscreen{display:block;position:fixed;inset:0;z-index:1000;overflow:auto;background:radial-gradient(ellipse at top,#25245b,#090b18 75%);padding:16px;padding-bottom:calc(25px + env(safe-area-inset-bottom))}
+.game-top{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:1100px;margin:0 auto 20px}
+.game-content{max-width:1000px;margin:25px auto;text-align:center;background:#11172deF;border:1px solid #35446e;border-radius:24px;padding:clamp(16px,4vw,42px);box-shadow:0 15px 60px #0005}
+.game-content h2{font-size:clamp(30px,5vw,52px);margin-top:0}
 .game-content button{margin:4px}
-.big{font-size:clamp(45px,12vw,85px);margin:15px}
-.result{min-height:28px;color:var(--cyan);font-weight:700;margin:15px 0}
+.big{font-size:clamp(48px,12vw,100px);margin:15px}
+.result{min-height:25px;color:var(--cyan);font-weight:700;margin:12px 0;overflow-wrap:anywhere}
 .choices{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
 .choices button{min-width:90px}
-.board{display:grid;grid-template-columns:repeat(3,minmax(70px,110px));gap:8px;justify-content:center}
+.board{display:grid;grid-template-columns:repeat(3,minmax(70px,115px));gap:8px;justify-content:center}
 .cell{height:95px;font-size:38px;background:#151c35;border:1px solid #36436b}
-.memory-grid{display:grid;grid-template-columns:repeat(4,minmax(50px,85px));gap:8px;justify-content:center}
-.mem{height:75px;font-size:29px;padding:4px}
+.memory-grid{display:grid;grid-template-columns:repeat(4,minmax(45px,85px));gap:8px;justify-content:center}
+.mem{height:75px;font-size:28px;padding:4px}
 #drawCanvas{background:white;border-radius:12px;width:100%;max-width:480px;touch-action:none;display:block;margin:15px auto}
-.word{font-size:clamp(24px,7vw,45px);letter-spacing:6px}
-footer{text-align:center;color:#6f7898;padding:30px;font-size:12px}
-.hidden{display:none!important}
+.word{font-size:clamp(24px,7vw,45px);letter-spacing:5px;overflow-wrap:anywhere}
 .pill{font-size:12px;color:var(--cyan);border:1px solid #31566b;padding:5px 9px;border-radius:20px}
+.hidden{display:none!important}
 hr{border:0;border-top:1px solid var(--line);margin:18px 0}
-@media(max-width:560px){header{padding:14px}.logo{font-size:19px}.wrap{padding:16px 12px}.panel{padding:15px}.stats{gap:6px}.stat{padding:10px}}
+.list-row{padding:12px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.list-row:last-child{border-bottom:0}
+.chat-box{height:220px;overflow:auto;background:#090e20;border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0}
+.chat-msg{padding:8px 0;border-bottom:1px solid #273254;overflow-wrap:anywhere}
+.chat-msg small{color:var(--muted)}
+footer{text-align:center;color:#6f7898;padding:30px;font-size:12px}
+@media(max-width:600px){header{padding:13px}.logo{font-size:18px}.wrap{padding:15px 12px}.panel{padding:15px}.stats{gap:6px}.stat{padding:9px}.game-card{min-height:200px}.game-content{margin:10px auto;padding:15px}.game-top{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -72,48 +79,104 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 </header>
 
 <main class="wrap">
-  <section id="auth" class="panel">
-    <div class="eyebrow">PLAYER LOGIN</div>
-    <h2>Dein nächstes Abenteuer.</h2>
-    <p class="muted">Melde dich an oder spiele direkt im Gastmodus.</p>
-    <label for="username">Spielername (bei Registrierung)</label>
-    <input id="username" maxlength="20" placeholder="NeonPlayer">
-    <label for="email">E-Mail</label>
-    <input id="email" type="email" autocomplete="email" placeholder="du@example.com">
-    <label for="password">Passwort</label>
-    <input id="password" type="password" autocomplete="current-password" placeholder="Mindestens 6 Zeichen">
+<section id="auth" class="panel">
+  <div class="eyebrow">PLAYER LOGIN</div>
+  <h2>Dein nächstes Abenteuer.</h2>
+  <p class="muted">Melde dich an oder spiele als Gast.</p>
+  <label for="username">Spielername</label>
+  <input id="username" maxlength="20" placeholder="NeonPlayer" autocomplete="nickname">
+  <label for="email">E-Mail</label>
+  <input id="email" type="email" autocomplete="email" placeholder="du@example.com">
+  <label for="password">Passwort</label>
+  <input id="password" type="password" autocomplete="current-password" placeholder="Mindestens 6 Zeichen">
+  <div class="choices">
+    <button class="primary" onclick="register()">Registrieren</button>
+    <button onclick="login()">Anmelden</button>
+    <button onclick="guest()">Gast spielen</button>
+  </div>
+  <div id="authMsg" class="result" aria-live="polite"></div>
+  <p class="muted">Wenn E-Mail-Bestätigung aktiv ist, musst du zuerst deine E-Mail bestätigen.</p>
+</section>
+
+<section id="app">
+  <div class="hero">
+    <div class="eyebrow">YOUR GAME. YOUR RULES.</div>
+    <h1>ENTER THE <em>ARCADE.</em></h1>
+    <p class="muted">Elf Spiele. Unendlich viele Runden.</p>
     <div class="choices">
-      <button class="primary" onclick="register()">Registrieren</button>
-      <button onclick="login()">Anmelden</button>
-      <button onclick="guest()">Gast spielen</button>
+      <button class="primary" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">Spiele entdecken ↓</button>
+      <span class="pill" id="playerPill">PLAYER</span>
     </div>
-    <div id="authMsg" class="result" aria-live="polite"></div>
-    <p class="muted" style="font-size:12px">Für die Registrierung muss die E-Mail-Bestätigung in den Supabase-Einstellungen deaktiviert sein, wenn du dich sofort anmelden möchtest.</p>
+  </div>
+
+  <section class="panel">
+    <div class="section-title" style="margin-top:0">
+      <h2>Deine Stats</h2>
+      <button onclick="resetStats()">Lokale Stats zurücksetzen</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><strong id="xp">0</strong><small>XP gesammelt</small></div>
+      <div class="stat"><strong id="rounds">0</strong><small>Runden gespielt</small></div>
+      <div class="stat"><strong id="best">0</strong><small>Beste Snake-Punktzahl</small></div>
+    </div>
+    <p id="saveStatus" class="muted">Gast-Spielstände werden lokal gespeichert.</p>
   </section>
 
-  <section id="app">
-    <div class="hero">
-      <div class="eyebrow">YOUR GAME. YOUR RULES.</div>
-      <h1>ENTER THE <em>ARCADE.</em></h1>
-      <p class="muted">Elf Spiele. Unendlich viele Runden. Wie weit kommst du?</p>
-      <div class="choices" style="justify-content:flex-start">
-        <button class="primary" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">Spiele entdecken ↓</button>
-        <span class="pill" id="playerPill">PLAYER</span>
-      </div>
-    </div>
+  <div class="section-title"><h2>🌐 Arcade Community</h2></div>
+  <div class="grid">
+    <section class="panel">
+      <h2>🏆 Rangliste</h2>
+      <p class="muted">Spieler mit den meisten XP.</p>
+      <button class="primary" onclick="loadLeaderboard()">Rangliste laden</button>
+      <div id="leaderboard"></div>
+    </section>
 
-    <div class="panel">
-      <div class="section-title" style="margin-top:0"><h2>Deine Stats</h2><button onclick="resetStats()">Stats zurücksetzen</button></div>
-      <div class="stats">
-        <div class="stat"><strong id="xp">0</strong><small>XP gesammelt</small></div>
-        <div class="stat"><strong id="rounds">0</strong><small>Runden gespielt</small></div>
-        <div class="stat"><strong id="best">0</strong><small>Beste Snake-Punktzahl</small></div>
-      </div>
-    </div>
+    <section class="panel">
+      <h2>👥 Freunde</h2>
+      <input id="friendName" maxlength="20" placeholder="Spielername">
+      <button class="primary" onclick="sendFriendRequest()">Freundesanfrage senden</button>
+      <div id="friendRequests"></div>
+      <div id="friends"></div>
+    </section>
 
-    <div class="section-title" id="games"><h2>🎮 Alle Minispiele</h2><span class="pill">11 GAMES</span></div>
-    <div class="grid" id="gameGrid"></div>
+    <section class="panel">
+      <h2>🎮 Gruppen & Spielräume</h2>
+      <input id="roomName" maxlength="40" placeholder="Name des Raums">
+      <input id="roomGame" maxlength="40" placeholder="Spiel, z. B. Werwolf">
+      <button class="primary" onclick="createRoom()">Raum erstellen</button>
+      <hr>
+      <input id="roomCode" maxlength="20" placeholder="Raumcode">
+      <button onclick="joinRoom()">Raum beitreten</button>
+      <div id="rooms"></div>
+    </section>
+
+    <section class="panel">
+      <h2>💬 Raum-Chat</h2>
+      <p class="muted" id="chatRoomLabel">Wähle zuerst einen Raum aus.</p>
+      <div id="chatMessages" class="chat-box"></div>
+      <textarea id="chatInput" maxlength="1000" placeholder="Nachricht schreiben…"></textarea>
+      <button class="primary" onclick="sendChatMessage()">Nachricht senden</button>
+      <button onclick="loadChat()">Chat aktualisieren</button>
+    </section>
+  </div>
+
+  <section id="adminPanel" class="panel hidden">
+    <div class="section-title" style="margin-top:0">
+      <h2>🛡️ Admin-Panel</h2>
+      <button onclick="loadAdmin()">Aktualisieren</button>
+    </div>
+    <p class="muted">Spieler verwalten und Gruppen einsehen.</p>
+    <div id="adminMsg" class="result"></div>
+    <h3>Spielerliste</h3>
+    <div id="adminPlayers"></div>
+    <hr>
+    <h3>Gruppen und Spielräume</h3>
+    <div id="adminRooms"></div>
   </section>
+
+  <div class="section-title" id="games"><h2>🎮 Alle Minispiele</h2><span class="pill">11 GAMES</span></div>
+  <div class="grid" id="gameGrid"></div>
+</section>
 </main>
 
 <section id="game">
@@ -128,214 +191,270 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 <footer>NEON ARCADE · Made for fun ✦</footer>
 
 <script>
-/* SUPABASE KONFIGURATION */
-const SUPABASE_URL = "https://qznkudfhmegfriwqdvmj.supabase.co";
-const SUPABASE_KEY = "sb_publishable_CPz52i2XcyThttYOrlKMAw_Pd3PYRmB";
-let db = null;
-try {
-  if (window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch(e) { console.warn("Supabase konnte nicht initialisiert werden.",e); }
+"use strict";
 
-let user = null;
-let username = "Gast";
-let currentGame = "";
-let gameCleanup = null;
-let stats = loadStats();
-const $ = id => document.getElementById(id);
-const safe = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* SUPABASE */
+const SUPABASE_URL="https://qznkudfhmegfriwqdvmj.supabase.co";
+const SUPABASE_KEY="sb_publishable_CPz52i2XcyThttYOrLkMAw_Pd3PYRmB";
+const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let user=null, username="Gast", isAdmin=false;
+let currentGame="", gameCleanup=null, activeRoom=null;
+let stats=loadStats();
+const $=id=>document.getElementById(id);
+const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const say=(id,text)=>{if($(id))$(id).textContent=text;};
 
 function loadStats(){
-  try { return JSON.parse(localStorage.getItem("neon_stats_v1")) || {xp:0,rounds:0,best:0}; }
-  catch { return {xp:0,rounds:0,best:0}; }
+  try{return JSON.parse(localStorage.getItem("neon_stats_v1"))||{xp:0,rounds:0,best:0};}
+  catch{return {xp:0,rounds:0,best:0};}
 }
-function saveStats(){ localStorage.setItem("neon_stats_v1",JSON.stringify(stats)); updateStats(); }
 function updateStats(){
   $("xp").textContent=stats.xp;
   $("rounds").textContent=stats.rounds;
   $("best").textContent=stats.best;
 }
-function award(points=10){
-  stats.xp+=points; stats.rounds++; saveStats();
-  $("gameXP").textContent="+"+points+" XP";
+function saveStats(){
+  localStorage.setItem("neon_stats_v1",JSON.stringify(stats));
+  updateStats();
+  syncStats();
 }
+async function award(points=10){
+  stats.xp+=points;stats.rounds++;
+  localStorage.setItem("neon_stats_v1",JSON.stringify(stats));
+  updateStats();
+  $("gameXP").textContent="+"+points+" XP";
+  await syncStats();
+}
+async function syncStats(){
+  if(!user||!db)return;
+  say("saveStatus","Spielstand wird gespeichert …");
+  const {error}=await db.from("arcade_player_data").upsert({
+    user_id:user.id,username,xp:stats.xp,rounds:stats.rounds,
+    banned:false
+  },{onConflict:"user_id"});
+  say("saveStatus",error?"Cloud-Speichern nicht möglich: "+error.message:"Spielstand mit Supabase synchronisiert.");
+}
+
+/* AUTHENTIFIZIERUNG */
 function guest(){
-  user=null; username=$("username").value.trim()||"Gast";
+  user=null;isAdmin=false;
+  username=$("username").value.trim()||"Gast";
   enterApp();
 }
-function enterApp(){
-  $("auth").style.display="none"; $("app").style.display="block";
-  $("playerPill").textContent=username.toUpperCase();
-  renderAccount(); updateStats();
+async function register(){
+  if(!db)return say("authMsg","Supabase konnte nicht initialisiert werden.");
+  const name=$("username").value.trim();
+  const email=$("email").value.trim();
+  const password=$("password").value;
+  if(name.length<2)return say("authMsg","Spielername: mindestens 2 Zeichen.");
+  if(!email||password.length<6)return say("authMsg","Bitte E-Mail und Passwort mit mindestens 6 Zeichen eingeben.");
+  say("authMsg","Registrierung läuft …");
+  const {data,error}=await db.auth.signUp({email,password,options:{data:{username:name}}});
+  if(error)return say("authMsg",error.message);
+  if(data.session){
+    user=data.user;username=name;
+    await enterApp();
+    say("authMsg","Registrierung erfolgreich.");
+  }else{
+    say("authMsg","Konto erstellt. Bitte gegebenenfalls deine E-Mail bestätigen und danach anmelden.");
+  }
+}
+async function login(){
+  if(!db)return say("authMsg","Supabase konnte nicht initialisiert werden.");
+  const email=$("email").value.trim(),password=$("password").value;
+  if(!email||!password)return say("authMsg","Bitte E-Mail und Passwort eingeben.");
+  say("authMsg","Anmeldung läuft …");
+  const {data,error}=await db.auth.signInWithPassword({email,password});
+  if(error)return say("authMsg",error.message);
+  user=data.user;
+  username=user.user_metadata?.username||user.email?.split("@")[0]||"Player";
+
+  const {data:player,error:playerError}=await db.from("arcade_player_data")
+    .select("username,xp,rounds,best,banned").eq("user_id",user.id).maybeSingle();
+
+  if(playerError){
+    console.warn("Spielerdaten konnten nicht gelesen werden",playerError);
+  }else if(player?.banned){
+    await db.auth.signOut();
+    user=null;
+    return say("authMsg","Dieses Konto ist gesperrt. Bitte wende dich an den Support.");
+  }
+
+  if(player){
+    username=player.username||username;
+    stats.xp=Number(player.xp)||0;
+    stats.rounds=Number(player.rounds)||0;
+    stats.best=Number(player.best)||0;
+    localStorage.setItem("neon_stats_v1",JSON.stringify(stats));
+  }
+  await enterApp();
+  say("authMsg","");
+}
+async function logout(){
+  if(db&&user)await db.auth.signOut();
+  user=null;isAdmin=false;activeRoom=null;username="Gast";
+  closeGame();
+  $("app").style.display="none";
+  $("auth").style.display="block";
+  renderAccount();
+}
+function showAuth(){
+  $("auth").style.display="block";
+  $("app").style.display="none";
 }
 function renderAccount(){
   $("account").innerHTML=`<span class="muted">${safe(username)}</span>`+
     (user?'<button onclick="logout()">Abmelden</button>':'<button onclick="showAuth()">Login</button>');
 }
-function showAuth(){ $("auth").style.display="block"; $("app").style.display="none"; }
-async function register(){
-  if(!db){ $("authMsg").textContent="Supabase ist nicht erreichbar."; return; }
-  const name=$("username").value.trim(),email=$("email").value.trim(),password=$("password").value;
-  if(name.length<2){$("authMsg").textContent="Dein Spielername braucht mindestens 2 Zeichen.";return;}
-  if(!email||password.length<6){$("authMsg").textContent="Bitte E-Mail und Passwort (mindestens 6 Zeichen) eingeben.";return;}
-  $("authMsg").textContent="Registrierung läuft …";
-  try{
-    const {data,error}=await db.auth.signUp({email,password,options:{data:{username:name}}});
-    if(error) throw error;
-    if(data.session){
-      user=data.user;username=name;
-      $("authMsg").textContent="Registrierung erfolgreich!";
-      enterApp();
-    }else{
-      $("authMsg").textContent="Konto erstellt. Falls du sofort starten möchtest, deaktiviere in Supabase unter Authentication → Sign In / Providers → Email die Option Confirm email und registriere dich erneut.";
-    }
-  }catch(e){$("authMsg").textContent=e.message||"Registrierung fehlgeschlagen.";}
-}
-async function login(){
-  if(!db){$("authMsg").textContent="Supabase ist nicht erreichbar.";return;}
-  const email=$("email").value.trim(),password=$("password").value;
-  if(!email||!password){$("authMsg").textContent="Bitte E-Mail und Passwort eingeben.";return;}
-  $("authMsg").textContent="Anmeldung läuft …";
-  try{
-    const {data,error}=await db.auth.signInWithPassword({email,password});
-    if(error) throw error;
-    user=data.user;
-    username=user.user_metadata?.username||user.email?.split("@")[0]||"Player";
-    $("authMsg").textContent="";
-    enterApp();
-  }catch(e){$("authMsg").textContent=e.message||"Login fehlgeschlagen.";}
-}
-async function logout(){
-  if(db) await db.auth.signOut().catch(()=>{});
-  user=null;username="Gast";showAuth();renderAccount();
-}
-function resetStats(){
-  if(confirm("Möchtest du deine lokalen Spielstatistiken wirklich zurücksetzen?")){
-    stats={xp:0,rounds:0,best:0};saveStats();
+async function enterApp(){
+  $("auth").style.display="none";
+  $("app").style.display="block";
+  $("playerPill").textContent=username.toUpperCase();
+  renderAccount();updateStats();
+
+  if(user&&db){
+    const {data:adminRow,error:adminError}=await db.from("admin_users")
+      .select("user_id").eq("user_id",user.id).maybeSingle();
+    isAdmin=!adminError&&!!adminRow;
+    $("adminPanel").classList.toggle("hidden",!isAdmin);
+    await syncStats();
+    await loadLeaderboard();
+    await loadFriends();
+    await loadRooms();
+    if(isAdmin)await loadAdmin();
+  }else{
+    $("adminPanel").classList.add("hidden");
+    say("saveStatus","Gast-Spielstände werden nur in diesem Browser gespeichert.");
   }
 }
+
+/* SPIELE */
 const games=[
  ["impostor","🕵️","Impostor","Finde heraus, wer das geheime Wort nicht kennt."],
- ["werwolf","🐺","Werwolf","Ein Social-Deduction-Spiel für eine Gruppe."],
- ["ttt","❎","Tic-Tac-Toe","Besiege den Computer im Klassiker."],
+ ["werwolf","🐺","Werwolf","Verteilt Rollen und findet den Werwolf."],
+ ["ttt","❎","Tic-Tac-Toe","Besiege den Computer."],
  ["quiz","🧠","Quiz Battle","Teste dein Wissen in zehn Fragen."],
- ["draw","🎨","Zeichnen & Raten","Zeichne auf der Leinwand."],
+ ["draw","🎨","Zeichnen & Raten","Zeichne und lass Freunde raten."],
  ["memory","🧩","Memory Clash","Finde alle passenden Paare."],
  ["rps","✊","Schere-Stein-Papier","Spiele gegen den Computer."],
  ["word","🔤","Wortraten","Errate das versteckte Wort."],
- ["party","🎉","Party Fragen","Zufällige lustige Gruppenfragen."],
+ ["party","🎉","Party Fragen","Zufällige Gruppenfragen."],
  ["snake","🐍","Snake","Sammle Punkte, ohne dich zu treffen."],
  ["dodge","🚀","Sternenflucht","Teste deine Reaktionsgeschwindigkeit."]
 ];
 $("gameGrid").innerHTML=games.map(g=>`
-  <article class="game-card">
-    <div class="emoji">${g[1]}</div><h3>${g[2]}</h3><p>${g[3]}</p>
-    <button class="primary" onclick="openGame('${g[0]}')">Jetzt spielen →</button>
-  </article>`).join("");
+<article class="game-card">
+ <div class="emoji">${g[1]}</div><h3>${g[2]}</h3><p>${g[3]}</p>
+ <button class="primary" onclick="openGame('${g[0]}')">Jetzt spielen →</button>
+</article>`).join("");
+
+const content=html=>{$("gameContent").innerHTML=html;};
+const handlers={};
 
 function openGame(id){
   closeGame(false);
   currentGame=id;
   const g=games.find(x=>x[0]===id);
+  if(!g||!handlers[id])return;
   $("gameTitle").textContent=g[2];
-  $("game").classList.add("fullscreen");
   $("gameContent").innerHTML="";
   $("gameXP").textContent="+10 XP";
-  const render=handlers[id];
-  if(render) render();
+  $("game").style.display="block";
+  $("game").classList.add("fullscreen");
+  try{handlers[id]();}
+  catch(e){
+    console.error("Spiel-Fehler:",id,e);
+    content(`<h2>Spiel-Fehler</h2><p>Dieses Spiel konnte nicht gestartet werden.</p><button onclick="openGame('${id}')">Erneut versuchen</button>`);
+  }
   window.scrollTo(0,0);
 }
 function closeGame(hide=true){
-  if(gameCleanup){try{gameCleanup()}catch{} gameCleanup=null;}
+  if(typeof gameCleanup==="function"){
+    try{gameCleanup();}catch(e){console.warn(e);}
+  }
+  gameCleanup=null;
   if(hide){
     $("game").classList.remove("fullscreen");
     $("game").style.display="none";
     $("gameContent").innerHTML="";
+    currentGame="";
   }
 }
-const originalClose=closeGame;
-closeGame=function(hide=true){
-  originalClose(hide);
-  if(hide){$("game").style.display="none";$("game").classList.remove("fullscreen");}
-};
-const content=html=>{$("gameContent").innerHTML=html;};
-const msg=t=>{const e=$("result");if(e)e.textContent=t;};
-const handlers={};
+function gameResult(text){const el=$("result");if(el)el.textContent=text;}
 
 /* 1. IMPOSTOR */
 handlers.impostor=()=>{
  const words=["Pizza","Mond","Dinosaurier","Schokolade","Fußball","Elefant","Schule","Achterbahn","Roboter","Sonnenbrille"];
  const word=words[Math.floor(Math.random()*words.length)];
- content(`<h2>🕵️ Impostor</h2><p>Spielt mit mindestens 3 Personen. Gebt das Gerät herum und zeigt jedem einzeln seine Rolle.</p>
- <label>Anzahl Spieler</label><input id="players" type="number" min="3" max="12" value="5">
- <label>Anzahl Impostor</label><input id="imps" type="number" min="1" max="3" value="1">
- <button class="primary" onclick="startImpostor()">Rollen verteilen</button><div id="roleArea"></div>`);
- window.startImpostor=()=>{
+ content(`<h2>🕵️ Impostor</h2><p>Mindestens drei Personen. Gebt das Gerät herum und zeigt jedem einzeln seine Rolle.</p>
+ <label>Spieler</label><input id="players" type="number" min="3" max="12" value="5">
+ <label>Impostor</label><input id="imps" type="number" min="1" max="3" value="1">
+ <button class="primary" id="startImpostor">Rollen verteilen</button><div id="roleArea"></div>`);
+ $("startImpostor").onclick=()=>{
   const n=Math.max(3,Math.min(12,parseInt($("players").value)||5));
   const ni=Math.max(1,Math.min(n-1,parseInt($("imps").value)||1));
-  const impostors=new Set();
-  while(impostors.size<ni)impostors.add(Math.floor(Math.random()*n));
+  const imp=new Set();
+  while(imp.size<ni)imp.add(Math.floor(Math.random()*n));
   let i=0;
   const show=()=>{
-   if(i>=n){$("roleArea").innerHTML=`<h3>Alle Rollen gesehen!</h3><p>Redet miteinander und stimmt ab, wer der Impostor ist.</p><button onclick="openGame('impostor')">Neue Runde</button>`;award(5);return;}
-   $("roleArea").innerHTML=`<hr><h3>Spieler ${i+1}</h3><p>Gib das Gerät nur dieser Person.</p><button class="primary" id="revealRole">Meine Rolle zeigen</button><div id="myRole"></div>`;
+   if(i>=n){$("roleArea").innerHTML="<h3>Alle Rollen gesehen!</h3><p>Diskutiert und stimmt ab.</p><button onclick=\"openGame('impostor')\">Neue Runde</button>";award(5);return;}
+   $("roleArea").innerHTML=`<hr><h3>Spieler ${i+1}</h3><p>Nur diese Person darf ihre Rolle sehen.</p><button class="primary" id="revealRole">Rolle zeigen</button><div id="myRole"></div>`;
    $("revealRole").onclick=()=>{
-    $("myRole").innerHTML=`<h2>${impostors.has(i)?"🕵️ DU BIST IMPOSTOR!":"✅ Wort: "+safe(word)}</h2><p>${impostors.has(i)?"Finde unauffällig heraus, welches Wort gemeint ist.":"Beschreibe das Wort, ohne es direkt zu verraten."}</p><button onclick="nextRole()">Verstanden – weiter</button>`;
+    $("myRole").innerHTML=`<h2>${imp.has(i)?"🕵️ DU BIST IMPOSTOR!":"Wort: "+safe(word)}</h2><button id="nextRole">Weitergeben</button>`;
     $("revealRole").disabled=true;
+    $("nextRole").onclick=()=>{i++;show();};
    };
-  };
-  window.nextRole=()=>{i++;show();};
-  show();
+  };show();
  };
 };
 
 /* 2. WERWOLF */
 handlers.werwolf=()=>{
- content(`<h2>🐺 Werwolf</h2><p>Offline-Rollenspiel für 4–12 Personen. Jede Person sieht ihre Rolle einzeln.</p>
- <label>Spieleranzahl</label><input id="wolfN" type="number" min="4" max="12" value="6">
- <button class="primary" onclick="startWolves()">Rollen verteilen</button><div id="wolfArea"></div>`);
- window.startWolves=()=>{
-  let n=Math.max(4,Math.min(12,+$("wolfN").value||6));
-  let roles=Array(n).fill("Dorfbewohner");
-  roles[0]="Werwolf";roles[1]="Seher";
-  for(let i=2;i<Math.max(2,Math.floor(n/3));i++)roles[i]="Werwolf";
-  roles.sort(()=>Math.random()-.5);
-  let i=0;
+ content(`<h2>🐺 Werwolf</h2><p>Offline-Rollenspiel für 4–12 Personen.</p><label>Spieleranzahl</label><input id="wolfN" type="number" min="4" max="12" value="6"><button class="primary" id="startWolves">Rollen verteilen</button><div id="wolfArea"></div>`);
+ $("startWolves").onclick=()=>{
+  const n=Math.max(4,Math.min(12,+$("wolfN").value||6));
+  const roles=Array(n).fill("Dorfbewohner");
+  roles[0]="Werwolf";if(n>=5)roles[1]="Seher";
+  for(let i=2;i<Math.floor(n/3);i++)roles[i]="Werwolf";
+  roles.sort(()=>Math.random()-.5);let i=0;
   const show=()=>{
-   if(i>=n){$("wolfArea").innerHTML="<h3>Alle Rollen verteilt!</h3><p>Startet die Nacht: Werwölfe wählen heimlich, der Seher prüft eine Person. Tagsüber diskutiert das Dorf und stimmt ab.</p>";award(5);return;}
+   if(i>=n){$("wolfArea").innerHTML="<h3>Alle Rollen verteilt!</h3><p>Startet die Nacht, diskutiert am Tag und stimmt ab.</p>";award(5);return;}
    $("wolfArea").innerHTML=`<hr><h3>Spieler ${i+1}</h3><button class="primary" id="revealWolf">Rolle anzeigen</button><div id="wolfRole"></div>`;
    $("revealWolf").onclick=()=>{
-    $("wolfRole").innerHTML=`<h2>${roles[i]}</h2><button onclick="nextWolf()">Verstanden – weiter</button>`;
+    $("wolfRole").innerHTML=`<h2>${roles[i]}</h2><button id="nextWolf">Weitergeben</button>`;
     $("revealWolf").disabled=true;
+    $("nextWolf").onclick=()=>{i++;show();};
    };
-  };
-  window.nextWolf=()=>{i++;show();};show();
+  };show();
  };
 };
 
 /* 3. TIC-TAC-TOE */
 handlers.ttt=()=>{
- let board=Array(9).fill(""),over=false;
- content(`<h2>❎ Tic-Tac-Toe</h2><p>Du bist X. Der Computer ist O.</p><div class="board" id="tttBoard"></div><div class="result" id="result">Dein Zug!</div><button onclick="openGame('ttt')">Neustart</button>`);
+ let b=Array(9).fill(""),over=false;
  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
- function winner(){for(const w of wins)if(board[w[0]]&&board[w[0]]===board[w[1]]&&board[w[1]]===board[w[2]])return board[w[0]];if(board.every(Boolean))return "draw";return null;}
- function draw(){
-  $("tttBoard").innerHTML=board.map((v,i)=>`<button class="cell" data-i="${i}">${v}</button>`).join("");
-  $("tttBoard").querySelectorAll("button").forEach(b=>b.onclick=()=>play(+b.dataset.i));
- }
- function finish(w){
-  over=true;msg(w==="X"?"Du gewinnst! +15 XP":w==="O"?"Der Computer gewinnt. Nochmal?":"Unentschieden!");
-  if(w==="X")award(15);else if(w==="draw")award(5);
- }
- function play(i){
-  if(over||board[i])return;
-  board[i]="X";let w=winner();draw();
-  if(w){finish(w);return;}
-  let free=board.map((v,i)=>v?null:i).filter(v=>v!==null);
-  let move=free.find(i=>{board[i]="O";let win=winner()==="O";board[i]="";return win;});
-  if(move===undefined)move=free.find(i=>{board[i]="X";let win=winner()==="X";board[i]="";return win;});
+ content(`<h2>❎ Tic-Tac-Toe</h2><p>Du bist X. Der Computer ist O.</p><div class="board" id="tttBoard"></div><div class="result" id="result">Dein Zug!</div><button onclick="openGame('ttt')">Neustart</button>`);
+ const winner=()=>{for(const w of wins)if(b[w[0]]&&b[w[0]]===b[w[1]]&&b[w[1]]===b[w[2]])return b[w[0]];return b.every(Boolean)?"draw":null;};
+ const draw=()=>{
+  $("tttBoard").innerHTML=b.map((v,i)=>`<button class="cell" data-i="${i}">${v}</button>`).join("");
+  $("tttBoard").querySelectorAll("button").forEach(x=>x.onclick=()=>play(+x.dataset.i));
+ };
+ const finish=w=>{
+  over=true;
+  if(w==="X"){gameResult("Du gewinnst! +15 XP");award(15);}
+  else if(w==="O")gameResult("Der Computer gewinnt!");
+  else{gameResult("Unentschieden!");award(5);}
+ };
+ const play=i=>{
+  if(over||b[i])return;
+  b[i]="X";let w=winner();draw();if(w)return finish(w);
+  const free=b.map((v,i)=>v?null:i).filter(v=>v!==null);
+  let move=free.find(i=>{b[i]="O";let x=winner()==="O";b[i]="";return x;});
+  if(move===undefined)move=free.find(i=>{b[i]="X";let x=winner()==="X";b[i]="";return x;});
   if(move===undefined)move=free[Math.floor(Math.random()*free.length)];
-  board[move]="O";w=winner();draw();if(w)finish(w);else msg("Dein Zug!");
- }
+  b[move]="O";w=winner();draw();if(w)finish(w);else gameResult("Dein Zug!");
+ };
  draw();
 };
 
@@ -355,78 +474,73 @@ handlers.quiz=()=>{
  ];
  let i=0,score=0;
  const show=()=>{
-  if(i>=qs.length){content(`<h2>Quiz beendet!</h2><div class="big">${score}/${qs.length}</div><p>${score>=8?"Starkes Wissen!":score>=5?"Gut gemacht!":"Übung macht den Meister!"}</p><button class="primary" onclick="openGame('quiz')">Nochmal spielen</button>`);award(score*2+5);return;}
+  if(i>=qs.length){content(`<h2>Quiz beendet!</h2><div class="big">${score}/${qs.length}</div><p>${score>=8?"Starkes Wissen!":score>=5?"Gut gemacht!":"Übung macht den Meister!"}</p><button class="primary" onclick="openGame('quiz')">Nochmal</button>`);award(score*2+5);return;}
   const q=qs[i];
   content(`<h2>🧠 Quiz Battle</h2><p>Frage ${i+1} von ${qs.length}</p><h3>${q[0]}</h3><div class="choices">${q[1].map((a,j)=>`<button data-a="${j}">${a}</button>`).join("")}</div><div class="result" id="result"></div>`);
-  $("gameContent").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{
-   const buttons=$("gameContent").querySelectorAll("[data-a]");
-   buttons.forEach(x=>x.disabled=true);
-   if(+b.dataset.a===q[2]){score++;msg("Richtig!");}else msg("Leider falsch. Richtig: "+q[1][q[2]]);
-   const next=document.createElement("button");next.textContent="Nächste Frage →";next.className="primary";next.onclick=()=>{i++;show();};
-   $("gameContent").append(next);
+  $("gameContent").querySelectorAll("[data-a]").forEach(btn=>btn.onclick=()=>{
+   $("gameContent").querySelectorAll("[data-a]").forEach(x=>x.disabled=true);
+   if(+btn.dataset.a===q[2]){score++;gameResult("Richtig!");}else gameResult("Leider falsch. Richtig: "+q[1][q[2]]);
+   const next=document.createElement("button");next.className="primary";next.textContent="Nächste Frage →";next.onclick=()=>{i++;show();};$("gameContent").append(next);
   });
- };
- show();
+ };show();
 };
 
 /* 5. ZEICHNEN */
 handlers.draw=()=>{
- content(`<h2>🎨 Zeichnen & Raten</h2><p>Zeichne etwas und lass Freunde raten!</p><p id="drawWord"></p>
- <canvas id="drawCanvas" width="480" height="320"></canvas>
- <div class="choices"><button onclick="clearCanvas()">Leeren</button><button onclick="changeColor()">Farbe wechseln</button><button class="primary" onclick="revealDraw()">Wort anzeigen</button></div><div class="result" id="result"></div>`);
- const canvas=$("drawCanvas"),ctx=canvas.getContext("2d");
- ctx.fillStyle="white";ctx.fillRect(0,0,480,320);
- ctx.lineWidth=5;ctx.lineCap="round";ctx.strokeStyle="#16172b";
+ content(`<h2>🎨 Zeichnen & Raten</h2><p>Zeichne etwas und lass Freunde raten!</p><canvas id="drawCanvas" width="480" height="320"></canvas><div class="choices"><button id="clearCanvas">Leeren</button><button id="changeColor">Farbe wechseln</button><button class="primary" id="revealDraw">Wort anzeigen</button></div><div class="result" id="result"></div>`);
+ const c=$("drawCanvas"),ctx=c.getContext("2d");ctx.fillStyle="white";ctx.fillRect(0,0,480,320);ctx.lineWidth=5;ctx.lineCap="round";ctx.strokeStyle="#16172b";
  let drawing=false,last=null,color=0;
- function pos(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};}
- canvas.onpointerdown=e=>{drawing=true;last=pos(e);canvas.setPointerCapture(e.pointerId);};
- canvas.onpointermove=e=>{if(!drawing)return;const p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;};
- canvas.onpointerup=canvas.onpointercancel=()=>drawing=false;
+ const pos=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height};};
+ c.onpointerdown=e=>{drawing=true;last=pos(e);c.setPointerCapture(e.pointerId);};
+ c.onpointermove=e=>{if(!drawing)return;const p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;};
+ c.onpointerup=c.onpointercancel=()=>drawing=false;
  const words=["Katze","Rakete","Pizza","Sonne","Krone","Fahrrad","Drachen","Eiscreme","Roboter"];
  const secret=words[Math.floor(Math.random()*words.length)];
- window.clearCanvas=()=>{ctx.fillStyle="white";ctx.fillRect(0,0,480,320);};
- window.changeColor=()=>{color=(color+1)%4;ctx.strokeStyle=["#16172b","#f02489","#1478d4","#2a9e63"][color];};
- window.revealDraw=()=>{msg("Das Wort war: "+secret);award(10);};
+ $("clearCanvas").onclick=()=>{ctx.fillStyle="white";ctx.fillRect(0,0,480,320);};
+ $("changeColor").onclick=()=>{color=(color+1)%4;ctx.strokeStyle=["#16172b","#f02489","#1478d4","#2a9e63"][color];};
+ $("revealDraw").onclick=()=>{gameResult("Das Wort war: "+secret);award(10);};
+ gameCleanup=()=>{c.onpointerdown=c.onpointermove=c.onpointerup=c.onpointercancel=null;};
 };
 
 /* 6. MEMORY */
 handlers.memory=()=>{
  const symbols=["🚀","🌙","👾","💎","🎮","⭐","🪐","🔥"];
- let cards=[...symbols,...symbols].sort(()=>Math.random()-.5);
+ const cards=[...symbols,...symbols].sort(()=>Math.random()-.5);
  let opened=[],matched=new Set(),lock=false,moves=0;
  content(`<h2>🧩 Memory Clash</h2><p>Finde alle acht Paare.</p><p id="memMoves">Züge: 0</p><div class="memory-grid" id="memGrid"></div><div class="result" id="result"></div><button onclick="openGame('memory')">Neues Spiel</button>`);
+ let timer=null;
  const draw=()=>{
   $("memGrid").innerHTML=cards.map((c,i)=>`<button class="mem" data-i="${i}">${matched.has(i)||opened.includes(i)?c:"?"}</button>`).join("");
-  $("memGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>flip(+b.dataset.i));
+  $("memGrid").querySelectorAll("button").forEach(btn=>btn.onclick=()=>flip(+btn.dataset.i));
  };
- function flip(i){
+ const flip=i=>{
   if(lock||matched.has(i)||opened.includes(i))return;
   opened.push(i);draw();
   if(opened.length===2){
    moves++;$("memMoves").textContent="Züge: "+moves;
    if(cards[opened[0]]===cards[opened[1]]){
     opened.forEach(x=>matched.add(x));opened=[];
-    if(matched.size===cards.length){msg("Alle Paare gefunden!");award(Math.max(10,40-moves));}
+    if(matched.size===cards.length){gameResult("Alle Paare gefunden!");award(Math.max(10,40-moves));}
     draw();
    }else{
-    lock=true;setTimeout(()=>{opened=[];lock=false;draw();},750);
+    lock=true;timer=setTimeout(()=>{opened=[];lock=false;draw();},750);
    }
   }
- }
- draw();
+ };
+ gameCleanup=()=>clearTimeout(timer);draw();
 };
 
-/* 7. SCHERE STEIN PAPIER */
+/* 7. SCHERE-STEIN-PAPIER */
 handlers.rps=()=>{
- content(`<h2>✊ Schere-Stein-Papier</h2><p>Kannst du den Computer schlagen?</p><div class="choices"><button onclick="rps('Schere')">✂️ Schere</button><button onclick="rps('Stein')">🪨 Stein</button><button onclick="rps('Papier')">📄 Papier</button></div><div class="big" id="rpsBig">❔</div><div class="result" id="result"></div><button onclick="openGame('rps')">Neustart</button>`);
- window.rps=pick=>{
-  const options=["Schere","Stein","Papier"],bot=options[Math.floor(Math.random()*3)];
-  const emoji={Schere:"✂️",Stein:"🪨",Papier:"📄"};
+ content(`<h2>✊ Schere-Stein-Papier</h2><p>Kannst du den Computer schlagen?</p><div class="choices"><button data-pick="Schere">✂️ Schere</button><button data-pick="Stein">🪨 Stein</button><button data-pick="Papier">📄 Papier</button></div><div class="big" id="rpsBig">❔</div><div class="result" id="result"></div><button onclick="openGame('rps')">Neustart</button>`);
+ const emoji={Schere:"✂️",Stein:"🪨",Papier:"📄"};
+ $("gameContent").querySelectorAll("[data-pick]").forEach(btn=>btn.onclick=()=>{
+  const pick=btn.dataset.pick,options=["Schere","Stein","Papier"],bot=options[Math.floor(Math.random()*3)];
   $("rpsBig").textContent=emoji[pick]+" vs "+emoji[bot];
-  if(pick===bot)msg("Unentschieden!");
-  else if((pick==="Schere"&&bot==="Papier")||(pick==="Stein"&&bot==="Schere")||(pick==="Papier"&&bot==="Stein")){msg("Du gewinnst! +10 XP");award(10);}
-  else{msg("Der Computer gewinnt. Versuch's nochmal!");}
- };
+  if(pick===bot)gameResult("Unentschieden!");
+  else if((pick==="Schere"&&bot==="Papier")||(pick==="Stein"&&bot==="Schere")||(pick==="Papier"&&bot==="Stein")){gameResult("Du gewinnst! +10 XP");award(10);}
+  else gameResult("Der Computer gewinnt. Versuch's nochmal!");
+ });
 };
 
 /* 8. WORTRATEN */
@@ -434,81 +548,65 @@ handlers.word=()=>{
  const words=["ARCADE","NEON","GALAXIE","ROBOTER","KOMET","PIXEL","DRACHE","PLANET"];
  const secret=words[Math.floor(Math.random()*words.length)];
  let guessed=new Set(),tries=7,done=false;
- content(`<h2>🔤 Wortraten</h2><p>Errate das Wort. Du hast sieben Fehlversuche.</p><div class="word" id="wordDisplay"></div><p id="tries"></p><div class="choices" id="letters"></div><div class="result" id="result"></div><button onclick="openGame('word')">Neues Wort</button>`);
- function draw(){
+ content(`<h2>🔤 Wortraten</h2><p>Errate das Wort. Sieben Fehlversuche.</p><div class="word" id="wordDisplay"></div><p id="tries"></p><div class="choices" id="letters"></div><div class="result" id="result"></div><button onclick="openGame('word')">Neues Wort</button>`);
+ const draw=()=>{
   $("wordDisplay").textContent=[...secret].map(c=>guessed.has(c)?c:"_").join(" ");
   $("tries").textContent="Fehlversuche übrig: "+tries;
   $("letters").innerHTML="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(c=>`<button data-letter="${c}" ${guessed.has(c)||done?"disabled":""}>${c}</button>`).join("");
-  $("letters").querySelectorAll("button").forEach(b=>b.onclick=()=>guess(b.dataset.letter));
- }
- function guess(c){
+  $("letters").querySelectorAll("button").forEach(btn=>btn.onclick=()=>guess(btn.dataset.letter));
+ };
+ const guess=c=>{
   if(done||guessed.has(c))return;
-  guessed.add(c);
-  if(!secret.includes(c))tries--;
-  if([...secret].every(x=>guessed.has(x))){done=true;msg("Richtig! Du hast das Wort gefunden.");award(15);}
-  else if(tries<=0){done=true;msg("Das Wort war "+secret+".");}
+  guessed.add(c);if(!secret.includes(c))tries--;
+  if([...secret].every(x=>guessed.has(x))){done=true;gameResult("Richtig! Wort gefunden.");award(15);}
+  else if(tries<=0){done=true;gameResult("Das Wort war "+secret+".");}
   draw();
- }
- draw();
+ };draw();
 };
 
-/* 9. PARTY FRAGEN */
+/* 9. PARTY-FRAGEN */
 handlers.party=()=>{
- const questions=[
- "Wer würde am ehesten auf dem Mond Urlaub machen?",
- "Welche Superkraft wäre im Alltag am nützlichsten?",
- "Wer könnte am längsten ohne Handy auskommen?",
- "Was war dein lustigster Gaming-Moment?",
- "Wenn du ein Tier sein könntest, welches wäre es?",
- "Welche drei Dinge würdest du auf eine einsame Insel mitnehmen?",
- "Wer würde in einer Zombie-Komödie die Hauptrolle spielen?",
- "Was ist die unnötigste Erfindung, die du dir vorstellen kannst?",
- "Welche Fähigkeit würdest du sofort lernen wollen?",
- "Was wäre dein Künstlername?",
- "Welche Spielwelt würdest du gerne besuchen?",
- "Wer aus der Gruppe würde eine Alien-Invasion zuerst bemerken?",
- "Was ist dein perfekter freier Tag?",
- "Welche fiktive Figur wäre ein guter Mitbewohner?",
- "Erfinde einen neuen Feiertag und erkläre ihn."
- ];
+ const qs=["Wer würde am ehesten auf dem Mond Urlaub machen?","Welche Superkraft wäre im Alltag am nützlichsten?","Wer könnte am längsten ohne Handy auskommen?","Was war dein lustigster Gaming-Moment?","Wenn du ein Tier sein könntest, welches wäre es?","Welche drei Dinge würdest du auf eine einsame Insel mitnehmen?","Wer würde in einer Zombie-Komödie die Hauptrolle spielen?","Was ist die unnötigste Erfindung, die du dir vorstellen kannst?","Welche Fähigkeit würdest du sofort lernen wollen?","Was wäre dein Künstlername?","Welche Spielwelt würdest du gerne besuchen?","Wer würde eine Alien-Invasion zuerst bemerken?","Was ist dein perfekter freier Tag?","Welche fiktive Figur wäre ein guter Mitbewohner?","Erfinde einen neuen Feiertag."];
  let used=[];
- content(`<h2>🎉 Party Fragen</h2><p>Für Freunde, Familie oder Spieleabende.</p><div class="big">🎲</div><h3 id="partyQ">Drücke den Knopf für eine Frage!</h3><button class="primary" onclick="nextParty()">Nächste Frage</button><div class="result" id="result"></div>`);
- window.nextParty=()=>{
-  if(used.length===questions.length)used=[];
-  let available=questions.map((q,i)=>i).filter(i=>!used.includes(i));
-  const i=available[Math.floor(Math.random()*available.length)];used.push(i);
-  $("partyQ").textContent=questions[i];award(1);
+ content(`<h2>🎉 Party Fragen</h2><p>Für Freunde, Familie oder Spieleabende.</p><div class="big">🎲</div><h3 id="partyQ">Drücke den Knopf für eine Frage!</h3><button class="primary" id="nextParty">Nächste Frage</button>`);
+ $("nextParty").onclick=()=>{
+  if(used.length===qs.length)used=[];
+  const avail=qs.map((_,i)=>i).filter(i=>!used.includes(i));
+  const i=avail[Math.floor(Math.random()*avail.length)];used.push(i);
+  $("partyQ").textContent=qs[i];award(1);
  };
 };
 
 /* 10. SNAKE */
 handlers.snake=()=>{
- content(`<h2>🐍 Snake</h2><p>Sammle Sterne. Steuerung mit Pfeiltasten oder den Knöpfen.</p><canvas id="snakeCanvas" width="300" height="300" style="width:min(90vw,300px);background:#050a16;border:1px solid #344366;border-radius:12px"></canvas><h3 id="snakeScore">Punkte: 0</h3><div class="choices"><button onclick="snakeDir(0,-1)">⬆️</button></div><div class="choices"><button onclick="snakeDir(-1,0)">⬅️</button><button onclick="snakeDir(0,1)">⬇️</button><button onclick="snakeDir(1,0)">➡️</button></div><div class="result" id="result"></div><button class="primary" onclick="openGame('snake')">Neu starten</button>`);
+ content(`<h2>🐍 Snake</h2><p>Nutze die Pfeiltasten oder die Knöpfe.</p><canvas id="snakeCanvas" width="300" height="300" style="width:min(90vw,360px);background:#050a16;border:1px solid #344366;border-radius:12px"></canvas><h3 id="snakeScore">Punkte: 0</h3><div class="choices"><button data-dir="0,-1">⬆️</button></div><div class="choices"><button data-dir="-1,0">⬅️</button><button data-dir="0,1">⬇️</button><button data-dir="1,0">➡️</button></div><div class="result" id="result"></div><button class="primary" onclick="openGame('snake')">Neu starten</button>`);
  const c=$("snakeCanvas"),ctx=c.getContext("2d"),cell=15,n=20;
- let snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}],dir={x:1,y:0},food={x:15,y:10},score=0,dead=false;
- function newFood(){do{food={x:Math.floor(Math.random()*n),y:Math.floor(Math.random()*n)}}while(snake.some(s=>s.x===food.x&&s.y===food.y));}
- window.snakeDir=(x,y)=>{if(x!==-dir.x||y!==-dir.y)dir={x,y};};
- const key=e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};if(m[e.key]){e.preventDefault();snakeDir(...m[e.key]);}};
+ let snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}],dir={x:1,y:0},food={x:15,y:10},score=0,dead=false,awarded=false;
+ const newFood=()=>{do{food={x:Math.floor(Math.random()*n),y:Math.floor(Math.random()*n)}}while(snake.some(s=>s.x===food.x&&s.y===food.y));};
+ const change=(x,y)=>{if(x!==-dir.x||y!==-dir.y)dir={x,y};};
+ $("gameContent").querySelectorAll("[data-dir]").forEach(btn=>btn.onclick=()=>change(...btn.dataset.dir.split(",").map(Number)));
+ const key=e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};if(m[e.key]){e.preventDefault();change(...m[e.key]);}};
  window.addEventListener("keydown",key);
- gameCleanup=()=>window.removeEventListener("keydown",key);
- function tick(){
+ const tick=()=>{
   if(dead)return;
   const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
-  if(h.x<0||h.y<0||h.x>=n||h.y>=n||snake.some(s=>s.x===h.x&&s.y===h.y)){dead=true;msg("Game Over! Punktzahl: "+score);stats.best=Math.max(stats.best,score);saveStats();award(score);return;}
+  if(h.x<0||h.y<0||h.x>=n||h.y>=n||snake.some(s=>s.x===h.x&&s.y===h.y)){
+   dead=true;gameResult("Game Over! Punktzahl: "+score);
+   stats.best=Math.max(stats.best,score);localStorage.setItem("neon_stats_v1",JSON.stringify(stats));updateStats();
+   if(!awarded&&score>0){awarded=true;award(score);}return;
+  }
   snake.unshift(h);
   if(h.x===food.x&&h.y===food.y){score+=10;newFood();$("snakeScore").textContent="Punkte: "+score;}else snake.pop();
   ctx.fillStyle="#050a16";ctx.fillRect(0,0,300,300);
   ctx.fillStyle="#ff4fd8";ctx.fillRect(food.x*cell,food.y*cell,cell-1,cell-1);
   snake.forEach((s,i)=>{ctx.fillStyle=i?"#35bfcf":"#4dfcff";ctx.fillRect(s.x*cell,s.y*cell,cell-1,cell-1);});
- }
- const timer=setInterval(tick,125);
- const prev=gameCleanup;gameCleanup=()=>{clearInterval(timer);window.removeEventListener("keydown",key);if(prev)prev();};
- tick();
+ };
+ const timer=setInterval(tick,125);gameCleanup=()=>{clearInterval(timer);window.removeEventListener("keydown",key);};tick();
 };
 
 /* 11. STERNENFLUCHT */
 handlers.dodge=()=>{
- content(`<h2>🚀 Sternenflucht</h2><p>Drücke den Knopf, wenn die Sterne erscheinen. Reagiere so schnell du kannst!</p><div class="big" id="dodgeIcon">🌌</div><h3 id="dodgeText">Bereit?</h3><button class="primary" id="dodgeBtn">Start</button><div class="result" id="result"></div>`);
+ content(`<h2>🚀 Sternenflucht</h2><p>Drücke den Knopf, sobald der Stern erscheint.</p><div class="big" id="dodgeIcon">🌌</div><h3 id="dodgeText">Bereit?</h3><button class="primary" id="dodgeBtn">Start</button><div class="result" id="result"></div>`);
  let state="ready",timer=null,start=0;
  const btn=$("dodgeBtn");
  btn.onclick=()=>{
@@ -516,27 +614,241 @@ handlers.dodge=()=>{
    state="wait";btn.textContent="Warte …";$("dodgeIcon").textContent="🌑";$("dodgeText").textContent="Warte auf das Signal …";
    timer=setTimeout(()=>{state="go";start=performance.now();$("dodgeIcon").textContent="⭐";$("dodgeText").textContent="JETZT!";btn.textContent="JETZT DRÜCKEN!";},1000+Math.random()*3500);
   }else if(state==="wait"){
-   clearTimeout(timer);state="ready";$("dodgeText").textContent="Zu früh! Nochmal versuchen.";btn.textContent="Nochmal";
+   clearTimeout(timer);state="ready";$("dodgeText").textContent="Zu früh! Versuche es erneut.";btn.textContent="Nochmal";
   }else if(state==="go"){
    const ms=Math.round(performance.now()-start);state="ready";$("dodgeText").textContent=ms+" ms";
-   msg(ms<250?"Blitzschnell!":ms<400?"Gute Reaktion!":"Versuche, schneller zu sein!");
+   gameResult(ms<250?"Blitzschnell!":ms<400?"Gute Reaktion!":"Versuche es noch einmal.");
    award(ms<300?15:5);btn.textContent="Noch eine Runde";
   }
  };
  gameCleanup=()=>clearTimeout(timer);
 };
 
-/* Bereits angemeldete Session wiederherstellen */
+/* RANGLISTE */
+async function loadLeaderboard(){
+ if(!user||!db)return say("leaderboard","Bitte melde dich an, um die Rangliste zu laden.");
+ const el=$("leaderboard");el.textContent="Lädt …";
+ const {data,error}=await db.from("arcade_player_data").select("username,xp,rounds")
+  .eq("banned",false).order("xp",{ascending:false}).limit(20);
+ if(error){el.textContent="Rangliste nicht verfügbar: "+error.message;return;}
+ el.innerHTML=data.length?data.map((p,i)=>`<div class="list-row"><strong>${i+1}. ${safe(p.username)}</strong><br><span class="muted">${Number(p.xp)||0} XP · ${Number(p.rounds)||0} Runden</span></div>`).join(""):"Noch keine Spieler in der Rangliste.";
+}
+
+/* FREUNDE */
+async function sendFriendRequest(){
+ if(!user)return alert("Bitte zuerst anmelden.");
+ const name=$("friendName").value.trim();
+ if(!name)return alert("Bitte gib einen Spielernamen ein.");
+ const {data:profile,error:findError}=await db.from("profiles").select("id,username").ilike("username",name).maybeSingle();
+ if(findError)return alert("Spieler konnte nicht gesucht werden: "+findError.message);
+ if(!profile)return alert("Spieler nicht gefunden.");
+ if(profile.id===user.id)return alert("Du kannst dir selbst keine Anfrage senden.");
+ const {error}=await db.from("friend_requests").insert({sender_id:user.id,receiver_id:profile.id,status:"pending"});
+ if(error)alert("Anfrage fehlgeschlagen: "+error.message);
+ else{alert("Freundesanfrage gesendet.");$("friendName").value="";await loadFriends();}
+}
+async function loadFriends(){
+ if(!user||!db)return;
+ const req=$("friendRequests"),fr=$("friends");
+ req.textContent="Lade Anfragen …";fr.textContent="Lade Freunde …";
+ const {data:incoming,error:e1}=await db.from("friend_requests").select("id,sender_id,status").eq("receiver_id",user.id).eq("status","pending");
+ if(e1){req.textContent="Anfragen nicht verfügbar: "+e1.message;}else{
+  req.innerHTML="<h3>Eingehende Anfragen</h3>";
+  for(const r of incoming||[]){
+   const {data:p}=await db.from("profiles").select("username").eq("id",r.sender_id).maybeSingle();
+   const row=document.createElement("div");row.className="list-row";
+   row.innerHTML=`<strong>${safe(p?.username||"Spieler")}</strong> `;
+   const accept=document.createElement("button");accept.textContent="Annehmen";
+   accept.onclick=()=>answerFriendRequest(r.id,"accepted");
+   const reject=document.createElement("button");reject.textContent="Ablehnen";
+   reject.onclick=()=>answerFriendRequest(r.id,"rejected");
+   row.append(accept,reject);req.append(row);
+  }
+  if(!incoming?.length)req.innerHTML="<h3>Eingehende Anfragen</h3><p class='muted'>Keine offenen Anfragen.</p>";
+ }
+ const {data:out,error:e2}=await db.from("friend_requests").select("id,receiver_id,status").eq("sender_id",user.id).eq("status","accepted");
+ if(e2){fr.textContent="Freundesliste nicht verfügbar: "+e2.message;return;}
+ fr.innerHTML="<h3>Freundesliste</h3>";
+ for(const r of out||[]){
+  const {data:p}=await db.from("profiles").select("username").eq("id",r.receiver_id).maybeSingle();
+  const row=document.createElement("div");row.className="list-row";row.textContent=p?.username||"Spieler";fr.append(row);
+ }
+ const {data:incomingAccepted}=await db.from("friend_requests").select("sender_id").eq("receiver_id",user.id).eq("status","accepted");
+ for(const r of incomingAccepted||[]){
+  const {data:p}=await db.from("profiles").select("username").eq("id",r.sender_id).maybeSingle();
+  const row=document.createElement("div");row.className="list-row";row.textContent=p?.username||"Spieler";fr.append(row);
+ }
+ if(!(out?.length)&&!(incomingAccepted?.length))fr.innerHTML+="<p class='muted'>Noch keine Freunde.</p>";
+}
+async function answerFriendRequest(id,status){
+ const {error}=await db.from("friend_requests").update({status}).eq("id",id).eq("receiver_id",user.id);
+ if(error)alert("Änderung fehlgeschlagen: "+error.message);
+ await loadFriends();
+}
+
+/* GRUPPEN UND RÄUME */
+function roomCode(){
+ return Math.random().toString(36).slice(2,8).toUpperCase();
+}
+async function createRoom(){
+ if(!user)return alert("Bitte anmelden, um einen Raum zu erstellen.");
+ const name=$("roomName").value.trim(),game=$("roomGame").value.trim()||"Freies Spiel";
+ if(!name)return alert("Bitte gib dem Raum einen Namen.");
+ const code=roomCode();
+ const {data:room,error}=await db.from("rooms").insert({
+  owner_id:user.id,name,game,room_code:code
+ }).select("id,name,game,room_code").single();
+ if(error)return alert("Raum konnte nicht erstellt werden: "+error.message);
+ const {error:memberError}=await db.from("room_members").insert({room_id:room.id,user_id:user.id});
+ if(memberError)console.warn("Raum erstellt, Mitgliedschaft konnte nicht gespeichert werden:",memberError);
+ alert("Raum erstellt! Code: "+code);
+ $("roomName").value="";$("roomGame").value="";
+ await loadRooms();selectRoom(room);
+}
+async function joinRoom(){
+ if(!user)return alert("Bitte zuerst anmelden.");
+ const code=$("roomCode").value.trim().toUpperCase();
+ if(!code)return alert("Bitte einen Raumcode eingeben.");
+ const {data:room,error}=await db.from("rooms").select("id,name,game,room_code").eq("room_code",code).maybeSingle();
+ if(error)return alert("Raum konnte nicht gesucht werden: "+error.message);
+ if(!room)return alert("Kein Raum mit diesem Code gefunden.");
+ const {error:joinError}=await db.from("room_members").upsert({room_id:room.id,user_id:user.id},{onConflict:"room_id,user_id"});
+ if(joinError)return alert("Beitritt fehlgeschlagen: "+joinError.message);
+ $("roomCode").value="";await loadRooms();selectRoom(room);
+}
+async function loadRooms(){
+ if(!user||!db)return;
+ const el=$("rooms");el.textContent="Lade Räume …";
+ const {data:members,error}=await db.from("room_members").select("room_id").eq("user_id",user.id);
+ if(error){el.textContent="Räume nicht verfügbar: "+error.message;return;}
+ const ids=(members||[]).map(x=>x.room_id);
+ if(!ids.length){el.innerHTML="<p class='muted'>Du bist noch in keinem Raum.</p>";return;}
+ const {data:rooms,error:roomError}=await db.from("rooms").select("id,name,game,room_code,owner_id").in("id",ids);
+ if(roomError){el.textContent="Räume nicht verfügbar: "+roomError.message;return;}
+ el.innerHTML="<h3>Deine Räume</h3>";
+ for(const r of rooms||[]){
+  const row=document.createElement("div");row.className="list-row";
+  row.innerHTML=`<strong>${safe(r.name)}</strong><br><span class="muted">${safe(r.game)} · Code: ${safe(r.room_code)}</span><br>`;
+  const btn=document.createElement("button");btn.textContent="Raum öffnen";btn.onclick=()=>selectRoom(r);
+  row.append(btn);el.append(row);
+ }
+}
+async function selectRoom(room){
+ activeRoom=room;
+ $("chatRoomLabel").textContent="Raum: "+room.name+" · Code: "+room.room_code;
+ await loadChat();
+}
+
+/* RAUM-CHAT */
+async function loadChat(){
+ if(!user||!db)return say("chatMessages","Bitte anmelden, um den Chat zu verwenden.");
+ if(!activeRoom)return say("chatMessages","Öffne zuerst einen Spielraum.");
+ const el=$("chatMessages");el.textContent="Lade Nachrichten …";
+ const {data:member}=await db.from("room_members").select("room_id").eq("room_id",activeRoom.id).eq("user_id",user.id).maybeSingle();
+ if(!member)return say("chatMessages","Du bist kein Mitglied dieses Raums.");
+ const {data,error}=await db.from("chat_messages").select("id,user_id,content,created_at")
+  .eq("room_id",activeRoom.id).order("created_at",{ascending:true}).limit(100);
+ if(error){el.textContent="Chat nicht verfügbar: "+error.message;return;}
+ el.innerHTML="";
+ for(const m of data||[]){
+  const {data:p}=await db.from("profiles").select("username").eq("id",m.user_id).maybeSingle();
+  const item=document.createElement("div");item.className="chat-msg";
+  item.innerHTML=`<strong>${safe(p?.username||(m.user_id===user.id?username:"Spieler"))}</strong> <small>${safe(new Date(m.created_at).toLocaleString())}</small><div>${safe(m.content)}</div>`;
+  el.append(item);
+ }
+ if(!data?.length)el.textContent="Noch keine Nachrichten. Starte den Chat!";
+ el.scrollTop=el.scrollHeight;
+}
+async function sendChatMessage(){
+ if(!user)return alert("Bitte anmelden.");
+ if(!activeRoom)return alert("Öffne zuerst einen Spielraum.");
+ const text=$("chatInput").value.trim();
+ if(!text)return;
+ if(text.length>1000)return alert("Die Nachricht ist zu lang.");
+ const {data:member}=await db.from("room_members").select("room_id").eq("room_id",activeRoom.id).eq("user_id",user.id).maybeSingle();
+ if(!member)return alert("Du bist kein Mitglied dieses Raums.");
+ const {error}=await db.from("chat_messages").insert({room_id:activeRoom.id,user_id:user.id,content:text});
+ if(error)return alert("Nachricht konnte nicht gesendet werden: "+error.message);
+ $("chatInput").value="";await loadChat();
+}
+
+/* ADMIN */
+async function loadAdmin(){
+ if(!user||!db||!isAdmin)return;
+ say("adminMsg","Lade Admin-Daten …");
+ const {data:players,error}=await db.from("arcade_player_data")
+  .select("user_id,username,xp,rounds,banned,created_at").order("created_at",{ascending:false}).limit(200);
+ if(error){say("adminMsg","Spielerliste nicht verfügbar: "+error.message);return;}
+ const list=$("adminPlayers");list.innerHTML="";
+ for(const p of players||[]){
+  const row=document.createElement("div");row.className="list-row";
+  const title=document.createElement("strong");title.textContent=p.username+" · "+p.xp+" XP";
+  const detail=document.createElement("div");detail.className="muted";detail.textContent="Runden: "+p.rounds+" · ID: "+p.user_id;
+  const status=document.createElement("div");status.textContent=p.banned?"GESPERRT":"Aktiv";
+  row.append(title,detail,status);
+  if(p.user_id!==user.id){
+   const btn=document.createElement("button");
+   btn.textContent=p.banned?"Entsperren":"Sperren";
+   btn.onclick=()=>toggleBan(p.user_id,!p.banned);
+   row.append(btn);
+  }
+  list.append(row);
+ }
+ if(!players?.length)list.textContent="Keine Spielerdaten gefunden.";
+
+ const {data:rooms,error:roomError}=await db.from("rooms")
+  .select("id,name,game,room_code,owner_id,created_at").order("created_at",{ascending:false}).limit(100);
+ if(roomError){$("adminRooms").textContent="Gruppenübersicht nicht verfügbar: "+roomError.message;}
+ else{
+  $("adminRooms").innerHTML="";
+  for(const r of rooms||[]){
+   const row=document.createElement("div");row.className="list-row";
+   row.innerHTML=`<strong>${safe(r.name)}</strong><br><span class="muted">${safe(r.game)} · Code ${safe(r.room_code)} · Besitzer ${safe(r.owner_id)}</span>`;
+   const btn=document.createElement("button");btn.textContent="Mitglieder anzeigen";btn.onclick=()=>viewRoomMembers(r.id,r.name);
+   row.append(btn);$("adminRooms").append(row);
+  }
+  if(!rooms?.length)$("adminRooms").textContent="Keine Räume vorhanden.";
+ }
+ say("adminMsg","Admin-Daten geladen.");
+}
+async function toggleBan(id,banned){
+ if(!isAdmin)return alert("Keine Adminrechte.");
+ const {error}=await db.from("arcade_player_data").update({banned}).eq("user_id",id);
+ if(error)alert("Spielerstatus konnte nicht geändert werden: "+error.message);
+ else{say("adminMsg",banned?"Spieler gesperrt.":"Spieler entsperrt.");await loadAdmin();}
+}
+async function viewRoomMembers(roomId,roomName){
+ if(!isAdmin)return;
+ const {data,error}=await db.from("room_members").select("user_id,joined_at").eq("room_id",roomId);
+ if(error)return alert("Mitglieder konnten nicht geladen werden: "+error.message);
+ const names=[];
+ for(const m of data||[]){
+  const {data:p}=await db.from("profiles").select("username").eq("id",m.user_id).maybeSingle();
+  names.push((p?.username||"Spieler")+" ("+m.user_id+")");
+ }
+ alert("Mitglieder in "+roomName+":\n\n"+(names.join("\n")||"Keine Mitglieder"));
+}
+
+/* STATS */
+function resetStats(){
+ if(!confirm("Lokale Statistiken wirklich zurücksetzen?"))return;
+ stats={xp:0,rounds:0,best:0};
+ localStorage.setItem("neon_stats_v1",JSON.stringify(stats));
+ updateStats();syncStats();
+}
+
+/* SESSION WIEDERHERSTELLEN */
 (async()=>{
  if(!db)return;
  try{
-  const {data}=await db.auth.getSession();
+  const {data,error}=await db.auth.getSession();
+  if(error)throw error;
   if(data.session){
    user=data.session.user;
    username=user.user_metadata?.username||user.email?.split("@")[0]||"Player";
-   enterApp();
+   await enterApp();
   }
- }catch(e){console.warn(e);}
+ }catch(e){console.warn("Session konnte nicht wiederhergestellt werden:",e);}
 })();
 </script>
 </body>
