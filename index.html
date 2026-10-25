@@ -451,7 +451,7 @@ const games=[
  ["word","🔤","Wortraten","Errate das versteckte Wort."],
  ["party","🎉","Party Fragen","Zufällige Gruppenfragen."],
  ["snake","🐍","Snake","Sammle Punkte, ohne dich zu treffen."],
- ["dodge","🚀","Sternenflucht","Teste deine Reaktionsgeschwindigkeit."]
+ ["tap","⏱️","reaktion","Teste deine Reaktionsgeschwindigkeit."]
 ];
 
 $("gameGrid").innerHTML=games.map(g=>`
@@ -1027,10 +1027,9 @@ handlers.snake=()=>{
 
  tick();
 };
-
 /* 11. STERNENFLUCHT */
 handlers.dodge=()=>{
- content(`<h2>🚀 Sternenflucht</h2><p>Drücke den Knopf, sobald der Stern erscheint.</p><div class="big" id="dodgeIcon">🌌</div><h3 id="dodgeText">Bereit?</h3><button class="primary" id="dodgeBtn">Start</button><div class="result" id="result"></div>`);
+ content(`<h2>⏱️ reaktion</h2><p>Drücke den Knopf, sobald der .</p><div class="big" id="dodgeIcon">🌌</div><h3 id="dodgeText">Bereit?</h3><button class="primary" id="dodgeBtn">Start</button><div class="result" id="result"></div>`);
 
  let state="ready",timer=null,start=0;
  const btn=$("dodgeBtn");
@@ -1069,6 +1068,7 @@ handlers.dodge=()=>{
 
  gameCleanup=()=>clearTimeout(timer);
 };
+
 
 /* RANGLISTE */
 
