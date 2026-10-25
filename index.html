@@ -438,7 +438,6 @@ async function enterApp(){
     say("leaderboard","Bitte melde dich an, um die Rangliste zu laden.");
   }
 }
-
 /* SPIELE */
 const games=[
  ["impostor","🕵️","Impostor","Finde heraus, wer das geheime Wort nicht kennt."],
@@ -505,6 +504,7 @@ function gameResult(text){
   const el=$("result");
   if(el)el.textContent=text;
 }
+
 
 /* 1. IMPOSTOR */
 handlers.impostor=()=>{
