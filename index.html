@@ -285,5 +285,417 @@ function dodgeStep(){
 })();
 renderGames();updateStats();
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  const SUPABASE_URL = 'https://qznkudfhmegfriwqdvmj.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_CPz52i2XcyThttYOrLkMAw_Pd3PYRmB';
+
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  let arcadeUser = null;
+  let arcadeProfile = null;
+  let arcadeIsAdmin = false;
+
+  const escapeHTML = value => String(value ?? '').replace(
+    /[&<>"']/g,
+    ch => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;',
+      '"':'&quot;', "'":'&#39;'
+    }[ch])
+  );
+
+  function addArcadeStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      .account-panel{background:linear-gradient(145deg,#171c3a,#0f1328);
+        border:1px solid #30385e;border-radius:20px;padding:20px;margin:16px 0}
+      .account-panel h2,.account-panel h3{margin-top:0}
+      .account-message{color:#31d8f3;font-size:13px;min-height:20px}
+      .admin-table-wrap{overflow-x:auto}
+      .admin-table{border-collapse:collapse;width:100%;font-size:13px}
+      .admin-table th,.admin-table td{padding:10px;border-bottom:1px solid #30385e;text-align:left}
+      .admin-table input{min-width:90px}
+      .account-actions{display:flex;gap:8px;flex-wrap:wrap}
+      .account-actions button{margin:4px 0}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function createAccountPanel() {
+    const panel = document.createElement('section');
+    panel.className = 'account-panel';
+    panel.id = 'arcadeAccount';
+    panel.innerHTML = `
+      <h2>👤 Konto & Online-XP</h2>
+      <p class="muted">
+        Erstelle ein Konto, damit deine Punkte online gespeichert werden.
+        Verwende ein Passwort, das du nicht auf anderen Seiten benutzt.
+      </p>
+      <div id="accountSignedOut">
+        <label>Spielername</label>
+        <input id="accountUsername" maxlength="24" autocomplete="nickname"
+          placeholder="Dein Spielername">
+        <label>E-Mail</label>
+        <input id="accountEmail" type="email" autocomplete="email"
+          placeholder="name@beispiel.de">
+        <label>Passwort</label>
+        <input id="accountPassword" type="password"
+          autocomplete="current-password" minlength="8"
+          placeholder="Mindestens 8 Zeichen">
+        <div class="account-actions">
+          <button class="primary" id="accountRegister">Konto erstellen</button>
+          <button id="accountLogin">Anmelden</button>
+        </div>
+      </div>
+      <div id="accountSignedIn" hidden>
+        <p id="accountWelcome"></p>
+        <div class="account-actions">
+          <button id="accountRefresh">Punkte aktualisieren</button>
+          <button id="accountLogout">Abmelden</button>
+          <button id="accountAdminButton" hidden>🛡️ Admin-Bereich</button>
+        </div>
+      </div>
+      <p class="account-message" id="accountMessage" role="status"></p>
+      <div id="adminPanel" hidden>
+        <hr>
+        <h3>🛡️ Admin – Spielerverwaltung</h3>
+        <p class="muted">
+          Hier kannst du registrierte Arcade-Profile ansehen, XP ändern
+          und Konten für die Arcade sperren oder entsperren.
+        </p>
+        <button class="primary" id="adminReload">Spielerliste laden</button>
+        <p id="adminMessage" class="account-message" role="status"></p>
+        <div id="adminPlayers" class="admin-table-wrap"></div>
+      </div>
+    `;
+
+    const main = document.querySelector('main');
+    main.insertBefore(panel, main.firstChild);
+  }
+
+  function message(text) {
+    document.getElementById('accountMessage').textContent = text;
+  }
+
+  function adminMessage(text) {
+    document.getElementById('adminMessage').textContent = text;
+  }
+
+  async function getProfile() {
+    if (!arcadeUser) return null;
+
+    const { data, error } = await db
+      .from('arcade_player_data')
+      .select('user_id,username,xp,rounds,banned')
+      .eq('user_id', arcadeUser.id)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async function refreshAccount() {
+    if (!arcadeUser) return;
+
+    try {
+      arcadeProfile = await getProfile();
+
+      if (!arcadeProfile) {
+        message('Dein Profil fehlt. Bitte melde dich erneut an oder registriere dich neu.');
+        return;
+      }
+
+      if (arcadeProfile.banned) {
+        message('Dieses Arcade-Konto ist gesperrt. Bitte wende dich an die Administration.');
+        await db.auth.signOut();
+        return;
+      }
+
+      document.getElementById('accountWelcome').textContent =
+        'Angemeldet als ' + arcadeProfile.username;
+
+      document.getElementById('playerName').value = arcadeProfile.username;
+
+      // Online-Daten ersetzen die bisherigen lokalen Anzeigewerte.
+      xp = arcadeProfile.xp;
+      rounds = arcadeProfile.rounds;
+      updateStats();
+
+      // Admin-Rechte werden vom Server über die geschützte RPC geprüft.
+      const { error } = await db.rpc('arcade_admin_list_players');
+      arcadeIsAdmin = !error;
+      document.getElementById('accountAdminButton').hidden = !arcadeIsAdmin;
+    } catch (err) {
+      message(err.message || 'Die Kontodaten konnten nicht geladen werden.');
+    }
+  }
+
+  async function setSignedIn(user) {
+    arcadeUser = user || null;
+    arcadeProfile = null;
+    arcadeIsAdmin = false;
+
+    document.getElementById('accountSignedOut').hidden = !!user;
+    document.getElementById('accountSignedIn').hidden = !user;
+    document.getElementById('accountAdminButton').hidden = true;
+    document.getElementById('adminPanel').hidden = true;
+
+    if (user) await refreshAccount();
+    else message('Melde dich an, um Online-XP zu verwenden.');
+  }
+
+  async function register() {
+    const username = document.getElementById('accountUsername').value.trim();
+    const email = document.getElementById('accountEmail').value.trim();
+    const password = document.getElementById('accountPassword').value;
+
+    if (username.length < 2 || username.length > 24) {
+      message('Dein Spielername muss 2 bis 24 Zeichen haben.');
+      return;
+    }
+    if (!email || password.length < 8) {
+      message('Gib eine gültige E-Mail und ein Passwort mit mindestens 8 Zeichen ein.');
+      return;
+    }
+
+    message('Konto wird erstellt …');
+
+    const { data, error } = await db.auth.signUp({
+      email,
+      password,
+      options: { data: { username } }
+    });
+
+    if (error) {
+      message(error.message);
+      return;
+    }
+
+    if (data.session && data.user) {
+      const { error: profileError } = await db.rpc(
+        'arcade_register_profile',
+        { p_username: username }
+      );
+
+      if (profileError) {
+        message('Konto erstellt, aber das Profil konnte nicht angelegt werden: ' +
+          profileError.message);
+        return;
+      }
+
+      await setSignedIn(data.user);
+      message('Registrierung erfolgreich!');
+    } else {
+      message('Registrierung gestartet. Prüfe deine E-Mails und bestätige die Adresse. Melde dich danach an.');
+    }
+  }
+
+  async function login() {
+    const email = document.getElementById('accountEmail').value.trim();
+    const password = document.getElementById('accountPassword').value;
+
+    message('Anmeldung läuft …');
+
+    const { data, error } = await db.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      message('Anmeldung fehlgeschlagen: ' + error.message);
+      return;
+    }
+
+    await setSignedIn(data.user);
+    if (arcadeUser && arcadeProfile && !arcadeProfile.banned) {
+      message('Du bist angemeldet.');
+    }
+  }
+
+  async function logout() {
+    const { error } = await db.auth.signOut();
+    if (error) {
+      message(error.message);
+      return;
+    }
+    arcadeUser = null;
+    arcadeProfile = null;
+    arcadeIsAdmin = false;
+    document.getElementById('adminPlayers').innerHTML = '';
+    await setSignedIn(null);
+  }
+
+  async function loadAdminPlayers() {
+    if (!arcadeUser || !arcadeIsAdmin) {
+      adminMessage('Keine Admin-Berechtigung.');
+      return;
+    }
+
+    adminMessage('Spielerliste wird geladen …');
+    document.getElementById('adminPlayers').innerHTML = '';
+
+    const { data, error } = await db.rpc('arcade_admin_list_players');
+
+    if (error) {
+      adminMessage('Fehler: ' + error.message);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      document.getElementById('adminPlayers').textContent =
+        'Noch keine Arcade-Profile vorhanden.';
+      adminMessage('');
+      return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'admin-table';
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>Spieler</th>
+          <th>XP</th>
+          <th>Runden</th>
+          <th>Status</th>
+          <th>Aktionen</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `;
+
+    const tbody = table.querySelector('tbody');
+
+    data.forEach(player => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <b>${escapeHTML(player.username)}</b>
+          <div class="muted">${escapeHTML(player.user_id)}</div>
+        </td>
+        <td><input type="number" min="0" max="100000000"
+          value="${Number(player.xp)}" aria-label="XP für ${escapeHTML(player.username)}"></td>
+        <td>${Number(player.rounds)}</td>
+        <td>${player.banned ? '🔒 Gesperrt' : '🟢 Aktiv'}</td>
+        <td>
+          <button class="saveXP">XP speichern</button>
+          <button class="toggleBan">${player.banned ? 'Entsperren' : 'Sperren'}</button>
+        </td>
+      `;
+
+      tr.querySelector('.saveXP').addEventListener('click', async () => {
+        const newXP = Number(tr.querySelector('input').value);
+
+        if (!Number.isInteger(newXP) || newXP < 0 || newXP > 100000000) {
+          adminMessage('Bitte gib eine gültige XP-Zahl ein.');
+          return;
+        }
+
+        const { error } = await db.rpc('arcade_admin_set_xp', {
+          p_user_id: player.user_id,
+          p_xp: newXP
+        });
+
+        if (error) {
+          adminMessage(error.message);
+          return;
+        }
+
+        adminMessage('XP für ' + player.username + ' gespeichert.');
+        await loadAdminPlayers();
+        if (player.user_id === arcadeUser.id) await refreshAccount();
+      });
+
+      tr.querySelector('.toggleBan').addEventListener('click', async () => {
+        const newBanned = !player.banned;
+
+        if (!confirm(
+          player.username + (newBanned
+            ? ' wirklich für die Arcade sperren?'
+            : ' wieder für die Arcade freigeben?')
+        )) return;
+
+        const { error } = await db.rpc('arcade_admin_set_banned', {
+          p_user_id: player.user_id,
+          p_banned: newBanned
+        });
+
+        if (error) {
+          adminMessage(error.message);
+          return;
+        }
+
+        adminMessage('Spielerstatus aktualisiert.');
+        await loadAdminPlayers();
+      });
+
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('adminPlayers').appendChild(table);
+    adminMessage(data.length + ' Spieler geladen.');
+  }
+
+  // Spielstände aus der vorhandenen Spielelogik online speichern.
+  const originalReward = reward;
+  reward = function(amount = 20) {
+    if (arcadeUser) {
+      if (!arcadeProfile || arcadeProfile.banned) {
+        message('Bitte melde dich an, um Punkte zu sammeln.');
+        return;
+      }
+
+      // Die XP-Menge wird vom Server begrenzt und geprüft.
+      const safeAmount = Math.max(0, Math.min(100, Math.floor(amount)));
+
+      db.rpc('arcade_award_xp', { p_amount: safeAmount })
+        .then(async ({ error }) => {
+          if (error) {
+            message(error.message);
+            return;
+          }
+          await refreshAccount();
+        });
+
+      return;
+    }
+
+    // Offline-Modus bleibt verfügbar, wenn man nicht angemeldet ist.
+    originalReward(amount);
+  };
+
+  async function start() {
+    addArcadeStyles();
+    createAccountPanel();
+
+    document.getElementById('accountRegister').addEventListener('click', register);
+    document.getElementById('accountLogin').addEventListener('click', login);
+    document.getElementById('accountLogout').addEventListener('click', logout);
+    document.getElementById('accountRefresh').addEventListener('click', refreshAccount);
+    document.getElementById('adminReload').addEventListener('click', loadAdminPlayers);
+
+    document.getElementById('accountAdminButton').addEventListener('click', () => {
+      if (!arcadeIsAdmin) return;
+      const panel = document.getElementById('adminPanel');
+      panel.hidden = !panel.hidden;
+      if (!panel.hidden) loadAdminPlayers();
+    });
+
+    const { data } = await db.auth.getSession();
+    await setSignedIn(data.session?.user || null);
+
+    db.auth.onAuthStateChange((_event, session) => {
+      // Supabase-Callbacks nicht mit zusätzlichen Auth-Aufrufen blockieren.
+      setTimeout(() => setSignedIn(session?.user || null), 0);
+    });
+  }
+
+  start().catch(err => {
+    console.error(err);
+    const panel = document.getElementById('arcadeAccount');
+    if (panel) message('Supabase konnte nicht gestartet werden: ' + err.message);
+  });
+})();
+</script>
 </body>
 </html>
