@@ -1,680 +1,1183 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Neon Arcade</title>
-<style>
-:root {
-  --bg:#090b18; --panel:#131832; --panel2:#1b2242;
-  --purple:#8b6cff; --cyan:#31d8f3; --pink:#ff5ac8;
-  --green:#56e6ad; --text:#f5f6ff; --muted:#a5afd1;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:radial-gradient(ellipse at top,#20204b,var(--bg) 60%);
-  color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh
-}
-button,input,select{font:inherit}
-button{cursor:pointer}
-header{text-align:center;padding:28px 16px 12px}
-.logo{font-size:clamp(28px,5vw,45px);font-weight:1000;letter-spacing:-2px}
-.logo span{color:var(--cyan);text-shadow:0 0 22px #31d8f377}
-.subtitle{color:var(--muted);font-size:13px}
-main{max-width:1100px;margin:auto;padding:16px}
-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0 25px}
-button,.btn{
-  border:1px solid #394267;border-radius:12px;padding:11px 15px;
-  background:var(--panel2);color:white;font-weight:750;
-  transition:.18s
-}
-button:hover{border-color:var(--cyan);transform:translateY(-1px)}
-.primary{background:linear-gradient(110deg,var(--purple),#398af6);border:0}
-.secondary{background:#171c35}
-input,select{
-  background:#090e21;color:white;border:1px solid #394267;
-  border-radius:10px;padding:12px;width:100%;margin:6px 0 12px
-}
-label{font-size:12px;color:var(--muted)}
-h1,h2,h3{letter-spacing:-.5px}
-.hero,.panel,.game{
-  background:linear-gradient(145deg,#171c3a,#0f1328);
-  border:1px solid #30385e;border-radius:20px;padding:22px;margin-bottom:16px
-}
-.hero{text-align:center;padding:35px 20px;background:
-  radial-gradient(ellipse at top,#7557ff30,transparent 70%),
-  linear-gradient(145deg,#171c3a,#0f1328)}
-.hero h1{font-size:clamp(27px,5vw,43px);margin:8px}
-.hero p,.muted{color:var(--muted);line-height:1.6;font-size:13px}
-.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
-.gamecard{
-  background:linear-gradient(145deg,#1b2243,#10152b);
-  border:1px solid #30385e;border-radius:16px;padding:18px;
-  text-align:left;color:white;min-height:160px
-}
-.gamecard .emoji{font-size:36px}
-.gamecard h3{margin:12px 0 5px}
-.gamecard p{font-size:12px;color:var(--muted);line-height:1.5}
-.gamecard small{color:var(--cyan)}
-.gamearea{text-align:center}
-.big{font-size:clamp(25px,5vw,39px);font-weight:950;overflow-wrap:anywhere}
-.secret{
-  min-height:155px;display:grid;place-items:center;
-  margin:18px 0;padding:22px;border:1px solid #6558a9;
-  border-radius:18px;background:radial-gradient(ellipse at top,#8b6cff35,transparent 70%),#111731;
-  user-select:none
-}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0}
-.grid button{min-height:48px}
-.progress{height:7px;background:#252b4b;border-radius:10px;overflow:hidden;margin:12px 0}
-.progress div{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan))}
-.notice{background:#10162d;border:1px solid #30385e;padding:13px;border-radius:12px;text-align:left;color:var(--muted);font-size:12px;line-height:1.7}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
-.row>*{flex:1}
-.result{padding:16px;background:#10162d;border:1px solid #394267;border-radius:12px;margin:14px 0;line-height:1.7}
-.tic{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:330px;margin:18px auto}
-.tic button{aspect-ratio:1;font-size:35px;font-weight:900;background:#1a2140}
-.memory{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:400px;margin:18px auto}
-.memory button{aspect-ratio:1;font-size:25px;padding:3px}
-canvas{width:100%;height:300px;background:white;border-radius:12px;touch-action:none;cursor:crosshair}
-footer{text-align:center;color:#697398;font-size:11px;padding:20px}
-@media(max-width:520px){
-  main{padding:12px}.hero,.panel,.game{padding:16px}
-  .grid{grid-template-columns:1fr 1fr}
-  .secret{min-height:135px}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080817">
+  <title>Neon Arcade</title>
+  <meta name="description" content="Neon Arcade – spiele, sammle Punkte und tritt in der Online-Bestenliste an.">
+  <style>
+    :root {
+      --bg: #080817;
+      --panel: #111128;
+      --panel2: #171735;
+      --cyan: #00f5ff;
+      --pink: #ff3df2;
+      --purple: #9b5cff;
+      --text: #f4f4ff;
+      --muted: #a5a5c7;
+      --line: rgba(0,245,255,.22);
+      --green: #52ff9a;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 15% 0%, rgba(95,40,180,.2), transparent 42%),
+        radial-gradient(ellipse at 95% 35%, rgba(0,190,255,.1), transparent 38%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    a { color: var(--cyan); }
+    .wrap { width: min(1180px, 100% - 28px); margin: auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(8,8,23,.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+    }
+    .logo {
+      font-size: clamp(1.15rem, 4vw, 1.65rem);
+      font-weight: 950;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: white;
+      text-shadow: 0 0 14px var(--cyan), 0 0 28px rgba(255,61,242,.65);
+    }
+    .logo span { color: var(--cyan); }
+    nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: .9rem;
+    }
+    nav a:hover { color: white; background: var(--panel2); }
+
+    .hero {
+      text-align: center;
+      padding: 58px 0 36px;
+    }
+    .eyebrow {
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: .76rem;
+      font-weight: 800;
+    }
+    h1 {
+      margin: 12px 0;
+      font-size: clamp(2.3rem, 8vw, 5.4rem);
+      line-height: 1.04;
+      font-weight: 1000;
+      letter-spacing: -2px;
+      text-shadow: 0 0 18px rgba(0,245,255,.48), 0 0 42px rgba(155,92,255,.35);
+    }
+    h1 span { color: var(--pink); }
+    .hero p { color: var(--muted); max-width: 620px; margin: 16px auto 22px; line-height: 1.65; }
+    .button {
+      border: 1px solid var(--cyan);
+      background: rgba(0,245,255,.1);
+      color: white;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-weight: 750;
+      transition: transform .15s, background .15s;
+    }
+    .button:hover { background: rgba(0,245,255,.2); transform: translateY(-1px); }
+    .button.primary {
+      color: #050511;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(0,245,255,.25);
+    }
+    .button.pink { border-color: var(--pink); background: rgba(255,61,242,.12); }
+    .button.small { padding: 8px 11px; font-size: .85rem; }
+    .button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .section { padding: 22px 0 42px; }
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    h2 { margin: 0; font-size: clamp(1.35rem, 4vw, 1.9rem); }
+    h2 .accent { color: var(--cyan); }
+    .sub { color: var(--muted); font-size: .9rem; margin-top: 5px; }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 16px;
+    }
+    .game-card {
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 250px;
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(23,23,53,.97), rgba(12,12,30,.97));
+      transition: transform .2s, border-color .2s, box-shadow .2s;
+    }
+    .game-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--cyan);
+      box-shadow: 0 8px 32px rgba(0,245,255,.1);
+    }
+    .game-icon {
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      font-size: 2.3rem;
+      border-radius: 17px;
+      background: rgba(0,245,255,.08);
+      border: 1px solid rgba(0,245,255,.18);
+      margin-bottom: 17px;
+    }
+    .game-card h3 { margin: 0 0 8px; font-size: 1.18rem; }
+    .game-card p { margin: 0 0 18px; color: var(--muted); line-height: 1.5; font-size: .9rem; flex: 1; }
+    .tag {
+      display: inline-block;
+      font-size: .72rem;
+      color: var(--cyan);
+      background: rgba(0,245,255,.08);
+      border-radius: 999px;
+      padding: 4px 8px;
+      margin-bottom: 12px;
+      align-self: flex-start;
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(17,17,40,.9);
+      border-radius: 18px;
+      padding: 20px;
+      min-width: 0;
+    }
+    .panel h3 { margin: 0 0 8px; }
+    .field { display: flex; flex-direction: column; gap: 7px; margin: 14px 0; }
+    label { color: var(--muted); font-size: .86rem; }
+    input, select {
+      width: 100%;
+      min-width: 0;
+      color: white;
+      background: #09091b;
+      border: 1px solid rgba(165,165,199,.25);
+      border-radius: 10px;
+      padding: 11px 12px;
+    }
+    input::placeholder { color: #777795; }
+    .row { display: flex; gap: 9px; align-items: center; }
+    .row > * { min-width: 0; }
+    .row input { flex: 1; }
+
+    .status {
+      color: var(--muted);
+      font-size: .83rem;
+      line-height: 1.5;
+      margin: 10px 0;
+      overflow-wrap: anywhere;
+    }
+    .status.ok { color: var(--green); }
+    .status.error { color: #ff9292; }
+
+    .score-list { margin-top: 15px; }
+    .score-entry {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(165,165,199,.13);
+    }
+    .score-entry:last-child { border-bottom: 0; }
+    .rank { color: var(--cyan); font-weight: 900; width: 28px; }
+    .score-name { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+    .score-game { display: block; color: var(--muted); font-size: .76rem; margin-top: 3px; }
+    .score-value { color: var(--green); font-weight: 850; font-variant-numeric: tabular-nums; }
+
+    .chat-messages {
+      height: 260px;
+      overflow-y: auto;
+      border: 1px solid rgba(165,165,199,.15);
+      border-radius: 12px;
+      background: #09091b;
+      padding: 12px;
+      margin: 14px 0;
+    }
+    .message { padding: 9px 0; border-bottom: 1px solid rgba(165,165,199,.1); overflow-wrap: anywhere; }
+    .message:last-child { border-bottom: 0; }
+    .message-head { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .message-user { color: var(--cyan); font-weight: 800; font-size: .85rem; }
+    .message-time { color: #777795; font-size: .7rem; }
+    .message-text { font-size: .9rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .chat-compose { display: flex; gap: 8px; }
+    .chat-compose input { flex: 1; }
+    .notice { color: var(--muted); font-size: .8rem; line-height: 1.5; }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 26px 0 38px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    /* Vollbild-Spielmodus */
+    .game-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #070711;
+      padding: max(10px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+      overflow-y: auto;
+    }
+    .game-modal.open { display: flex; flex-direction: column; }
+    .modal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 4px 0 12px;
+    }
+    .modal-title { font-weight: 900; font-size: 1.1rem; }
+    .modal-content {
+      width: min(900px, 100%);
+      margin: auto;
+      text-align: center;
+    }
+    .game-canvas {
+      display: block;
+      width: 100%;
+      max-height: 65vh;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      background: #080817;
+      border: 1px solid rgba(0,245,255,.45);
+      border-radius: 14px;
+      touch-action: none;
+    }
+    .game-info { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; margin: 12px 0; }
+    .game-info strong { color: var(--cyan); }
+    .game-actions { display: flex; justify-content: center; gap: 9px; flex-wrap: wrap; margin: 12px 0; }
+    .game-instructions { color: var(--muted); font-size: .85rem; line-height: 1.5; }
+    .tap-pad { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+    .tap-pad button { min-width: 65px; min-height: 44px; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 760px) {
+      .game-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 11px; }
+      .game-card { padding: 14px; min-height: 240px; }
+      .columns { grid-template-columns: 1fr; }
+      .hero { padding-top: 42px; }
+    }
+    @media (max-width: 420px) {
+      .game-grid { grid-template-columns: 1fr; }
+      .game-card { min-height: auto; }
+      .row.wrap-mobile { flex-wrap: wrap; }
+      .row.wrap-mobile > * { flex: 1 1 100%; }
+      nav { gap: 2px; }
+      nav a { padding: 7px; font-size: .82rem; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="logo">NEON <span>ARCADE</span></div>
-  <div class="subtitle">Play together. Bluff together. Win together.</div>
-</header>
-
-<main>
-  <section class="hero">
-    <div>✨ DEINE ARCADE · DEINE REGELN</div>
-    <h1>Ready. Set. <span style="color:var(--cyan)">Play!</span></h1>
-    <p>Neun Spiele für deine Crew – vom geheimen Impostor bis zum großen Werwolf-Finale.</p>
-    <div class="row">
-      <button class="primary" onclick="document.getElementById('library').scrollIntoView({behavior:'smooth'})">Spiele entdecken ↓</button>
-      <button onclick="showStats()">🏆 Meine Punkte</button>
+  <header>
+    <div class="wrap topbar">
+      <a class="logo" href="#home">NEON <span>ARCADE</span></a>
+      <nav aria-label="Hauptnavigation">
+        <a href="#games">Spiele</a>
+        <a href="#leaderboard">Bestenliste</a>
+        <a href="#chat">Chats</a>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <section class="panel">
-    <div class="row">
-      <div><label>Spielername (optional)</label><input id="playerName" placeholder="Dein Name"></div>
-      <div><label>Deine Punkte</label><div class="big" id="score">0 XP</div></div>
-      <div><label>Gespielte Runden</label><div class="big" id="played">0</div></div>
+  <main id="home">
+    <section class="hero wrap">
+      <div class="eyebrow">Insert coin · Enter the neon world</div>
+      <h1>PLAY THE <span>FUTURE</span></h1>
+      <p>Deine Arcade. Deine Punkte. Dein Highscore. Starte ein Spiel, knacke deinen Rekord und miss dich mit anderen Spielern.</p>
+      <a class="button primary" href="#games" style="display:inline-block;text-decoration:none">JETZT SPIELEN ↘</a>
+    </section>
+
+    <section id="games" class="section wrap">
+      <div class="section-heading">
+        <div>
+          <h2>ARCADE <span class="accent">GAMES</span></h2>
+          <div class="sub">Wähle ein Spiel und starte deine nächste Runde.</div>
+        </div>
+      </div>
+
+      <div class="game-grid">
+        <article class="game-card">
+          <div class="game-icon">🐍</div>
+          <span class="tag">ARCADE · KLASSIKER</span>
+          <h3>Neon Snake</h3>
+          <p>Sammle Energie, werde länger und weiche deinem eigenen Schwanz aus. Wie viele Punkte schaffst du?</p>
+          <button class="button primary" onclick="openGame('snake')">Snake spielen</button>
+        </article>
+
+        <article class="game-card">
+          <div class="game-icon">⚡</div>
+          <span class="tag">REFLEXE · ACTION</span>
+          <h3>Neon Dodge</h3>
+          <p>Bewege dich seitwärts und weiche den fallenden Blöcken aus. Je länger du durchhältst, desto mehr Punkte!</p>
+          <button class="button primary" onclick="openGame('dodge')">Dodge spielen</button>
+        </article>
+
+        <article class="game-card">
+          <div class="game-icon">👆</div>
+          <span class="tag">CASUAL · HIGH SCORE</span>
+          <h3>Neon Clicker</h3>
+          <p>Klicke so oft du kannst, bevor die Zeit abläuft. Ein einfacher Wettlauf gegen die Uhr.</p>
+          <button class="button primary" onclick="openGame('clicker')">Clicker spielen</button>
+        </article>
+      </div>
+      <p class="notice" style="margin-top:15px">Hinweis: Diese Datei enthält die oben gezeigten Spiele. Wenn deine bisherige Website andere Spiele enthält, muss deren ursprünglicher Code ergänzt werden, damit sie tatsächlich erhalten bleiben.</p>
+    </section>
+
+    <section id="leaderboard" class="section wrap">
+      <div class="section-heading">
+        <div>
+          <h2>GLOBAL <span class="accent">LEADERBOARD</span></h2>
+          <div class="sub">Punktestände werden vom konfigurierten Online-Dienst geladen.</div>
+        </div>
+        <button class="button small" onclick="loadLeaderboard()">↻ Aktualisieren</button>
+      </div>
+
+      <div class="columns">
+        <div class="panel">
+          <h3>🏆 Top-Spieler</h3>
+          <div class="field">
+            <label for="leaderboardGame">Spiel auswählen</label>
+            <select id="leaderboardGame" onchange="loadLeaderboard()">
+              <option value="all">Alle Spiele</option>
+              <option value="snake">Neon Snake</option>
+              <option value="dodge">Neon Dodge</option>
+              <option value="clicker">Neon Clicker</option>
+            </select>
+          </div>
+          <div id="leaderboardStatus" class="status">Online-Bestenliste wird vorbereitet …</div>
+          <div id="scoreList" class="score-list"></div>
+        </div>
+
+        <div class="panel">
+          <h3>🎮 Dein Spielerprofil</h3>
+          <p class="sub">Wähle einen Anzeigenamen. Nutze keinen echten Namen oder private Informationen.</p>
+          <div class="field">
+            <label for="playerName">Spielername (öffentlich)</label>
+            <input id="playerName" maxlength="20" placeholder="z. B. NeonTiger" autocomplete="nickname">
+          </div>
+          <button class="button" onclick="savePlayerName()">Namen speichern</button>
+          <div id="profileStatus" class="status">Der Anzeigename wird auf diesem Gerät gespeichert.</div>
+          <p class="notice">Wichtig: Ein öffentlicher Anzeigename ist keine sichere Anmeldung. Diese Version verwendet keine Benutzerkonten und kann nicht zuverlässig prüfen, ob ein eingereichter Highscore ehrlich erspielt wurde.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="chat" class="section wrap">
+      <div class="section-heading">
+        <div>
+          <h2>NEON <span class="accent">CHAT</span></h2>
+          <div class="sub">Gemeinschafts-Chat, Spielrunden und private Chat-Räume per Anzeigename.</div>
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="panel">
+          <h3>💬 Chat-Raum</h3>
+          <div class="field">
+            <label for="chatRoom">Raum auswählen</label>
+            <select id="chatRoom" onchange="changeChatRoom()">
+              <option value="lobby">Allgemeiner Chat</option>
+              <option value="round:snake">Neon Snake · Runden-Chat</option>
+              <option value="round:dodge">Neon Dodge · Runden-Chat</option>
+              <option value="round:clicker">Neon Clicker · Runden-Chat</option>
+            </select>
+          </div>
+          <div id="chatStatus" class="status">Online-Chat wird vorbereitet …</div>
+          <div id="chatMessages" class="chat-messages" aria-live="polite">
+            <div class="notice">Nach dem Einrichten des Online-Dienstes erscheinen hier Nachrichten.</div>
+          </div>
+          <form id="chatForm" onsubmit="sendChatMessage(event)">
+            <div class="chat-compose">
+              <input id="chatInput" maxlength="300" placeholder="Nachricht schreiben …" autocomplete="off">
+              <button class="button primary" type="submit">Senden</button>
+            </div>
+          </form>
+          <p class="notice">Bitte keine persönlichen Daten, Telefonnummern, Passwörter oder privaten Kontaktinformationen teilen. Nachrichten können öffentlich sichtbar sein.</p>
+        </div>
+
+        <div class="panel">
+          <h3>✉️ Freundes-Chat</h3>
+          <p class="sub">Öffne einen gemeinsamen Chat-Raum mit einer Person, indem ihr denselben Anzeigenamen des Raums verwendet.</p>
+          <div class="field">
+            <label for="friendRoom">Gemeinsamer Raumname</label>
+            <input id="friendRoom" maxlength="30" placeholder="z. B. team-blue">
+          </div>
+          <button class="button pink" onclick="openFriendRoom()">Raum öffnen</button>
+          <p class="notice">Beide Personen müssen denselben Raum betreten. Das ist ein gemeinsamer Raum und keine verschlüsselte private Direktnachricht. Verwende keine privaten oder sensiblen Namen als Raum-ID.</p>
+          <div class="field">
+            <label for="onlineStatus">Verbindungsstatus</label>
+            <div id="onlineStatus" class="status">Online-Dienst noch nicht eingerichtet.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div>NEON ARCADE · PLAY. COMPETE. REPEAT.</div>
+      <div style="margin-top:7px">Ein Browser-Projekt · optimiert für Handy, Tablet und Desktop</div>
     </div>
-  </section>
+  </footer>
 
-  <h2 id="library">🎮 Alle Spiele</h2>
-  <section class="games" id="games"></section>
-
-  <section class="game" id="game" style="display:none">
-    <div class="row" style="justify-content:space-between">
-      <h2 id="gameTitle">Spiel</h2>
-      <button onclick="closeGame()">✕ Schließen</button>
+  <!-- Vollbild-Spiel -->
+  <div id="gameModal" class="game-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-bar">
+      <div id="modalTitle" class="modal-title">NEON ARCADE</div>
+      <button class="button pink" onclick="closeGame()" aria-label="Spiel schließen">✕ Schließen</button>
     </div>
-    <p id="gameDesc" class="muted"></p>
-    <div class="gamearea" id="area"></div>
-  </section>
-</main>
+    <div class="modal-content">
+      <div class="game-info">
+        <div>Punkte: <strong id="gameScore">0</strong></div>
+        <div id="gameTimerWrap">Zeit: <strong id="gameTimer">—</strong></div>
+        <div id="gameBestWrap">Dein Rekord: <strong id="gameBest">0</strong></div>
+      </div>
+      <canvas id="gameCanvas" class="game-canvas" width="640" height="480" aria-label="Spielfeld"></canvas>
+      <div id="gameMessage" class="game-instructions">Bereit? Starte dein Spiel!</div>
+      <div class="game-actions">
+        <button id="startGameButton" class="button primary" onclick="startGame()">▶ Starten</button>
+        <button class="button" onclick="restartGame()">↻ Neu starten</button>
+      </div>
+      <div id="touchControls" class="tap-pad hidden">
+        <button class="button" onclick="moveSnake('up')">▲</button>
+        <button class="button" onclick="moveSnake('left')">◀</button>
+        <button class="button" onclick="moveSnake('down')">▼</button>
+        <button class="button" onclick="moveSnake('right')">▶</button>
+      </div>
+      <p class="game-instructions">Tipp: Auf dem iPad kannst du die Schaltflächen verwenden. Beim Snake-Spiel funktionieren zusätzlich die Pfeiltasten.</p>
+    </div>
+  </div>
 
-<footer>NEON ARCADE · Lokale Spielesammlung · Keine Online-Verbindung erforderlich</footer>
+  <script>
+    /*
+      ===========================================================
+      SUPABASE EINRICHTEN
+      ===========================================================
+      1. Lege ein Supabase-Projekt an.
+      2. Trage Projekt-URL und öffentlichen anon-Key unten ein.
+      3. Öffne im Supabase-SQL-Editor eine neue Abfrage und führe
+         das SQL aus, das nach diesem Script im HTML-Kommentar steht.
+      4. Veröffentliche danach die geänderte index.html erneut.
 
-<script>
-const games=[
- {id:'impostor',emoji:'🕵️',name:'Impostor',desc:'Geheimes Wort, Bluffen und Abstimmen.',mode:'3–12 Spieler'},
- {id:'werewolf',emoji:'🌕',name:'Werwolf',desc:'Geheime Rollen, Nachtaktionen und Dorfabstimmung.',mode:'5–20 Spieler'},
- {id:'tic',emoji:'❎',name:'Tic-Tac-Toe',desc:'Klassisches Duell für zwei Personen.',mode:'2 Spieler'},
- {id:'quiz',emoji:'⚡',name:'Quiz Battle',desc:'Teste dein Wissen mit Quizfragen.',mode:'Solo'},
- {id:'draw',emoji:'🎨',name:'Zeichnen & Raten',desc:'Zeichne einen Begriff und lass die Crew raten.',mode:'Party'},
- {id:'memory',emoji:'🧠',name:'Memory Clash',desc:'Finde alle Kartenpaare.',mode:'Solo'},
- {id:'rps',emoji:'✊',name:'Schere-Stein-Papier',desc:'Duell gegen den Computer.',mode:'1 vs CPU'},
- {id:'word',emoji:'🔤',name:'Wortduell',desc:'Errate ein geheimes Wort Buchstabe für Buchstabe.',mode:'Solo'},
- {id:'truth',emoji:'🎲',name:'Party Fragen',desc:'Lustige Fragen und harmlose Aufgaben.',mode:'Party'}
-];
+      Verwende niemals einen service_role-Key in einer HTML-Datei.
+      Ein öffentlicher anon-Key ist für den Browser vorgesehen,
+      benötigt aber trotzdem passende RLS-Regeln.
+    */
 
-let xp=Number(localStorage.getItem('neon_xp')||0);
-let rounds=Number(localStorage.getItem('neon_rounds')||0);
-let currentGame='';
-let state={};
-const $=id=>document.getElementById(id);
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-const shuffle=a=>{
- for(let i=a.length-1;i>0;i--){
-  let j=Math.floor(Math.random()*(i+1));
-  [a[i],a[j]]=[a[j],a[i]];
- }
- return a;
-};
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({
- '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[c]));
+    const SUPABASE_URL = "https://DEIN-PROJEKT.supabase.co";
+    const SUPABASE_ANON_KEY = "DEIN-OEFFENTLICHER_ANON_KEY";
 
-function updateStats(){
- $('score').textContent=xp+' XP';
- $('played').textContent=rounds;
- localStorage.setItem('neon_xp',xp);
- localStorage.setItem('neon_rounds',rounds);
-}
-function reward(points=20){
- xp+=points;rounds++;updateStats();
-}
-function showStats(){
- alert('Dein Arcade-Stand\n\n'+xp+' XP\n'+rounds+' gespielte Runden');
-}
-function openGame(id){
- currentGame=id;
- const g=games.find(x=>x.id===id);
- $('game').style.display='block';
- $('gameTitle').textContent=g.emoji+' '+g.name;
- $('gameDesc').textContent=g.desc;
- $('game').scrollIntoView({behavior:'smooth'});
- ({
-  impostor:startImpostor,
-  werewolf:startWerewolf,
-  tic:startTic,
-  quiz:startQuiz,
-  draw:startDraw,
-  memory:startMemory,
-  rps:startRPS,
-  word:startWord,
-  truth:startTruth
- }[id])();
-}
-function closeGame(){$('game').style.display='none'}
-function renderGames(){
- $('games').innerHTML=games.map(g=>`
- <button class="gamecard" onclick="openGame('${g.id}')">
-  <div class="emoji">${g.emoji}</div><h3>${g.name}</h3>
-  <p>${g.desc}</p><small>▶ Spielen · ${g.mode}</small>
- </button>`).join('');
-}
-function screen(html){$('area').innerHTML=html}
-function btn(label,fn,cls='primary'){
- return `<button class="${cls}" onclick="${fn}">${label}</button>`;
-}
+    const SUPABASE_READY =
+      SUPABASE_URL.startsWith("https://") &&
+      !SUPABASE_URL.includes("DEIN-PROJEKT") &&
+      SUPABASE_ANON_KEY.length > 20 &&
+      !SUPABASE_ANON_KEY.includes("DEIN-OEFFENTLICHER");
 
-/* 1. IMPOSTOR */
-function startImpostor(){
- screen(`<div class="notice">Jede Person sieht ihre Karte geheim. Danach folgen Hinweise, Diskussion und Abstimmung. Wird der Impostor enttarnt, darf er das Wort erraten.</div>
- <label>Spielerzahl (3–12)</label><input id="impN" type="number" min="3" max="12" value="6">
- ${btn('Geheime Karten verteilen →','dealImpostor()')}`);
-}
-function dealImpostor(){
- let n=Math.max(3,Math.min(12,+$('impN').value||6));
- state={n,i:0,bad:Math.floor(Math.random()*n),word:pick([
- 'Pizza','Dinosaurier','Schule','Strand','Popcorn','Fahrrad',
- 'Schokolade','Weltraum','Fußball','Kino','Eiscreme','Roboter',
- 'Zahnbürste','Wasserfall','Flughafen','Pinguin'
- ]),shown:false};
- impCard();
-}
-function impCard(){
- screen(`<div class="progress"><div style="width:${state.i/state.n*100}%"></div></div>
- <p>Geheime Karte ${state.i+1} von ${state.n}</p>
- <div class="secret" onclick="revealImp()"><div><div class="big">🔒</div><p>Tippen zum Aufdecken</p></div></div>
- ${btn('Karte gesehen – weiter →','nextImp()','secondary')}`);
- $('area').lastElementChild.disabled=true;
-}
-function revealImp(){
- if(state.shown)return;
- state.shown=true;
- $('area').querySelector('.secret').innerHTML=
- `<div><div class="big">${state.i===state.bad?'🕵️':'🗝️'}</div>
- <div class="big">${state.i===state.bad?'DU BIST DER IMPOSTOR':state.word}</div>
- <p>${state.i===state.bad?'Du kennst das Wort nicht. Bluffe!':'Merke dir das geheime Wort.'}</p></div>`;
- $('area').lastElementChild.disabled=false;
-}
-function nextImp(){
- if(!state.shown)return;
- if(state.i+1<state.n){state.i++;state.shown=false;impCard();return}
- screen(`<div class="big">💬 Hinweisrunde</div>
- <p>Jede Person nennt reihum einen Hinweis. Sagt nicht direkt das Wort! Diskutiert, wer blufft.</p>
- ${btn('Zur Abstimmung →','impVoteScreen()')}`);
-}
-function impVoteScreen(){
- screen(`<h3>Wer ist der Impostor?</h3><div class="grid">${
- Array.from({length:state.n},(_,i)=>`<button onclick="impVote(${i})">👤 Spieler ${i+1}</button>`).join('')
- }</div>`);
-}
-function impVote(i){
- state.caught=i===state.bad;
- screen(`<div class="big">${state.caught?'🎯':'😈'}</div>
- <h3>${state.caught?'Impostor erwischt!':'Falsch abgestimmt!'}</h3>
- <div class="result">Spieler ${i+1} war ${state.caught?'der Impostor':'unschuldig'}.<br>
- Das geheime Wort war <b>${state.word}</b>.</div>
- ${state.caught?`<label>Impostor: Errate das Wort</label><input id="impGuess" placeholder="Dein Tipp">
- ${btn('Tipp prüfen','finishImp()')}`:btn('Ergebnis ansehen','finishImp()')}`);
-}
-function finishImp(){
- let guess=($('impGuess')?.value||'').trim().toLowerCase();
- let crew=state.caught&&guess!==state.word.toLowerCase();
- screen(`<div class="big">${crew?'🏆':'😈'}</div>
- <h2>${crew?'Die Crew gewinnt!':'Der Impostor gewinnt!'}</h2>
- <p>Der Impostor war Spieler ${state.bad+1}. Das Wort war ${state.word}.</p>
- ${btn('Neue Runde ↻',"openGame('impostor')")}`);
- reward(crew?45:20);
-}
+    const $ = (id) => document.getElementById(id);
+    const gameNames = {
+      snake: "Neon Snake",
+      dodge: "Neon Dodge",
+      clicker: "Neon Clicker"
+    };
 
-/* 2. WERWOLF */
-function startWerewolf(){
- screen(`<div class="notice">
- 🐺 Werwölfe versuchen, das Dorf zu übernehmen.<br>
- 🔮 Seherin kann nachts Rollen prüfen.<br>
- 🧙 Hexe kann ein Opfer retten oder jemanden vergiften.<br>
- 🏹 Jäger nimmt beim Ausscheiden eine Person mit.<br>
- 🦹 Dieb tauscht seine Rolle mit einer anderen Person.<br>
- 😉 Blinzel-Mädchen darf heimlich eine Rolle ansehen.<br>
- 💘 Amor wählt zwei Verliebte.
- </div>
- <label>Spielerzahl (5–20)</label><input id="wolfN" type="number" min="5" max="20" value="8">
- ${btn('Rollen verdeckt verteilen →','dealWolf()')}`);
-}
-function dealWolf(){
- let n=Math.max(5,Math.min(20,+$('wolfN').value||8));
- let roles=Array(n).fill('👤 Dorfbewohner');
- let special=[];
- for(let i=0;i<(n>=13?3:2);i++)special.push('🐺 Werwolf');
- special.push('🔮 Seherin');
- if(n>=7)special.push('🧙 Hexe');
- if(n>=8)special.push('🏹 Jäger');
- if(n>=9)special.push('🦹 Dieb');
- if(n>=10)special.push('😉 Blinzel-Mädchen');
- if(n>=11)special.push('💘 Amor');
- special.forEach((r,i)=>roles[i]=r);
- state={n,roles:shuffle(roles),i:0,shown:false,out:[],night:1,dead:null,poison:null,usedPoison:false,usedSave:false};
- wolfCard();
-}
-function wolfCard(){
- screen(`<div class="progress"><div style="width:${state.i/state.n*100}%"></div></div>
- <p>Geheime Rolle · Spieler ${state.i+1} von ${state.n}</p>
- <div class="secret" onclick="revealWolf()"><div><div class="big">🔒</div><p>Nur die Person am Zug schaut!</p></div></div>
- ${btn('Karte verdecken – weiter →','nextWolf()','secondary')}`);
- $('area').lastElementChild.disabled=true;
-}
-function revealWolf(){
- if(state.shown)return;
- state.shown=true;
- $('area').querySelector('.secret').innerHTML=
- `<div><div class="big">${state.roles[state.i].split(' ')[0]}</div>
- <div class="big">${esc(state.roles[state.i].substring(2))}</div>
- <p>Merke dir deine Rolle. Verrate sie nicht leichtfertig.</p></div>`;
- $('area').lastElementChild.disabled=false;
-}
-function nextWolf(){
- if(!state.shown)return;
- if(state.i+1<state.n){state.i++;state.shown=false;wolfCard();return}
- nightIntro();
-}
-function nightIntro(){
- screen(`<div class="big">🌘 Nacht ${state.night}</div>
- <p>Alle schließen die Augen. Die Spielleitung führt die Nachtaktionen nacheinander aus.</p>
- ${btn('Nachtaktionen starten →','nightScreen()')}`);
-}
-function nightScreen(){
- screen(`<h3>Welche Rolle ist dran?</h3><p class="muted">Wählt die Aktion passend zur Rolle. Nicht vorhandene Rollen überspringen.</p>
- <div class="grid">
- ${['🐺 Werwölfe','🔮 Seherin','🧙 Hexe','🦹 Dieb','😉 Blinzel-Mädchen','💘 Amor'].map((r,i)=>`<button onclick="nightRole(${i})">${r}</button>`).join('')}
- </div>${btn('Nacht beenden →','dayIntro()','secondary')}`);
-}
-function alivePlayers(){return Array.from({length:state.n},(_,i)=>i).filter(i=>!state.out.includes(i))}
-function targetScreen(title,callback,exclude=[]){
- let alive=alivePlayers().filter(i=>!exclude.includes(i));
- screen(`<h3>${title}</h3><div class="grid">${
- alive.map(i=>`<button onclick="${callback}(${i})">👤 Spieler ${i+1}</button>`).join('')
- }</div>${btn('Überspringen','nightScreen()','secondary')}`);
-}
-function nightRole(k){
- state.action=k;
- if(k===0)targetScreen('🐺 Werwölfe wählen ein Opfer','nightTarget');
- if(k===1||k===4)targetScreen(k===1?'🔮 Seherin prüft eine Rolle':'😉 Heimlicher Blick','peekRole');
- if(k===2)targetScreen('🧙 Hexe wählt eine Person','witchTarget');
- if(k===3)targetScreen('🦹 Dieb wählt eine Person zum Tauschen','thiefSwap');
- if(k===5)targetScreen('💘 Amor wählt die erste verliebte Person','amorFirst');
-}
-function nightTarget(i){state.dead=i;nightScreen()}
-function peekRole(i){
- screen(`<h3>Geheimer Blick</h3><div class="result">Spieler ${i+1}: <b>${esc(state.roles[i])}</b></div>
- ${btn('Rolle verdecken →','nightScreen()')}`);
-}
-function witchTarget(i){
- screen(`<h3>🧙 Hexe</h3><p>Spieler ${i+1} wurde ausgewählt.</p>
- <div class="grid">
- ${btn('Diese Person vergiften','poisonPlayer('+i+')')}
- ${btn('Opfer retten','saveVictim()','secondary')}
- ${btn('Nichts tun','nightScreen()','secondary')}
- </div>`);
-}
-function poisonPlayer(i){
- if(state.usedPoison){alert('Der Gifttrank wurde schon benutzt.');return nightScreen()}
- state.usedPoison=true;state.poison=i;nightScreen();
-}
-function saveVictim(){
- if(state.usedSave){alert('Der Heiltrank wurde schon benutzt.');return nightScreen()}
- state.usedSave=true;state.dead=null;nightScreen();
-}
-function thiefSwap(i){
- let me=state.roles.findIndex((r,j)=>r.includes('Dieb')&&!state.out.includes(j));
- if(me<0){screen(`<p>Es gibt keinen lebenden Dieb.</p>${btn('Weiter','nightScreen()')}`);return}
- [state.roles[me],state.roles[i]]=[state.roles[i],state.roles[me]];
- screen(`<h3>🦹 Rollentausch</h3><p>Die Rollen von Spieler ${me+1} und Spieler ${i+1} wurden getauscht.</p>
- ${btn('Weiter →','nightScreen()')}`);
-}
-function amorFirst(i){
- state.love1=i;
- targetScreen('💘 Amor wählt die zweite Person','amorSecond',[i]);
-}
-function amorSecond(i){
- state.lovers=[state.love1,i];
- screen(`<h3>💘 Verliebte verbunden</h3><p>Spieler ${state.love1+1} und ${i+1} sind heimlich verbunden.</p>
- ${btn('Weiter →','nightScreen()')}`);
-}
-function dayIntro(){
- let victims=[state.dead,state.poison].filter(i=>i!==null&&i!==undefined);
- victims=[...new Set(victims)];
- victims.forEach(i=>{if(!state.out.includes(i))state.out.push(i)});
- if(state.lovers&&victims.some(i=>state.lovers.includes(i))){
-  state.lovers.forEach(i=>{if(!state.out.includes(i))state.out.push(i)});
- }
- screen(`<div class="big">🌅 Das Dorf erwacht</div>
- <div class="result">${victims.length?'Nachts ausgeschieden: '+victims.map(i=>'Spieler '+(i+1)).join(', '):'Niemand ist nachts ausgeschieden.'}
- </div><p>Diskutiert gemeinsam und stimmt ab.</p>
- ${btn('Zur Abstimmung →','wolfVote()')}`);
-}
-function wolfVote(){
- let alive=alivePlayers();
- if(alive.length<=1)return wolfEnd();
- screen(`<h3>Wen wählt das Dorf raus?</h3><div class="grid">${
- alive.map(i=>`<button onclick="wolfEliminate(${i})">👤 Spieler ${i+1}</button>`).join('')
- }</div>`);
-}
-function wolfEliminate(i){
- if(!state.out.includes(i))state.out.push(i);
- let role=state.roles[i],hunter=role.includes('Jäger');
- if(state.lovers&&state.lovers.includes(i)){
-  state.lovers.forEach(j=>{if(!state.out.includes(j))state.out.push(j)});
- }
- screen(`<div class="big">${role.split(' ')[0]}</div>
- <h3>Spieler ${i+1} ist ausgeschieden</h3>
- <div class="result">Die Rolle war: <b>${esc(role)}</b></div>
- ${hunter?`<p>🏹 Der Jäger nimmt eine Person mit!</p>
- <div class="grid">${alivePlayers().map(j=>`<button onclick="hunterShot(${j})">Spieler ${j+1}</button>`).join('')}</div>`
- :btn('Weiter →','wolfContinue()')}`);
-}
-function hunterShot(i){
- state.out.push(i);
- if(state.lovers&&state.lovers.includes(i))state.lovers.forEach(j=>{if(!state.out.includes(j))state.out.push(j)});
- screen(`<h3>🏹 Der Jäger hat geschossen!</h3>
- <div class="result">Spieler ${i+1} scheidet aus. Rolle: <b>${esc(state.roles[i])}</b></div>
- ${btn('Weiter →','wolfContinue()')}`);
-}
-function wolfContinue(){
- let alive=alivePlayers();
- let wolves=alive.filter(i=>state.roles[i].includes('Werwolf')).length;
- if(wolves===0||wolves>=alive.length-wolves){wolfEnd();return}
- state.night++;state.dead=null;state.poison=null;nightIntro();
-}
-function wolfEnd(){
- let alive=alivePlayers();
- let wolves=alive.filter(i=>state.roles[i].includes('Werwolf')).length;
- let town=wolves===0;
- screen(`<div class="big">${town?'🏆':'🐺'}</div>
- <h2>${town?'Das Dorf gewinnt!':'Die Werwölfe gewinnen!'}</h2>
- <div class="result">Verbliebene Personen: ${alive.length}<br>Werwölfe: ${wolves}</div>
- ${btn('Neue Runde ↻',"openGame('werewolf')")}`);
- reward(town?70:25);
-}
+    let playerName = localStorage.getItem("neonArcadePlayer") || "";
+    let currentRoom = "lobby";
+    let chatRefresh = null;
+    let gameType = "snake";
+    let gameRunning = false;
+    let gameOver = false;
+    let score = 0;
+    let bestScore = 0;
+    let gameLoop = null;
+    let timerLoop = null;
+    let secondsLeft = 15;
+    let lastScoreSent = 0;
+    let snake = [];
+    let food = {x: 10, y: 10};
+    let direction = {x: 1, y: 0};
+    let nextDirection = {x: 1, y: 0};
+    let dodgePlayer = {x: 300, y: 400};
+    let obstacles = [];
+    let dodgeFrame = 0;
+    let clickCount = 0;
+    let lastFrameTime = 0;
 
-/* 3. TIC-TAC-TOE */
-function startTic(){
- state={board:Array(9).fill(''),turn:'X',done:false};
- drawTic();
-}
-function drawTic(){
- let b=state.board;
- screen(`<h3>${state.done?'Runde beendet':'Am Zug: '+(state.turn==='X'?'Spieler 1 ❎':'Spieler 2 ⭕')}</h3>
- <div class="tic">${b.map((v,i)=>`<button ${v||state.done?'disabled':''} onclick="ticMove(${i})">${v}</button>`).join('')}</div>
- <p id="ticMsg" class="muted">Zwei Personen an einem Gerät.</p>
- ${btn('Neu starten ↻',"openGame('tic')",'secondary')}`);
-}
-function ticMove(i){
- if(state.board[i]||state.done)return;
- state.board[i]=state.turn;
- let lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
- let win=lines.some(line=>line.every(j=>state.board[j]===state.turn));
- if(win||state.board.every(Boolean)){
-  state.done=true;drawTic();
-  $('ticMsg').textContent=win?'Spieler '+(state.turn==='X'?'1':'2')+' gewinnt!':'Unentschieden!';
-  if(win)reward(50);else reward(10);
- }else{state.turn=state.turn==='X'?'O':'X';drawTic()}
-}
+    const canvas = $("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-/* 4. QUIZ */
-const questions=[
- {q:'Welcher Planet ist der größte?',a:['Mars','Jupiter','Venus','Merkur'],c:1},
- {q:'Wie viele Seiten hat ein Hexagon?',a:['5','6','7','8'],c:1},
- {q:'Was ist die Hauptstadt von Japan?',a:['Seoul','Peking','Tokio','Bangkok'],c:2},
- {q:'Welche Farbe entsteht aus Blau und Gelb?',a:['Lila','Grün','Orange','Rosa'],c:1},
- {q:'Wie viele Minuten hat eine Stunde?',a:['30','45','60','90'],c:2},
- {q:'Welches Tier ist ein Säugetier?',a:['Hai','Delfin','Forelle','Krabbe'],c:1},
- {q:'Wie heißt unser Stern?',a:['Mond','Sirius','Sonne','Polarstern'],c:2},
- {q:'Wie viele Beine hat eine Spinne?',a:['6','8','10','12'],c:1}
-];
-function startQuiz(){
- state={i:0,score:0,qs:shuffle([...questions]).slice(0,5)};
- showQuestion();
-}
-function showQuestion(){
- let q=state.qs[state.i];
- screen(`<div class="progress"><div style="width:${state.i/state.qs.length*100}%"></div></div>
- <p>Frage ${state.i+1} von ${state.qs.length}</p><h3>${q.q}</h3>
- <div class="grid">${q.a.map((a,i)=>`<button onclick="answerQuiz(${i})">${a}</button>`).join('')}</div>
- <p class="muted">Punkte: ${state.score}</p>`);
-}
-function answerQuiz(i){
- let q=state.qs[state.i],ok=i===q.c;
- if(ok)state.score++;
- screen(`<h3>${ok?'✅ Richtig!':'❌ Nicht ganz'}</h3>
- <div class="result">Die richtige Antwort ist <b>${q.a[q.c]}</b>.</div>
- ${btn(state.i+1<state.qs.length?'Nächste Frage →':'Ergebnis anzeigen →','nextQuestion()')}`);
-}
-function nextQuestion(){
- state.i++;
- if(state.i>=state.qs.length){
-  screen(`<div class="big">⚡ ${state.score}/${state.qs.length}</div>
-  <h2>Quiz beendet!</h2><p>Du hast ${state.score} Fragen richtig beantwortet.</p>
-  ${btn('Nochmal spielen ↻',"openGame('quiz' )")}`);
-  reward(10+state.score*10);return;
- }
- showQuestion();
-}
+    function setStatus(id, text, type = "") {
+      const el = $(id);
+      el.textContent = text;
+      el.className = "status" + (type ? " " + type : "");
+    }
 
-/* 5. ZEICHNEN & RATEN */
-const drawWords=['Katze','Rakete','Pizza','Roboter','Einhorn','Sonne','Dinosaurier','Fahrrad','Krone','Schneemann'];
-function startDraw(){
- state={word:pick(drawWords)};
- screen(`<p>Der Zeichner schaut auf den geheimen Begriff und zeichnet ihn. Die anderen raten!</p>
- <div class="secret"><div><p>GEHEIMBEGRIFF FÜR DEN ZEICHNER</p><div class="big">${state.word}</div></div></div>
- <label>Zeichenfarbe</label><input id="penColor" type="color" value="#222222">
- <label>Stiftgröße</label><input id="penSize" type="range" min="2" max="20" value="5">
- <canvas id="drawCanvas" width="900" height="400"></canvas>
- <div class="row" style="margin-top:12px">
- ${btn('Zeichenfläche leeren','clearCanvas()','secondary')}
- ${btn('Begriff erraten!','drawGuess()')}
- </div>`);
- initCanvas();
-}
-let ctx,painting=false,last=null;
-function initCanvas(){
- let c=$('drawCanvas');ctx=c.getContext('2d');
- ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);
- c.onpointerdown=e=>{painting=true;last=canvasPoint(e,c);c.setPointerCapture(e.pointerId)};
- c.onpointerup=()=>{painting=false;last=null};
- c.onpointermove=e=>{
-  if(!painting)return;
-  let p=canvasPoint(e,c);
-  ctx.strokeStyle=$('penColor').value;ctx.lineWidth=+$('penSize').value;
-  ctx.lineCap='round';ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;
- };
-}
-function canvasPoint(e,c){
- let r=c.getBoundingClientRect();
- return {x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height};
-}
-function clearCanvas(){
- ctx.fillStyle='white';ctx.fillRect(0,0,900,400);
-}
-function drawGuess(){
- screen(`<h3>Was wurde gezeichnet?</h3>
- <p>Zeigt die Zeichnung allen und lasst sie raten.</p>
- <input id="drawAnswer" placeholder="Geratener Begriff">
- ${btn('Antwort prüfen','checkDraw()')}`);
-}
-function checkDraw(){
- let ans=$('drawAnswer').value.trim().toLowerCase();
- let ok=ans===state.word.toLowerCase();
- screen(`<div class="big">${ok?'🎉':'🎨'}</div>
- <h3>${ok?'Richtig geraten!':'Auflösung'}</h3>
- <p>Der Begriff war <b>${state.word}</b>.</p>
- ${btn('Neue Runde ↻',"openGame('draw')")}`);
- reward(ok?35:10);
-}
+    function safeText(value, max = 300) {
+      return String(value ?? "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").trim().slice(0, max);
+    }
 
-/* 6. MEMORY */
-const memIcons=['🌙','⚡','🎮','👾','🍕','🚀','🐸','💎'];
-function startMemory(){
- state={cards:shuffle([...memIcons,...memIcons]),open:[],matched:[],turns:0,locked:false};
- drawMemory();
-}
-function drawMemory(){
- screen(`<p>Finde alle acht Paare. Versuche, möglichst wenige Züge zu machen.</p>
- <div class="memory">${state.cards.map((v,i)=>`
- <button ${state.matched.includes(i)?'disabled':''} onclick="flipMemory(${i})">
- ${state.matched.includes(i)||state.open.includes(i)?v:'✦'}
- </button>`).join('')}</div>
- <p class="muted">Paare: ${state.matched.length/2}/8 · Züge: ${state.turns}</p>
- ${btn('Neu mischen ↻',"openGame('memory')",'secondary')}`);
-}
-function flipMemory(i){
- if(state.locked||state.matched.includes(i)||state.open.includes(i))return;
- state.open.push(i);drawMemory();
- if(state.open.length===2){
-  state.turns++;
-  let [a,b]=state.open;
-  if(state.cards[a]===state.cards[b]){
-   state.matched.push(a,b);state.open=[];drawMemory();
-   if(state.matched.length===state.cards.length){
-    screen(`<div class="big">🧠 Geschafft!</div>
-    <h3>Alle Paare gefunden</h3><p>Du hast ${state.turns} Züge gebraucht.</p>
-    ${btn('Nochmal spielen ↻',"openGame('memory')")}`);
-    reward(40);
-   }
-  }else{
-   state.locked=true;
-   setTimeout(()=>{state.open=[];state.locked=false;drawMemory()},850);
-  }
- }
-}
+    function validName(name) {
+      return /^[\p{L}\p{N}_ -]{2,20}$/u.test(name);
+    }
 
-/* 7. SCHERE-STEIN-PAPIER */
-function startRPS(){
- screen(`<h3>Du gegen den Computer</h3><p>Wer gewinnt die Runde?</p>
- <div class="grid">
- <button onclick="playRPS('Stein')">✊ Stein</button>
- <button onclick="playRPS('Papier')">✋ Papier</button>
- <button onclick="playRPS('Schere')">✌️ Schere</button>
- </div><div id="rpsResult"></div>
- ${btn('Neues Duell ↻',"openGame('rps')",'secondary')}`);
-}
-function playRPS(m){
- let c=pick(['Stein','Papier','Schere']);
- let win=m!==c&&(
-  (m==='Stein'&&c==='Schere')||
-  (m==='Papier'&&c==='Stein')||
-  (m==='Schere'&&c==='Papier')
- );
- let tie=m===c;
- $('rpsResult').innerHTML=`<div class="result">Du: <b>${m}</b><br>Computer: <b>${c}</b><h3>${tie?'Unentschieden':win?'Du gewinnst!':'Computer gewinnt!'}</h3></div>`;
- reward(win?25:10);
-}
+    function savePlayerName() {
+      const value = safeText($("playerName").value, 20);
+      if (!validName(value)) {
+        setStatus("profileStatus", "Bitte einen Anzeigenamen mit 2–20 Buchstaben, Zahlen, Leerzeichen oder _ eingeben.", "error");
+        return;
+      }
+      playerName = value;
+      localStorage.setItem("neonArcadePlayer", playerName);
+      setStatus("profileStatus", "Anzeigename gespeichert: " + playerName, "ok");
+    }
 
-/* 8. WORTDUELL */
-const wordBank=['KOMET','PIXEL','DRACHE','GALAXIE','ROBOTER','KAKTUS','SCHOKO','ARCADE','MOND','PIRAT'];
-function startWord(){
- state={word:pick(wordBank),guessed:[],tries:7,done:false};
- drawWord();
-}
-function drawWord(){
- let masked=[...state.word].map(c=>state.guessed.includes(c)?c:'_').join(' ');
- screen(`<h3>Errate das Wort</h3>
- <p>Du hast ${state.tries} Fehlversuche.</p>
- <div class="big" style="letter-spacing:6px">${masked}</div>
- <div class="grid">${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(c=>
- `<button ${state.guessed.includes(c)||state.done?'disabled':''} onclick="guessLetter('${c}')">${c}</button>`
- ).join('')}</div>
- <p class="muted">Benutzte Buchstaben: ${state.guessed.join(' · ')||'Noch keine'}</p>
- ${btn('Neues Wort ↻',"openGame('word')",'secondary')}`);
-}
-function guessLetter(c){
- if(state.done||state.guessed.includes(c))return;
- state.guessed.push(c);
- if(!state.word.includes(c))state.tries--;
- let won=[...state.word].every(x=>state.guessed.includes(x));
- if(won||state.tries<=0){
-  state.done=true;
-  screen(`<div class="big">${won?'🔤':'💡'}</div>
-  <h3>${won?'Richtig erraten!':'Versuche aufgebraucht'}</h3>
-  <div class="result">Das Wort war <b>${state.word}</b>.</div>
-  ${btn('Weiteres Wort ↻',"openGame('word')")}`);
-  reward(won?35:10);return;
- }
- drawWord();
-}
+    $("playerName").value = playerName;
 
-/* 9. PARTY FRAGEN */
-const partyPrompts=[
- 'Erfinde einen Namen für ein Alien-Café.',
- 'Welche drei Dinge würdest du auf eine einsame Insel mitnehmen?',
- 'Erfinde eine neue, völlig unnötige Superkraft.',
- 'Nenne drei Dinge, die man im Weltraum nicht brauchen kann.',
- 'Zeichne einen Hund, ohne den Stift abzusetzen.',
- 'Erfinde einen Namen für einen Roboter-DJ.',
- 'Was wäre ein besonders seltsamer Name für ein Haustier?',
- 'Erfinde eine neue Sportart mit einem Kissen.',
- 'Beschreibe einen Film nur mit drei Wörtern.',
- 'Nenne drei Dinge, die in einen Drachen-Rucksack gehören.',
- 'Erfinde eine Werbeanzeige für unsichtbare Socken.',
- 'Denke dir eine neue Geschmacksrichtung für Eis aus.'
-];
-function startTruth(){
- state={used:[]};
- nextTruth();
-}
-function nextTruth(){
- let available=partyPrompts.map((x,i)=>i).filter(i=>!state.used.includes(i));
- if(!available.length)state.used=[];
- let i=pick(partyPrompts.map((x,j)=>j).filter(j=>!state.used.includes(j)));
- state.used.push(i);
- screen(`<div class="big">🎲</div><h3>Deine Aufgabe</h3>
- <div class="result" style="font-size:18px">${partyPrompts[i]}</div>
- <p class="muted">Gebt das Gerät weiter oder lest die Aufgabe laut vor.</p>
- ${btn('Nächste Aufgabe →','nextTruth()')}
- <div style="margin-top:12px">${btn('Runde beenden + Punkte','finishTruth()','secondary')}</div>`);
-}
-function finishTruth(){
- reward(15);
- screen(`<div class="big">🎉</div><h3>Gut gespielt!</h3>
- <p>Du hast eine Party-Runde beendet.</p>
- ${btn('Weiter spielen ↻',"openGame('truth')")}`);
-}
+    function currentPlayerName() {
+      if (playerName && validName(playerName)) return playerName;
+      return "Gast";
+    }
 
-renderGames();
-updateStats();
-</script>
+    async function supabaseRequest(table, options = {}) {
+      if (!SUPABASE_READY) throw new Error("Supabase ist noch nicht eingerichtet.");
+      const url = SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/" + table;
+      const response = await fetch(url + (options.query || ""), {
+        method: options.method || "GET",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          ...(options.headers || {})
+        },
+        body: options.body ? JSON.stringify(options.body) : undefined
+      });
+      const text = await response.text();
+      let data = null;
+      try { data = text ? JSON.parse(text) : null; } catch (_) {}
+      if (!response.ok) {
+        const message = data && data.message ? data.message : ("HTTP " + response.status);
+        throw new Error(message);
+      }
+      return data;
+    }
+
+    async function submitScore(game, value) {
+      if (!SUPABASE_READY) return;
+      if (!playerName || !validName(playerName)) return;
+      try {
+        await supabaseRequest("arcade_scores", {
+          method: "POST",
+          query: "?select=id",
+          headers: {"Prefer": "return=minimal"},
+          body: {
+            player_name: playerName,
+            game: game,
+            score: Math.floor(value)
+          }
+        });
+        lastScoreSent = value;
+      } catch (err) {
+        console.warn("Highscore konnte nicht gespeichert werden:", err);
+      }
+    }
+
+    async function loadLeaderboard() {
+      const list = $("scoreList");
+      const game = $("leaderboardGame").value;
+      list.replaceChildren();
+
+      if (!SUPABASE_READY) {
+        setStatus("leaderboardStatus", "Noch offline: Trage zuerst die Supabase-Projekt-URL und den anon-Key im Code ein.");
+        return;
+      }
+
+      setStatus("leaderboardStatus", "Bestenliste wird geladen …");
+      try {
+        const filters = game === "all" ? "" : "&game=eq." + encodeURIComponent(game);
+        const rows = await supabaseRequest("arcade_scores", {
+          query: "?select=player_name,game,score,created_at&order=score.desc&limit=20" + filters
+        });
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+          setStatus("leaderboardStatus", "Noch keine Punkte vorhanden. Starte ein Spiel und setze den ersten Highscore!");
+          return;
+        }
+
+        setStatus("leaderboardStatus", "Online-Bestenliste · " + rows.length + " Einträge geladen.", "ok");
+        rows.forEach((row, index) => {
+          const entry = document.createElement("div");
+          entry.className = "score-entry";
+          const rank = document.createElement("div");
+          rank.className = "rank";
+          rank.textContent = "#" + (index + 1);
+          const nameWrap = document.createElement("div");
+          nameWrap.className = "score-name";
+          nameWrap.textContent = safeText(row.player_name, 20);
+          const sub = document.createElement("span");
+          sub.className = "score-game";
+          sub.textContent = gameNames[row.game] || row.game;
+          nameWrap.appendChild(sub);
+          const points = document.createElement("div");
+          points.className = "score-value";
+          points.textContent = Number(row.score).toLocaleString("de-DE");
+          entry.append(rank, nameWrap, points);
+          list.appendChild(entry);
+        });
+      } catch (err) {
+        setStatus("leaderboardStatus", "Fehler beim Laden: " + err.message + " — prüfe Tabellen und RLS-Regeln.", "error");
+      }
+    }
+
+    function changeChatRoom() {
+      currentRoom = $("chatRoom").value;
+      refreshChat();
+    }
+
+    function openFriendRoom() {
+      const room = safeText($("friendRoom").value, 30).toLowerCase();
+      if (!/^[a-z0-9_-]{3,30}$/.test(room)) {
+        setStatus("chatStatus", "Raumnamen: 3–30 Zeichen, nur a–z, 0–9, _ und -.", "error");
+        return;
+      }
+      currentRoom = "friend:" + room;
+      $("chatRoom").value = "lobby";
+      $("chatMessages").replaceChildren();
+      refreshChat();
+    }
+
+    async function refreshChat() {
+      if (chatRefresh) {
+        clearInterval(chatRefresh);
+        chatRefresh = null;
+      }
+      $("chatMessages").replaceChildren();
+
+      if (!SUPABASE_READY) {
+        setStatus("chatStatus", "Noch offline: Richte Supabase ein, um Nachrichten zwischen Geräten auszutauschen.");
+        setStatus("onlineStatus", "Online-Dienst noch nicht eingerichtet.");
+        const msg = document.createElement("div");
+        msg.className = "notice";
+        msg.textContent = "Nachrichten werden hier angezeigt, sobald der Online-Dienst eingerichtet ist.";
+        $("chatMessages").appendChild(msg);
+        return;
+      }
+
+      setStatus("chatStatus", "Verbinde mit Raum …");
+      setStatus("onlineStatus", "Supabase ist konfiguriert. Verbindung wird geprüft …");
+      await loadMessages();
+      chatRefresh = setInterval(loadMessages, 5000);
+    }
+
+    async function loadMessages() {
+      if (!SUPABASE_READY) return;
+      try {
+        const roomFilter = encodeURIComponent(currentRoom);
+        const rows = await supabaseRequest("arcade_messages", {
+          query: "?select=player_name,message,created_at&room=eq." + roomFilter + "&order=created_at.asc&limit=100"
+        });
+        const box = $("chatMessages");
+        box.replaceChildren();
+
+        if (!rows || rows.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "notice";
+          empty.textContent = "Noch keine Nachrichten in diesem Raum. Sag Hallo!";
+          box.appendChild(empty);
+        } else {
+          rows.forEach((row) => {
+            const message = document.createElement("div");
+            message.className = "message";
+            const head = document.createElement("div");
+            head.className = "message-head";
+            const user = document.createElement("span");
+            user.className = "message-user";
+            user.textContent = safeText(row.player_name, 20);
+            const time = document.createElement("span");
+            time.className = "message-time";
+            const date = new Date(row.created_at);
+            time.textContent = Number.isNaN(date.getTime()) ? "" : date.toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"});
+            const text = document.createElement("div");
+            text.className = "message-text";
+            text.textContent = safeText(row.message, 300);
+            head.append(user, time);
+            message.append(head, text);
+            box.appendChild(message);
+          });
+        }
+        box.scrollTop = box.scrollHeight;
+        setStatus("chatStatus", "Verbunden · Raum: " + currentRoom, "ok");
+        setStatus("onlineStatus", "Online · Nachrichten werden regelmäßig aktualisiert.", "ok");
+      } catch (err) {
+        setStatus("chatStatus", "Chat-Fehler: " + err.message, "error");
+        setStatus("onlineStatus", "Verbindung oder Tabellenregeln prüfen.", "error");
+      }
+    }
+
+    async function sendChatMessage(event) {
+      event.preventDefault();
+      const input = $("chatInput");
+      const message = safeText(input.value, 300);
+      if (!message) return;
+      if (!SUPABASE_READY) {
+        setStatus("chatStatus", "Der Online-Chat funktioniert erst nach der Supabase-Einrichtung.", "error");
+        return;
+      }
+      if (!playerName || !validName(playerName)) {
+        setStatus("chatStatus", "Bitte speichere zuerst einen gültigen Anzeigenamen im Spielerprofil.", "error");
+        return;
+      }
+      if (/https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(message)) {
+        setStatus("chatStatus", "Links und E-Mail-Adressen sind in diesem Chat nicht erlaubt.", "error");
+        return;
+      }
+
+      try {
+        await supabaseRequest("arcade_messages", {
+          method: "POST",
+          query: "?select=id",
+          headers: {"Prefer": "return=minimal"},
+          body: {
+            room: currentRoom,
+            player_name: currentPlayerName(),
+            message
+          }
+        });
+        input.value = "";
+        await loadMessages();
+      } catch (err) {
+        setStatus("chatStatus", "Nachricht konnte nicht gesendet werden: " + err.message, "error");
+      }
+    }
+
+    function openGame(type) {
+      gameType = type;
+      $("gameModal").classList.add("open");
+      document.body.style.overflow = "hidden";
+      $("modalTitle").textContent = gameNames[type] || "Neon Arcade";
+      $("gameTimerWrap").classList.toggle("hidden", type === "snake");
+      $("touchControls").classList.toggle("hidden", type !== "snake");
+      $("gameMessage").textContent = type === "snake"
+        ? "Sammle die leuchtenden Punkte. Pfeiltasten oder Touch-Steuerung."
+        : type === "dodge"
+          ? "Weiche den fallenden Blöcken aus. Nutze links/rechts oder tippe auf das Spielfeld."
+          : "Drücke Start und tippe so oft du kannst, bis die Zeit abläuft.";
+      restartGame();
+    }
+
+    function closeGame() {
+      stopLoops();
+      gameRunning = false;
+      $("gameModal").classList.remove("open");
+      document.body.style.overflow = "";
+      loadLeaderboard();
+    }
+
+    function stopLoops() {
+      if (gameLoop) clearInterval(gameLoop);
+      if (timerLoop) clearInterval(timerLoop);
+      gameLoop = null;
+      timerLoop = null;
+    }
+
+    function restartGame() {
+      stopLoops();
+      gameRunning = false;
+      gameOver = false;
+      score = 0;
+      secondsLeft = 15;
+      clickCount = 0;
+      lastScoreSent = 0;
+      snake = [{x: 8, y: 8}, {x: 7, y: 8}, {x: 6, y: 8}];
+      direction = {x: 1, y: 0};
+      nextDirection = {x: 1, y: 0};
+      food = randomFood();
+      dodgePlayer = {x: 300, y: 400};
+      obstacles = [];
+      dodgeFrame = 0;
+      bestScore = Number(localStorage.getItem("neonBest_" + gameType) || 0);
+      updateGameInfo();
+      $("startGameButton").textContent = "▶ Starten";
+      drawGame();
+    }
+
+    function startGame() {
+      if (gameRunning) return;
+      if (gameOver) restartGame();
+      gameRunning = true;
+      gameOver = false;
+      $("startGameButton").textContent = "⏸ Läuft …";
+      if (gameType === "clicker") {
+        secondsLeft = 15;
+        timerLoop = setInterval(() => {
+          secondsLeft--;
+          updateGameInfo();
+          if (secondsLeft <= 0) endGame();
+        }, 1000);
+        $("gameMessage").textContent = "Los! Tippe schnell auf das Spielfeld.";
+        drawGame();
+      } else if (gameType === "snake") {
+        $("gameMessage").textContent = "Los geht's! Sammle die Energie.";
+        gameLoop = setInterval(tickSnake, 125);
+      } else {
+        $("gameMessage").textContent = "Los geht's! Weiche den Blöcken aus.";
+        lastFrameTime = performance.now();
+        gameLoop = setInterval(tickDodge, 32);
+      }
+    }
+
+    function endGame() {
+      if (gameOver) return;
+      gameRunning = false;
+      gameOver = true;
+      stopLoops();
+      bestScore = Math.max(bestScore, score);
+      localStorage.setItem("neonBest_" + gameType, String(bestScore));
+      $("startGameButton").textContent = "▶ Nochmal spielen";
+      $("gameMessage").textContent = "Runde beendet! Du hast " + score.toLocaleString("de-DE") + " Punkte erreicht.";
+      updateGameInfo();
+      if (score > 0 && score > lastScoreSent) submitScore(gameType, score);
+    }
+
+    function updateGameInfo() {
+      $("gameScore").textContent = score.toLocaleString("de-DE");
+      $("gameBest").textContent = Math.max(bestScore, score).toLocaleString("de-DE");
+      $("gameTimer").textContent = gameType === "clicker" ? secondsLeft + " s" : "—";
+    }
+
+    function randomFood() {
+      return {x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 15)};
+    }
+
+    function tickSnake() {
+      if (!gameRunning) return;
+      direction = nextDirection;
+      const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
+      if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 15 ||
+          snake.some((part, index) => index > 0 && part.x === head.x && part.y === head.y)) {
+        endGame();
+        return;
+      }
+      snake.unshift(head);
+      if (head.x === food.x && head.y === food.y) {
+        score += 10;
+        food = randomFood();
+      } else {
+        snake.pop();
+      }
+      updateGameInfo();
+      drawGame();
+    }
+
+    function moveSnake(dir) {
+      const dirs = {
+        up: {x:0,y:-1}, down: {x:0,y:1},
+        left: {x:-1,y:0}, right: {x:1,y:0}
+      };
+      const d = dirs[dir];
+      if (!d) return;
+      if (d.x === -direction.x && d.y === -direction.y) return;
+      nextDirection = d;
+      if (!gameRunning && gameType === "snake" && !gameOver) startGame();
+    }
+
+    function tickDodge() {
+      if (!gameRunning) return;
+      dodgeFrame++;
+      const speed = 3 + Math.min(5, score / 80);
+      if (dodgeFrame % 22 === 0) {
+        obstacles.push({
+          x: Math.random() * (canvas.width - 36),
+          y: -35,
+          w: 22 + Math.random() * 20,
+          h: 22 + Math.random() * 18
+        });
+      }
+      obstacles.forEach(o => o.y += speed);
+      obstacles = obstacles.filter(o => o.y < canvas.height + 40);
+      score += 1;
+      const p = {x: dodgePlayer.x, y: dodgePlayer.y, w: 36, h: 28};
+      if (obstacles.some(o => p.x < o.x + o.w && p.x + p.w > o.x && p.y < o.y + o.h && p.y + p.h > o.y)) {
+        endGame();
+        return;
+      }
+      updateGameInfo();
+      drawGame();
+    }
+
+    function drawBackground() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#080817";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(0,245,255,.08)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 32) {
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 32) {
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
+      }
+    }
+
+    function drawGame() {
+      drawBackground();
+      if (gameType === "snake") {
+        const cellW = canvas.width / 20;
+        const cellH = canvas.height / 15;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#ff3df2";
+        ctx.fillStyle = "#ff3df2";
+        ctx.fillRect(food.x * cellW + 4, food.y * cellH + 4, cellW - 8, cellH - 8);
+        snake.forEach((part, i) => {
+          ctx.shadowColor = "#00f5ff";
+          ctx.shadowBlur = 12;
+          ctx.fillStyle = i === 0 ? "#ffffff" : "#00dce8";
+          ctx.fillRect(part.x * cellW + 2, part.y * cellH + 2, cellW - 4, cellH - 4);
+        });
+        ctx.shadowBlur = 0;
+      } else if (gameType === "dodge") {
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = "#00f5ff";
+        ctx.fillStyle = "#00f5ff";
+        ctx.fillRect(dodgePlayer.x, dodgePlayer.y, 36, 28);
+        ctx.shadowColor = "#ff3df2";
+        ctx.fillStyle = "#ff3df2";
+        obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
+        ctx.shadowBlur = 0;
+      } else if (gameType === "clicker") {
+        ctx.textAlign = "center";
+        ctx.shadowColor = "#00f5ff";
+        ctx.shadowBlur = 20;
+        ctx.fillStyle = "#00f5ff";
+        ctx.font = "bold 52px system-ui";
+        ctx.fillText("TAP!", canvas.width / 2, canvas.height / 2 - 10);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#f4f4ff";
+        ctx.font = "24px system-ui";
+        ctx.fillText(String(clickCount) + " clicks", canvas.width / 2, canvas.height / 2 + 42);
+        ctx.textAlign = "start";
+      }
+
+      if (!gameRunning && !gameOver) {
+        ctx.fillStyle = "rgba(5,5,18,.58)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 30px system-ui";
+        ctx.fillText("READY PLAYER ONE", canvas.width / 2, canvas.height / 2);
+        ctx.textAlign = "start";
+      } else if (gameOver) {
+        ctx.fillStyle = "rgba(5,5,18,.64)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#ff3df2";
+        ctx.font = "bold 38px system-ui";
+        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 10);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "20px system-ui";
+        ctx.fillText("Punkte: " + score, canvas.width / 2, canvas.height / 2 + 30);
+        ctx.textAlign = "start";
+      }
+    }
+
+    function canvasPoint(event) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left) * canvas.width / rect.width,
+        y: (event.clientY - rect.top) * canvas.height / rect.height
+      };
+    }
+
+    canvas.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      const p = canvasPoint(event);
+      if (gameType === "clicker") {
+        if (!gameRunning && !gameOver) startGame();
+        if (gameRunning) {
+          clickCount++;
+          score = clickCount;
+          updateGameInfo();
+          drawGame();
+        }
+      } else if (gameType === "dodge") {
+        if (!gameRunning && !gameOver) startGame();
+        if (gameRunning) dodgePlayer.x = Math.max(0, Math.min(canvas.width - 36, p.x - 18));
+        drawGame();
+      } else if (gameType === "snake") {
+        if (!gameRunning && !gameOver) startGame();
+        const dx = p.x - (snake[0].x + .5) * canvas.width / 20;
+        const dy = p.y - (snake[0].y + .5) * canvas.height / 15;
+        if (Math.abs(dx) > Math.abs(dy)) moveSnake(dx > 0 ? "right" : "left");
+        else moveSnake(dy > 0 ? "down" : "up");
+      }
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+      if (gameType !== "dodge" || !gameRunning || event.buttons === 0) return;
+      const p = canvasPoint(event);
+      dodgePlayer.x = Math.max(0, Math.min(canvas.width - 36, p.x - 18));
+      drawGame();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (!$("gameModal").classList.contains("open")) return;
+      const keys = {
+        ArrowUp: "up", w: "up", W: "up",
+        ArrowDown: "down", s: "down", S: "down",
+        ArrowLeft: "left", a: "left", A: "left",
+        ArrowRight: "right", d: "right", D: "right"
+      };
+      if (keys[event.key] && gameType === "snake") {
+        event.preventDefault();
+        moveSnake(keys[event.key]);
+      }
+      if (event.key === "Escape") closeGame();
+      if (gameType === "dodge" && gameRunning) {
+        if (event.key === "ArrowLeft" || event.key === "a") dodgePlayer.x = Math.max(0, dodgePlayer.x - 24);
+        if (event.key === "ArrowRight" || event.key === "d") dodgePlayer.x = Math.min(canvas.width - 36, dodgePlayer.x + 24);
+        drawGame();
+      }
+      if (gameType === "clicker" && gameRunning && (event.key === " " || event.key === "Enter")) {
+        event.preventDefault();
+        clickCount++;
+        score = clickCount;
+        updateGameInfo();
+        drawGame();
+      }
+    });
+
+    // Canvas an Bildschirm anpassen, ohne das Seitenverhältnis zu verzerren.
+    window.addEventListener("resize", () => {
+      if ($("gameModal").classList.contains("open")) drawGame();
+    });
+
+    if (SUPABASE_READY) {
+      setStatus("onlineStatus", "Supabase ist konfiguriert.", "ok");
+      loadLeaderboard();
+      refreshChat();
+    } else {
+      setStatus("leaderboardStatus", "Online-Bestenliste wartet auf Supabase-Konfiguration.");
+      setStatus("chatStatus", "Online-Chat wartet auf Supabase-Konfiguration.");
+      setStatus("onlineStatus", "Noch nicht verbunden.");
+      const list = $("scoreList");
+      const empty = document.createElement("div");
+      empty.className = "notice";
+      empty.textContent = "Es werden keine erfundenen Spieler angezeigt. Hier erscheinen echte Einträge, sobald die Datenbank verbunden ist.";
+      list.appendChild(empty);
+    }
+  </script>
+
+  <!--
+  ===============================================================
+  SUPABASE SQL – EINMALIG IM SUPABASE SQL EDITOR AUSFÜHREN
+  ===============================================================
+
+  create table if not exists public.arcade_scores (
+    id bigint generated by default as identity primary key,
+    player_name text not null check (char_length(player_name) between 2 and 20),
+    game text not null check (game in ('snake', 'dodge', 'clicker')),
+    score integer not null check (score >= 0 and score <= 100000000),
+    created_at timestamptz not null default now()
+  );
+
+  create index if not exists arcade_scores_game_score_idx
+    on public.arcade_scores (game, score desc);
+
+  create table if not exists public.arcade_messages (
+    id bigint generated by default as identity primary key,
+    room text not null check (char_length(room) between 1 and 40),
+    player_name text not null check (char_length(player_name) between 2 and 20),
+    message text not null check (char_length(message) between 1 and 300),
+    created_at timestamptz not null default now()
+  );
+
+  create index if not exists arcade_messages_room_created_idx
+    on public.arcade_messages (room, created_at asc);
+
+  alter table public.arcade_scores enable row level security;
+  alter table public.arcade_messages enable row level security;
+
+  create policy "Scores are readable by visitors"
+    on public.arcade_scores for select
+    to anon, authenticated using (true);
+
+  create policy "Visitors can submit scores"
+    on public.arcade_scores for insert
+    to anon, authenticated with check (
+      char_length(player_name) between 2 and 20
+      and game in ('snake', 'dodge', 'clicker')
+      and score between 0 and 100000000
+    );
+
+  create policy "Chat messages are readable by visitors"
+    on public.arcade_messages for select
+    to anon, authenticated using (true);
+
+  create policy "Visitors can send chat messages"
+    on public.arcade_messages for insert
+    to anon, authenticated with check (
+      char_length(room) between 1 and 40
+      and char_length(player_name) between 2 and 20
+      and char_length(message) between 1 and 300
+    );
+
+  WICHTIG:
+  Diese einfachen Regeln sind nur ein Startpunkt für ein kleines
+  öffentliches Demo-Projekt. Sie erlauben öffentliche Einträge und
+  Nachrichten; sie bieten weder sichere Konten noch zuverlässigen
+  Spam-Schutz, Moderation oder Schutz vor gefälschten Highscores.
+  Für eine öffentliche Website sollte der Dienst um Rate-Limits,
+  Moderation und eine serverseitige Prüfung der Punktestände ergänzt
+  werden. Veröffentliche niemals geheime Admin- oder service_role-Keys.
+  -->
 </body>
 </html>
