@@ -3,698 +3,540 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Neon Arcade</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#090b18;--panel:#131832;--panel2:#1b2242;--purple:#8b6cff;--cyan:#31d8f3;--pink:#ff5ac8;--green:#56e6ad;--text:#f5f6ff;--muted:#a5afd1}
+:root{--bg:#080b18;--panel:#11172b;--line:#273254;--cyan:#4dfcff;--pink:#ff4fd8;--purple:#9271ff;--text:#f5f7ff;--muted:#a7b0ce}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at top,#20204b,var(--bg) 60%);color:var(--text);font-family:system-ui,sans-serif;min-height:100vh}
-button,input,select{font:inherit}
-button{cursor:pointer;color:white;border:1px solid #394267;border-radius:12px;padding:11px 15px;background:var(--panel2);font-weight:750;touch-action:manipulation}
-button:hover{border-color:var(--cyan)}
-button:disabled{opacity:.45;cursor:default}
-.primary{background:linear-gradient(110deg,var(--purple),#398af6);border:0}
-.secondary{background:#171c35}
-header{text-align:center;padding:28px 16px 12px}
-.logo{font-size:clamp(28px,5vw,45px);font-weight:1000;letter-spacing:-2px}
-.logo span{color:var(--cyan);text-shadow:0 0 22px #31d8f377}
-.subtitle{color:var(--muted);font-size:13px}
-main{max-width:1100px;margin:auto;padding:16px}
-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0 25px}
-input,select{background:#090e21;color:white;border:1px solid #394267;border-radius:10px;padding:12px;width:100%;margin:6px 0 12px}
-label{font-size:12px;color:var(--muted)}
-h1,h2,h3{letter-spacing:-.5px}
-.hero,.panel,.game{background:linear-gradient(145deg,#171c3a,#0f1328);border:1px solid #30385e;border-radius:20px;padding:22px;margin-bottom:16px}
-.hero{text-align:center;padding:35px 20px;background:radial-gradient(ellipse at top,#7557ff30,transparent 70%),linear-gradient(145deg,#171c3a,#0f1328)}
-.hero h1{font-size:clamp(27px,5vw,43px);margin:8px}
-.hero p,.muted{color:var(--muted);line-height:1.6;font-size:13px}
-.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
-.gamecard{background:linear-gradient(145deg,#1b2243,#10152b);border:1px solid #30385e;border-radius:16px;padding:18px;text-align:left;min-height:160px}
-.gamecard .emoji{font-size:36px}
-.gamecard h3{margin:12px 0 5px}
-.gamecard p{font-size:12px;color:var(--muted);line-height:1.5}
-.gamecard small{color:var(--cyan)}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
-.row>*{flex:1;min-width:0}
-.big{font-size:clamp(25px,5vw,39px);font-weight:950;overflow-wrap:anywhere}
-.secret{min-height:155px;display:grid;place-items:center;margin:18px 0;padding:22px;border:1px solid #6558a9;border-radius:18px;background:radial-gradient(ellipse at top,#8b6cff35,transparent 70%),#111731;user-select:none}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0}
-.grid button{min-height:48px}
-.progress{height:7px;background:#252b4b;border-radius:10px;overflow:hidden;margin:12px 0}
-.progress div{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan))}
-.notice{background:#10162d;border:1px solid #30385e;padding:13px;border-radius:12px;text-align:left;color:var(--muted);font-size:12px;line-height:1.7}
-.result{padding:16px;background:#10162d;border:1px solid #394267;border-radius:12px;margin:14px 0;line-height:1.7}
-.tic{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:330px;margin:18px auto}
-.tic button{aspect-ratio:1;font-size:35px;font-weight:900;background:#1a2140}
-.memory{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:400px;margin:18px auto}
-.memory button{aspect-ratio:1;font-size:25px;padding:3px}
-canvas{display:block;width:100%;background:#080d22;border-radius:12px;touch-action:none}
-footer{text-align:center;color:#697398;font-size:11px;padding:20px}
+body{margin:0;background:radial-gradient(ellipse at top,#1c2046 0%,var(--bg) 65%);color:var(--text);font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer;border:1px solid #35446e;border-radius:12px;background:#19213b;color:white;padding:11px 15px;transition:.18s}
+button:hover{border-color:var(--cyan);box-shadow:0 0 14px #4dfcff35;transform:translateY(-1px)}
+button.primary{background:linear-gradient(100deg,#5446e8,#b52fd0);border:0;font-weight:800}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#090e20;color:white;margin:6px 0 12px;outline:none}
+input:focus{border-color:var(--cyan)}
+header{padding:20px 5%;display:flex;justify-content:space-between;align-items:center;gap:14px;border-bottom:1px solid #263050;background:#090d1dcc;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
+.logo{font-size:23px;font-weight:1000;letter-spacing:1px;color:var(--cyan);text-shadow:0 0 18px #4dfcff66}
+.logo span{color:var(--pink)}
+.wrap{max-width:1150px;margin:auto;padding:24px 18px 65px}
+.hero{padding:35px 0 25px}
+.eyebrow{color:var(--cyan);letter-spacing:3px;font-size:12px;font-weight:900}
+h1{font-size:clamp(34px,7vw,65px);line-height:1.05;margin:12px 0}
+h1 em{font-style:normal;color:var(--pink);text-shadow:0 0 22px #ff4fd844}
+.muted{color:var(--muted)}
+.panel{background:#11172bdd;border:1px solid var(--line);border-radius:18px;padding:20px;margin:15px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.game-card{background:linear-gradient(145deg,#171e39,#0d1225);border:1px solid #29365b;border-radius:17px;padding:19px;min-height:185px;display:flex;flex-direction:column;gap:9px}
+.game-card .emoji{font-size:34px}
+.game-card h3{margin:0;font-size:19px}
+.game-card p{margin:0;color:var(--muted);font-size:13px;flex:1}
+.game-card button{width:100%}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:28px 0 15px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{padding:13px;background:#0b1022;border:1px solid #273253;border-radius:12px}
+.stat strong{display:block;font-size:22px;color:var(--cyan)}
+.stat small{color:var(--muted)}
+#auth{max-width:460px;margin:25px auto}
+#app{display:none}
+#account{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+#account button{padding:8px 10px;font-size:13px}
 #game{display:none}
 #game.fullscreen{display:block;position:fixed;inset:0;z-index:1000;margin:0;border:0;border-radius:0;overflow:auto;background:radial-gradient(ellipse at top,#20204b,#090b18 75%);padding:14px;padding-top:calc(14px + env(safe-area-inset-top));padding-bottom:calc(20px + env(safe-area-inset-bottom))}
-.gamehead{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;background:#0d1125ed;z-index:4;padding:5px 0 10px}
-.gamehead h2{margin:5px 0;font-size:20px}
-#area{max-width:760px;margin:0 auto;padding-bottom:25px}
-#stars{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent}
-.arcade-canvas{max-width:650px;margin:12px auto;border:1px solid #394267}
-.dpad{display:grid;grid-template-columns:repeat(3,60px);gap:6px;justify-content:center;margin:12px auto}
-.dpad button{height:48px;padding:4px}
-@media(max-width:520px){main{padding:12px}.hero,.panel,.game{padding:16px}.grid{grid-template-columns:1fr 1fr}.secret{min-height:135px}.games{grid-template-columns:repeat(2,minmax(0,1fr))}.gamecard{padding:12px;min-height:150px}.gamecard .emoji{font-size:30px}.gamecard h3{font-size:15px}}
+.game-top{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:850px;margin:0 auto 20px}
+.game-content{max-width:850px;margin:auto;text-align:center}
+.game-content h2{font-size:clamp(25px,5vw,38px)}
+.game-content button{margin:4px}
+.big{font-size:clamp(45px,12vw,85px);margin:15px}
+.result{min-height:28px;color:var(--cyan);font-weight:700;margin:15px 0}
+.choices{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
+.choices button{min-width:90px}
+.board{display:grid;grid-template-columns:repeat(3,minmax(70px,110px));gap:8px;justify-content:center}
+.cell{height:95px;font-size:38px;background:#151c35;border:1px solid #36436b}
+.memory-grid{display:grid;grid-template-columns:repeat(4,minmax(50px,85px));gap:8px;justify-content:center}
+.mem{height:75px;font-size:29px;padding:4px}
+#drawCanvas{background:white;border-radius:12px;width:100%;max-width:480px;touch-action:none;display:block;margin:15px auto}
+.word{font-size:clamp(24px,7vw,45px);letter-spacing:6px}
+footer{text-align:center;color:#6f7898;padding:30px;font-size:12px}
+.hidden{display:none!important}
+.pill{font-size:12px;color:var(--cyan);border:1px solid #31566b;padding:5px 9px;border-radius:20px}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+@media(max-width:560px){header{padding:14px}.logo{font-size:19px}.wrap{padding:16px 12px}.panel{padding:15px}.stats{gap:6px}.stat{padding:10px}}
 </style>
 </head>
 <body>
-<canvas id="stars"></canvas>
 <header>
- <div class="logo">NEON <span>ARCADE</span></div>
- <div class="subtitle">Play together. Bluff together. Win together.</div>
+  <div class="logo">NEON <span>ARCADE</span></div>
+  <div id="account"><span class="muted">Gastmodus</span></div>
 </header>
-<main>
- <section class="hero">
-  <div>✨ DEINE ARCADE · DEINE REGELN</div>
-  <h1>Ready. Set. <span style="color:var(--cyan)">Play!</span></h1>
-  <p>Partyspiele, Rätsel, Action und geheime Rollen für deine Crew.</p>
-  <div class="row">
-   <button class="primary" onclick="document.getElementById('library').scrollIntoView({behavior:'smooth'})">Spiele entdecken ↓</button>
-   <button onclick="showStats()">🏆 Meine Punkte</button>
-  </div>
- </section>
- <section class="panel">
-  <div class="row">
-   <div><label>Spielername (optional)</label><input id="playerName" placeholder="Dein Name"></div>
-   <div><label>Deine Punkte</label><div class="big" id="score">0 XP</div></div>
-   <div><label>Gespielte Runden</label><div class="big" id="played">0</div></div>
-  </div>
- </section>
- <h2 id="library">🎮 Alle Spiele</h2>
- <section class="games" id="games"></section>
+
+<main class="wrap">
+  <section id="auth" class="panel">
+    <div class="eyebrow">PLAYER LOGIN</div>
+    <h2>Dein nächstes Abenteuer.</h2>
+    <p class="muted">Melde dich an oder spiele direkt im Gastmodus.</p>
+    <label for="username">Spielername (bei Registrierung)</label>
+    <input id="username" maxlength="20" placeholder="NeonPlayer">
+    <label for="email">E-Mail</label>
+    <input id="email" type="email" autocomplete="email" placeholder="du@example.com">
+    <label for="password">Passwort</label>
+    <input id="password" type="password" autocomplete="current-password" placeholder="Mindestens 6 Zeichen">
+    <div class="choices">
+      <button class="primary" onclick="register()">Registrieren</button>
+      <button onclick="login()">Anmelden</button>
+      <button onclick="guest()">Gast spielen</button>
+    </div>
+    <div id="authMsg" class="result" aria-live="polite"></div>
+    <p class="muted" style="font-size:12px">Für die Registrierung muss die E-Mail-Bestätigung in den Supabase-Einstellungen deaktiviert sein, wenn du dich sofort anmelden möchtest.</p>
+  </section>
+
+  <section id="app">
+    <div class="hero">
+      <div class="eyebrow">YOUR GAME. YOUR RULES.</div>
+      <h1>ENTER THE <em>ARCADE.</em></h1>
+      <p class="muted">Elf Spiele. Unendlich viele Runden. Wie weit kommst du?</p>
+      <div class="choices" style="justify-content:flex-start">
+        <button class="primary" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">Spiele entdecken ↓</button>
+        <span class="pill" id="playerPill">PLAYER</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-title" style="margin-top:0"><h2>Deine Stats</h2><button onclick="resetStats()">Stats zurücksetzen</button></div>
+      <div class="stats">
+        <div class="stat"><strong id="xp">0</strong><small>XP gesammelt</small></div>
+        <div class="stat"><strong id="rounds">0</strong><small>Runden gespielt</small></div>
+        <div class="stat"><strong id="best">0</strong><small>Beste Snake-Punktzahl</small></div>
+      </div>
+    </div>
+
+    <div class="section-title" id="games"><h2>🎮 Alle Minispiele</h2><span class="pill">11 GAMES</span></div>
+    <div class="grid" id="gameGrid"></div>
+  </section>
 </main>
-<section class="game fullscreen" id="game">
- <div class="gamehead">
-  <h2 id="gameTitle">Spiel</h2>
-  <button onclick="closeGame()" aria-label="Spiel schließen">✕ Schließen</button>
- </div>
- <p id="gameDesc" class="muted"></p>
- <div id="area" class="gamearea"></div>
+
+<section id="game">
+  <div class="game-top">
+    <button onclick="closeGame()">← Zurück</button>
+    <strong id="gameTitle">Spiel</strong>
+    <span class="pill" id="gameXP">+10 XP</span>
+  </div>
+  <div id="gameContent" class="game-content"></div>
 </section>
-<footer>NEON ARCADE · Lokale Spielesammlung</footer>
+
+<footer>NEON ARCADE · Made for fun ✦</footer>
+
 <script>
+/* SUPABASE KONFIGURATION */
+const SUPABASE_URL = "https://qznkudfhmegfriwqdvmj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_CPz52i2XcyThttYOrLkMAw_Pd3PYRmB";
+let db = null;
+try {
+  if (window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch(e) { console.warn("Supabase konnte nicht initialisiert werden.",e); }
+
+let user = null;
+let username = "Gast";
+let currentGame = "";
+let gameCleanup = null;
+let stats = loadStats();
+const $ = id => document.getElementById(id);
+const safe = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function loadStats(){
+  try { return JSON.parse(localStorage.getItem("neon_stats_v1")) || {xp:0,rounds:0,best:0}; }
+  catch { return {xp:0,rounds:0,best:0}; }
+}
+function saveStats(){ localStorage.setItem("neon_stats_v1",JSON.stringify(stats)); updateStats(); }
+function updateStats(){
+  $("xp").textContent=stats.xp;
+  $("rounds").textContent=stats.rounds;
+  $("best").textContent=stats.best;
+}
+function award(points=10){
+  stats.xp+=points; stats.rounds++; saveStats();
+  $("gameXP").textContent="+"+points+" XP";
+}
+function guest(){
+  user=null; username=$("username").value.trim()||"Gast";
+  enterApp();
+}
+function enterApp(){
+  $("auth").style.display="none"; $("app").style.display="block";
+  $("playerPill").textContent=username.toUpperCase();
+  renderAccount(); updateStats();
+}
+function renderAccount(){
+  $("account").innerHTML=`<span class="muted">${safe(username)}</span>`+
+    (user?'<button onclick="logout()">Abmelden</button>':'<button onclick="showAuth()">Login</button>');
+}
+function showAuth(){ $("auth").style.display="block"; $("app").style.display="none"; }
+async function register(){
+  if(!db){ $("authMsg").textContent="Supabase ist nicht erreichbar."; return; }
+  const name=$("username").value.trim(),email=$("email").value.trim(),password=$("password").value;
+  if(name.length<2){$("authMsg").textContent="Dein Spielername braucht mindestens 2 Zeichen.";return;}
+  if(!email||password.length<6){$("authMsg").textContent="Bitte E-Mail und Passwort (mindestens 6 Zeichen) eingeben.";return;}
+  $("authMsg").textContent="Registrierung läuft …";
+  try{
+    const {data,error}=await db.auth.signUp({email,password,options:{data:{username:name}}});
+    if(error) throw error;
+    if(data.session){
+      user=data.user;username=name;
+      $("authMsg").textContent="Registrierung erfolgreich!";
+      enterApp();
+    }else{
+      $("authMsg").textContent="Konto erstellt. Falls du sofort starten möchtest, deaktiviere in Supabase unter Authentication → Sign In / Providers → Email die Option Confirm email und registriere dich erneut.";
+    }
+  }catch(e){$("authMsg").textContent=e.message||"Registrierung fehlgeschlagen.";}
+}
+async function login(){
+  if(!db){$("authMsg").textContent="Supabase ist nicht erreichbar.";return;}
+  const email=$("email").value.trim(),password=$("password").value;
+  if(!email||!password){$("authMsg").textContent="Bitte E-Mail und Passwort eingeben.";return;}
+  $("authMsg").textContent="Anmeldung läuft …";
+  try{
+    const {data,error}=await db.auth.signInWithPassword({email,password});
+    if(error) throw error;
+    user=data.user;
+    username=user.user_metadata?.username||user.email?.split("@")[0]||"Player";
+    $("authMsg").textContent="";
+    enterApp();
+  }catch(e){$("authMsg").textContent=e.message||"Login fehlgeschlagen.";}
+}
+async function logout(){
+  if(db) await db.auth.signOut().catch(()=>{});
+  user=null;username="Gast";showAuth();renderAccount();
+}
+function resetStats(){
+  if(confirm("Möchtest du deine lokalen Spielstatistiken wirklich zurücksetzen?")){
+    stats={xp:0,rounds:0,best:0};saveStats();
+  }
+}
 const games=[
-{id:'impostor',emoji:'🕵️',name:'Impostor',desc:'Geheimes Wort, Bluffen und Abstimmen.',mode:'3–12 Spieler'},
-{id:'werewolf',emoji:'🌕',name:'Werwolf',desc:'Geheime Rollen, Nachtaktionen und Dorfabstimmung.',mode:'5–20 Spieler'},
-{id:'tic',emoji:'❎',name:'Tic-Tac-Toe',desc:'Klassisches Duell für zwei Personen.',mode:'2 Spieler'},
-{id:'quiz',emoji:'⚡',name:'Quiz Battle',desc:'Teste dein Wissen mit Quizfragen.',mode:'Solo'},
-{id:'draw',emoji:'🎨',name:'Zeichnen & Raten',desc:'Zeichne einen Begriff und lass die Crew raten.',mode:'Party'},
-{id:'memory',emoji:'🧠',name:'Memory Clash',desc:'Finde alle Kartenpaare.',mode:'Solo'},
-{id:'rps',emoji:'✊',name:'Schere-Stein-Papier',desc:'Duell gegen den Computer.',mode:'1 vs CPU'},
-{id:'word',emoji:'🔤',name:'Wortraten',desc:'Errate ein geheimes Wort Buchstabe für Buchstabe.',mode:'Solo'},
-{id:'truth',emoji:'🎲',name:'Party Fragen',desc:'Lustige Fragen und harmlose Aufgaben.',mode:'Party'},
-{id:'snake',emoji:'🐍',name:'Snake',desc:'Sammle Sterne und werde immer länger. Wischen funktioniert auf dem iPad.',mode:'Solo'},
-{id:'dodge',emoji:'🚀',name:'Dodge – Sternenflucht',desc:'Weiche Hindernissen aus. Mit der Zeit wird es immer schneller!',mode:'Solo'}
+ ["impostor","🕵️","Impostor","Finde heraus, wer das geheime Wort nicht kennt."],
+ ["werwolf","🐺","Werwolf","Ein Social-Deduction-Spiel für eine Gruppe."],
+ ["ttt","❎","Tic-Tac-Toe","Besiege den Computer im Klassiker."],
+ ["quiz","🧠","Quiz Battle","Teste dein Wissen in zehn Fragen."],
+ ["draw","🎨","Zeichnen & Raten","Zeichne auf der Leinwand."],
+ ["memory","🧩","Memory Clash","Finde alle passenden Paare."],
+ ["rps","✊","Schere-Stein-Papier","Spiele gegen den Computer."],
+ ["word","🔤","Wortraten","Errate das versteckte Wort."],
+ ["party","🎉","Party Fragen","Zufällige lustige Gruppenfragen."],
+ ["snake","🐍","Snake","Sammle Punkte, ohne dich zu treffen."],
+ ["dodge","🚀","Sternenflucht","Teste deine Reaktionsgeschwindigkeit."]
 ];
-let xp=Number(localStorage.getItem('neon_xp')||0),rounds=Number(localStorage.getItem('neon_rounds')||0);
-let currentGame='',state={},timers=[];
-const $=id=>document.getElementById(id);
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-const shuffle=a=>{for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function updateStats(){$('score').textContent=xp+' XP';$('played').textContent=rounds;localStorage.setItem('neon_xp',xp);localStorage.setItem('neon_rounds',rounds)}
-function reward(n=20){xp+=n;rounds++;updateStats()}
-function showStats(){alert('Dein Arcade-Stand\n\n'+xp+' XP\n'+rounds+' gespielte Runden')}
-function screen(html){$('area').innerHTML=html}
-function btn(label,fn,cls='primary'){return `<button class="${cls}" onclick="${fn}">${label}</button>`}
-function renderGames(){$('games').innerHTML=games.map(g=>`<button class="gamecard" onclick="openGame('${g.id}')"><div class="emoji">${g.emoji}</div><h3>${g.name}</h3><p>${g.desc}</p><small>▶ Spielen · ${g.mode}</small></button>`).join('')}
+$("gameGrid").innerHTML=games.map(g=>`
+  <article class="game-card">
+    <div class="emoji">${g[1]}</div><h3>${g[2]}</h3><p>${g[3]}</p>
+    <button class="primary" onclick="openGame('${g[0]}')">Jetzt spielen →</button>
+  </article>`).join("");
+
 function openGame(id){
- stopTimers();currentGame=id;state={};
- const g=games.find(x=>x.id===id);
- $('game').style.display='block';$('gameTitle').textContent=g.emoji+' '+g.name;$('gameDesc').textContent=g.desc;
- $('game').scrollTop=0;screen('');
- ({impostor:startImpostor,werewolf:startWerewolf,tic:startTic,quiz:startQuiz,draw:startDraw,memory:startMemory,rps:startRPS,word:startWord,truth:startTruth,snake:startSnake,dodge:startDodge})[id]();
+  closeGame(false);
+  currentGame=id;
+  const g=games.find(x=>x[0]===id);
+  $("gameTitle").textContent=g[2];
+  $("game").classList.add("fullscreen");
+  $("gameContent").innerHTML="";
+  $("gameXP").textContent="+10 XP";
+  const render=handlers[id];
+  if(render) render();
+  window.scrollTo(0,0);
 }
-function closeGame(){stopTimers();$('game').style.display='none';$('game').classList.remove('fullscreen')}
-function stopTimers(){timers.forEach(t=>{clearInterval(t);clearTimeout(t)});timers=[]}
-function later(fn,ms){let t=setTimeout(fn,ms);timers.push(t);return t}
-function every(fn,ms){let t=setInterval(fn,ms);timers.push(t);return t}
-
-/* IMPOSTOR */
-function startImpostor(){screen(`<div class="notice">Gebt das Gerät reihum weiter. Jede Person schaut nur ihre eigene geheime Karte an. Danach gibt es Hinweise und eine Abstimmung.</div><label>Spielerzahl (3–12)</label><input id="impN" type="number" min="3" max="12" value="6">${btn('Geheime Karten verteilen →','dealImpostor()')}`)}
-function dealImpostor(){
- let n=Math.max(3,Math.min(12,+$('impN').value||6));
- state={n,i:0,bad:Math.floor(Math.random()*n),word:pick(['Pizza','Dinosaurier','Schule','Strand','Popcorn','Fahrrad','Schokolade','Weltraum','Fußball','Kino','Eiscreme','Roboter','Zahnbürste','Wasserfall','Flughafen','Pinguin']),shown:false};
- impCard()
+function closeGame(hide=true){
+  if(gameCleanup){try{gameCleanup()}catch{} gameCleanup=null;}
+  if(hide){
+    $("game").classList.remove("fullscreen");
+    $("game").style.display="none";
+    $("gameContent").innerHTML="";
+  }
 }
-function impCard(){screen(`<div class="progress"><div style="width:${state.i/state.n*100}%"></div></div><p>Geheime Karte ${state.i+1} von ${state.n}</p><div class="secret" onclick="revealImp()"><div class="big">🔒</div><p>Tippen zum Aufdecken</p></div>${btn('Karte gesehen – weiter →','nextImp()','secondary')}`);$('area').lastElementChild.disabled=true}
-function revealImp(){if(state.shown)return;state.shown=true;$('area').querySelector('.secret').innerHTML=`<div><div class="big">${state.i===state.bad?'🕵️':'🗝️'}</div><div class="big">${state.i===state.bad?'DU BIST DER IMPOSTOR':state.word}</div><p>${state.i===state.bad?'Du kennst das Wort nicht. Bluffe!':'Merke dir das geheime Wort.'}</p></div>`;$('area').lastElementChild.disabled=false}
-function nextImp(){if(!state.shown)return;if(state.i+1<state.n){state.i++;state.shown=false;impCard();return}screen(`<div class="big">💬 Hinweisrunde</div><p>Jede Person nennt reihum einen Hinweis. Verratet nicht direkt das Wort!</p>${btn('Zur Abstimmung →','impVoteScreen()')}`)}
-function impVoteScreen(){screen(`<h3>Wer ist der Impostor?</h3><div class="grid">${Array.from({length:state.n},(_,i)=>`<button onclick="impVote(${i})">👤 Spieler ${i+1}</button>`).join('')}</div>`)}
-function impVote(i){state.caught=i===state.bad;screen(`<div class="big">${state.caught?'🎯':'😈'}</div><h3>${state.caught?'Impostor erwischt!':'Falsch abgestimmt!'}</h3><div class="result">Spieler ${i+1} war ${state.caught?'der Impostor':'unschuldig'}. Das geheime Wort war <b>${state.word}</b>.</div>${state.caught?`<label>Impostor: Errate das Wort</label><input id="impGuess" placeholder="Dein Tipp">${btn('Tipp prüfen','finishImp()')}`:btn('Ergebnis ansehen','finishImp()')}`)}
-function finishImp(){let guess=($('impGuess')?.value||'').trim().toLowerCase();let crew=state.caught&&guess!==state.word.toLowerCase();screen(`<div class="big">${crew?'🏆':'😈'}</div><h2>${crew?'Die Crew gewinnt!':'Der Impostor gewinnt!'}</h2><p>Der Impostor war Spieler ${state.bad+1}. Das Wort war ${state.word}.</p>${btn('Neue Runde ↻',"openGame('impostor')")}`);reward(crew?45:20)}
-
-/* WERWOLF */
-function startWerewolf(){screen(`<div class="notice">🐺 Werwölfe wollen das Dorf übernehmen. 🔮 Die Seherin prüft Rollen. 🧙 Die Hexe kann heilen oder vergiften. 🏹 Der Jäger nimmt beim Ausscheiden jemanden mit. 💘 Amor verbindet zwei Personen.</div><label>Spielerzahl (5–20)</label><input id="wolfN" type="number" min="5" max="20" value="8">${btn('Rollen verdeckt verteilen →','dealWolf()')}`)}
-function dealWolf(){
- let n=Math.max(5,Math.min(20,+$('wolfN').value||8)),roles=Array(n).fill('👤 Dorfbewohner'),special=[];
- for(let i=0;i<(n>=13?3:2);i++)special.push('🐺 Werwolf');
- special.push('🔮 Seherin');if(n>=7)special.push('🧙 Hexe');if(n>=8)special.push('🏹 Jäger');if(n>=9)special.push('🦹 Dieb');if(n>=10)special.push('😉 Blinzel-Mädchen');if(n>=11)special.push('💘 Amor');
- special.forEach((r,i)=>roles[i]=r);
- state={n,roles:shuffle(roles),i:0,shown:false,out:[],night:1,dead:null,poison:null,usedPoison:false,usedSave:false,lovers:[]};wolfCard()
-}
-function wolfCard(){screen(`<div class="progress"><div style="width:${state.i/state.n*100}%"></div></div><p>Geheime Rolle · Spieler ${state.i+1} von ${state.n}</p><div class="secret" onclick="revealWolf()"><div class="big">🔒</div><p>Nur die Person am Zug schaut!</p></div>${btn('Karte verdecken – weiter →','nextWolf()','secondary')}`);$('area').lastElementChild.disabled=true}
-function revealWolf(){if(state.shown)return;state.shown=true;$('area').querySelector('.secret').innerHTML=`<div><div class="big">${state.roles[state.i].split(' ')[0]}</div><div class="big">${esc(state.roles[state.i].substring(2))}</div><p>Merke dir deine Rolle und verdecke die Karte danach.</p></div>`;$('area').lastElementChild.disabled=false}
-function nextWolf(){if(!state.shown)return;if(state.i+1<state.n){state.i++;state.shown=false;wolfCard();return}nightIntro()}
-function alivePlayers(){return Array.from({length:state.n},(_,i)=>i).filter(i=>!state.out.includes(i))}
-function nightIntro(){screen(`<div class="big">🌘 Nacht ${state.night}</div><p>Alle schließen die Augen. Die Spielleitung führt die Aktionen durch.</p>${btn('Nachtaktionen starten →','nightScreen()')}`)}
-function nightScreen(){screen(`<h3>Welche Rolle ist dran?</h3><div class="grid">${['🐺 Werwölfe','🔮 Seherin','🧙 Hexe','🦹 Dieb','😉 Blinzel-Mädchen','💘 Amor'].map((r,i)=>`<button onclick="nightRole(${i})">${r}</button>`).join('')}</div>${btn('Nacht beenden →','dayIntro()','secondary')}`)}
-function targetScreen(title,callback,exclude=[]){let a=alivePlayers().filter(i=>!exclude.includes(i));screen(`<h3>${title}</h3><div class="grid">${a.map(i=>`<button onclick="${callback}(${i})">👤 Spieler ${i+1}</button>`).join('')}</div>${btn('Überspringen','nightScreen()','secondary')}`)}
-function nightRole(k){state.action=k;if(k===0)targetScreen('🐺 Werwölfe wählen ein Opfer','nightTarget');if(k===1||k===4)targetScreen('🔮 Rolle ansehen','peekRole');if(k===2)targetScreen('🧙 Hexe wählt eine Person','witchTarget');if(k===3)targetScreen('🦹 Dieb wählt eine Person','thiefSwap');if(k===5)targetScreen('💘 Amor wählt die erste Person','amorFirst')}
-function nightTarget(i){state.dead=i;nightScreen()}
-function peekRole(i){screen(`<h3>Geheimer Blick</h3><div class="result">Spieler ${i+1}: <b>${esc(state.roles[i])}</b></div>${btn('Rolle verdecken →','nightScreen()')}`)}
-function witchTarget(i){screen(`<h3>🧙 Hexe</h3><p>Spieler ${i+1} wurde ausgewählt.</p><div class="grid">${btn('Diese Person vergiften','poisonPlayer('+i+')')}${btn('Opfer retten','saveVictim()','secondary')}${btn('Nichts tun','nightScreen()','secondary')}</div>`)}
-function poisonPlayer(i){if(state.usedPoison){alert('Der Gifttrank wurde schon benutzt.');return nightScreen()}state.usedPoison=true;state.poison=i;nightScreen()}
-function saveVictim(){if(state.usedSave){alert('Der Heiltrank wurde schon benutzt.');return nightScreen()}state.usedSave=true;state.dead=null;nightScreen()}
-function thiefSwap(i){let me=state.roles.findIndex((r,j)=>r.includes('Dieb')&&!state.out.includes(j));if(me<0){screen(`<p>Es gibt keinen lebenden Dieb.</p>${btn('Weiter','nightScreen()')}`);return}[state.roles[me],state.roles[i]]=[state.roles[i],state.roles[me]];screen(`<h3>🦹 Rollentausch</h3><p>Die Rollen wurden getauscht.</p>${btn('Weiter →','nightScreen()')}`)}
-function amorFirst(i){state.love1=i;targetScreen('💘 Amor wählt die zweite Person','amorSecond',[i])}
-function amorSecond(i){state.lovers=[state.love1,i];screen(`<h3>💘 Verliebte verbunden</h3><p>Spieler ${state.love1+1} und ${i+1} sind verbunden.</p>${btn('Weiter →','nightScreen()')}`)}
-function dayIntro(){let victims=[state.dead,state.poison].filter(i=>i!==null&&i!==undefined);victims=[...new Set(victims)];victims.forEach(i=>{if(!state.out.includes(i))state.out.push(i)});if(state.lovers.some(i=>victims.includes(i)))state.lovers.forEach(i=>{if(!state.out.includes(i))state.out.push(i)});screen(`<div class="big">🌅 Das Dorf erwacht</div><div class="result">${victims.length?'Nachts ausgeschieden: '+victims.map(i=>'Spieler '+(i+1)).join(', '):'Niemand ist nachts ausgeschieden.'}</div><p>Diskutiert gemeinsam und stimmt ab.</p>${btn('Zur Abstimmung →','wolfVote()')}`)}
-function wolfVote(){let a=alivePlayers();if(a.length<=1)return wolfEnd();screen(`<h3>Wen wählt das Dorf raus?</h3><div class="grid">${a.map(i=>`<button onclick="wolfEliminate(${i})">👤 Spieler ${i+1}</button>`).join('')}</div>`)}
-function wolfEliminate(i){if(!state.out.includes(i))state.out.push(i);let role=state.roles[i],hunter=role.includes('Jäger');if(state.lovers.includes(i))state.lovers.forEach(j=>{if(!state.out.includes(j))state.out.push(j)});screen(`<div class="big">${role.split(' ')[0]}</div><h3>Spieler ${i+1} ist ausgeschieden</h3><div class="result">Rolle: <b>${esc(role)}</b></div>${hunter?`<p>🏹 Der Jäger nimmt jemanden mit!</p><div class="grid">${alivePlayers().map(j=>`<button onclick="hunterShot(${j})">Spieler ${j+1}</button>`).join('')}</div>`:btn('Weiter →','wolfContinue()')}`)}
-function hunterShot(i){if(!state.out.includes(i))state.out.push(i);if(state.lovers.includes(i))state.lovers.forEach(j=>{if(!state.out.includes(j))state.out.push(j)});screen(`<h3>🏹 Der Jäger hat geschossen!</h3><p>Spieler ${i+1} scheidet aus. Rolle: ${esc(state.roles[i])}</p>${btn('Weiter →','wolfContinue()')}`)}
-function wolfContinue(){let a=alivePlayers(),w=a.filter(i=>state.roles[i].includes('Werwolf')).length;if(w===0||w>=a.length-w){wolfEnd();return}state.night++;state.dead=null;state.poison=null;nightIntro()}
-function wolfEnd(){let a=alivePlayers(),w=a.filter(i=>state.roles[i].includes('Werwolf')).length,town=w===0;screen(`<div class="big">${town?'🏆':'🐺'}</div><h2>${town?'Das Dorf gewinnt!':'Die Werwölfe gewinnen!'}</h2><div class="result">Verbliebene Personen: ${a.length}<br>Werwölfe: ${w}</div>${btn('Neue Runde ↻',"openGame('werewolf')")}`);reward(town?70:25)}
-
-/* TIC-TAC-TOE */
-function startTic(){state={board:Array(9).fill(''),turn:'X',done:false};drawTic()}
-function drawTic(){screen(`<h3>${state.done?'Runde beendet':'Am Zug: '+(state.turn==='X'?'Spieler 1 ❎':'Spieler 2 ⭕')}</h3><div class="tic">${state.board.map((v,i)=>`<button ${v||state.done?'disabled':''} onclick="ticMove(${i})">${v}</button>`).join('')}</div><p id="ticMsg" class="muted">Zwei Personen an einem Gerät.</p>${btn('Neu starten ↻',"openGame('tic')",'secondary')}`)}
-function ticMove(i){if(state.board[i]||state.done)return;state.board[i]=state.turn;let lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]],win=lines.some(l=>l.every(j=>state.board[j]===state.turn));if(win||state.board.every(Boolean)){state.done=true;drawTic();$('ticMsg').textContent=win?'Spieler '+(state.turn==='X'?'1':'2')+' gewinnt!':'Unentschieden!';reward(win?50:10)}else{state.turn=state.turn==='X'?'O':'X';drawTic()}}
-
-/* QUIZ */
-const questions=[
-{q:'Welcher Planet ist der größte?',a:['Mars','Jupiter','Venus','Merkur'],c:1},
-{q:'Wie viele Seiten hat ein Hexagon?',a:['5','6','7','8'],c:1},
-{q:'Was ist die Hauptstadt von Japan?',a:['Seoul','Peking','Tokio','Bangkok'],c:2},
-{q:'Welche Farbe entsteht aus Blau und Gelb?',a:['Lila','Grün','Orange','Rosa'],c:1},
-{q:'Wie viele Minuten hat eine Stunde?',a:['30','45','60','90'],c:2},
-{q:'Welches Tier ist ein Säugetier?',a:['Hai','Delfin','Forelle','Krabbe'],c:1},
-{q:'Wie heißt unser Stern?',a:['Mond','Sirius','Sonne','Polarstern'],c:2},
-{q:'Wie viele Beine hat eine Spinne?',a:['6','8','10','12'],c:1}];
-function startQuiz(){state={i:0,score:0,qs:shuffle([...questions]).slice(0,5)};showQuestion()}
-function showQuestion(){let q=state.qs[state.i];screen(`<div class="progress"><div style="width:${state.i/state.qs.length*100}%"></div></div><p>Frage ${state.i+1} von ${state.qs.length}</p><h3>${q.q}</h3><div class="grid">${q.a.map((a,i)=>`<button onclick="answerQuiz(${i})">${a}</button>`).join('')}</div><p class="muted">Punkte: ${state.score}</p>`)}
-function answerQuiz(i){let q=state.qs[state.i],ok=i===q.c;if(ok)state.score++;screen(`<h3>${ok?'✅ Richtig!':'❌ Nicht ganz'}</h3><div class="result">Die richtige Antwort ist <b>${q.a[q.c]}</b>.</div>${btn(state.i+1<state.qs.length?'Nächste Frage →':'Ergebnis anzeigen →','nextQuestion()')}`)}
-function nextQuestion(){state.i++;if(state.i>=state.qs.length){screen(`<div class="big">⚡ ${state.score}/${state.qs.length}</div><h2>Quiz beendet!</h2><p>Du hast ${state.score} Fragen richtig beantwortet.</p>${btn('Nochmal spielen ↻',"openGame('quiz')")}`);reward(10+state.score*10);return}showQuestion()}
-
-/* ZEICHNEN & RATEN */
-const drawWords=['Katze','Rakete','Pizza','Roboter','Einhorn','Sonne','Dinosaurier','Fahrrad','Krone','Schneemann'];
-let ctx,painting=false,last=null;
-function startDraw(){state={word:pick(drawWords)};screen(`<p>Der Zeichner schaut auf den geheimen Begriff und zeichnet ihn. Die anderen raten!</p><div class="secret"><div><p>GEHEIMBEGRIFF FÜR DEN ZEICHNER</p><div class="big">${state.word}</div></div></div><label>Zeichenfarbe</label><input id="penColor" type="color" value="#222222"><label>Stiftgröße</label><input id="penSize" type="range" min="2" max="20" value="5"><canvas id="drawCanvas" width="900" height="400" style="height:300px"></canvas><div class="row">${btn('Zeichenfläche leeren','clearCanvas()','secondary')}${btn('Begriff erraten!','drawGuess()')}</div>`);initCanvas()}
-function initCanvas(){let c=$('drawCanvas');ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);c.onpointerdown=e=>{painting=true;last=canvasPoint(e,c);c.setPointerCapture(e.pointerId)};c.onpointerup=()=>{painting=false;last=null};c.onpointercancel=()=>{painting=false;last=null};c.onpointermove=e=>{if(!painting)return;let p=canvasPoint(e,c);ctx.strokeStyle=$('penColor').value;ctx.lineWidth=+$('penSize').value;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p}}
-function canvasPoint(e,c){let r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height}}
-function clearCanvas(){if(ctx){ctx.fillStyle='white';ctx.fillRect(0,0,900,400)}}
-function drawGuess(){screen(`<h3>Was wurde gezeichnet?</h3><p>Zeigt die Zeichnung allen und lasst sie raten.</p><input id="drawAnswer" placeholder="Geratener Begriff">${btn('Antwort prüfen','checkDraw()')}`)}
-function checkDraw(){let ok=$('drawAnswer').value.trim().toLowerCase()===state.word.toLowerCase();screen(`<div class="big">${ok?'🎉':'🎨'}</div><h3>${ok?'Richtig geraten!':'Auflösung'}</h3><p>Der Begriff war <b>${state.word}</b>.</p>${btn('Neue Runde ↻',"openGame('draw')")}`);reward(ok?35:10)}
-
-/* MEMORY */
-const memIcons=['🌙','⚡','🎮','👾','🍕','🚀','🐸','💎'];
-function startMemory(){state={cards:shuffle([...memIcons,...memIcons]),open:[],matched:[],turns:0,locked:false};drawMemory()}
-function drawMemory(){screen(`<p>Finde alle acht Paare.</p><div class="memory">${state.cards.map((v,i)=>`<button ${state.matched.includes(i)?'disabled':''} onclick="flipMemory(${i})">${state.matched.includes(i)||state.open.includes(i)?v:'✦'}</button>`).join('')}</div><p class="muted">Paare: ${state.matched.length/2}/8 · Züge: ${state.turns}</p>${btn('Neu mischen ↻',"openGame('memory')",'secondary')}`)}
-function flipMemory(i){if(state.locked||state.matched.includes(i)||state.open.includes(i))return;state.open.push(i);drawMemory();if(state.open.length===2){state.turns++;let [a,b]=state.open;if(state.cards[a]===state.cards[b]){state.matched.push(a,b);state.open=[];drawMemory();if(state.matched.length===state.cards.length){screen(`<div class="big">🧠 Geschafft!</div><h3>Alle Paare gefunden</h3><p>Du hast ${state.turns} Züge gebraucht.</p>${btn('Nochmal spielen ↻',"openGame('memory')")}`);reward(40)}}else{state.locked=true;later(()=>{state.open=[];state.locked=false;drawMemory()},850)}}}
-
-/* SCHERE-STEIN-PAPIER */
-function startRPS(){screen(`<h3>Du gegen den Computer</h3><p>Wer gewinnt die Runde?</p><div class="grid"><button onclick="playRPS('Stein')">✊ Stein</button><button onclick="playRPS('Papier')">✋ Papier</button><button onclick="playRPS('Schere')">✌️ Schere</button></div><div id="rpsResult"></div>${btn('Neues Duell ↻',"openGame('rps')",'secondary')}`)}
-function playRPS(m){let c=pick(['Stein','Papier','Schere']),win=m!==c&&((m==='Stein'&&c==='Schere')||(m==='Papier'&&c==='Stein')||(m==='Schere'&&c==='Papier')),tie=m===c;$('rpsResult').innerHTML=`<div class="result">Du: <b>${m}</b><br>Computer: <b>${c}</b><h3>${tie?'Unentschieden':win?'Du gewinnst!':'Computer gewinnt!'}</h3></div>`;reward(win?25:10)}
-
-/* WORTRATEN */
-const wordBank=['KOMET','PIXEL','DRACHE','GALAXIE','ROBOTER','KAKTUS','SCHOKO','ARCADE','MOND','PIRAT','KATZE','STERN'];
-function startWord(){state={word:pick(wordBank),guessed:[],tries:7,done:false};drawWord()}
-function drawWord(){let masked=[...state.word].map(c=>state.guessed.includes(c)?c:'_').join(' ');screen(`<h3>Errate das Wort</h3><p>Du hast ${state.tries} Fehlversuche.</p><div class="big" style="letter-spacing:6px">${masked}</div><div class="grid">${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(c=>`<button ${state.guessed.includes(c)||state.done?'disabled':''} onclick="guessLetter('${c}')">${c}</button>`).join('')}</div><p class="muted">Benutzte Buchstaben: ${state.guessed.join(' · ')||'Noch keine'}</p>${btn('Neues Wort ↻',"openGame('word')",'secondary')}`)}
-function guessLetter(c){if(state.done||state.guessed.includes(c))return;state.guessed.push(c);if(!state.word.includes(c))state.tries--;let won=[...state.word].every(x=>state.guessed.includes(x));if(won||state.tries<=0){state.done=true;screen(`<div class="big">${won?'🔤':'💡'}</div><h3>${won?'Richtig erraten!':'Versuche aufgebraucht'}</h3><div class="result">Das Wort war <b>${state.word}</b>.</div>${btn('Weiteres Wort ↻',"openGame('word')")}`);reward(won?35:10);return}drawWord()}
-
-/* PARTY FRAGEN */
-const partyPrompts=['Erfinde einen Namen für ein Alien-Café.','Welche drei Dinge würdest du auf eine einsame Insel mitnehmen?','Erfinde eine neue, völlig unnötige Superkraft.','Nenne drei Dinge, die man im Weltraum nicht brauchen kann.','Zeichne einen Hund, ohne den Stift abzusetzen.','Erfinde einen Namen für einen Roboter-DJ.','Was wäre ein besonders seltsamer Name für ein Haustier?','Erfinde eine neue Sportart mit einem Kissen.','Beschreibe einen Film nur mit drei Wörtern.','Nenne drei Dinge, die in einen Drachen-Rucksack gehören.','Erfinde eine Werbeanzeige für unsichtbare Socken.','Denke dir eine neue Geschmacksrichtung für Eis aus.'];
-function startTruth(){state={used:[]};nextTruth()}
-function nextTruth(){let available=partyPrompts.map((x,i)=>i).filter(i=>!state.used.includes(i));if(!available.length)state.used=[];let i=pick(partyPrompts.map((x,j)=>j).filter(j=>!state.used.includes(j)));state.used.push(i);screen(`<div class="big">🎲</div><h3>Deine Aufgabe</h3><div class="result" style="font-size:18px">${partyPrompts[i]}</div><p class="muted">Gebt das Gerät weiter oder lest die Aufgabe laut vor.</p>${btn('Nächste Aufgabe →','nextTruth()')}<div style="margin-top:12px">${btn('Runde beenden + Punkte','finishTruth()','secondary')}</div>`)}
-function finishTruth(){reward(15);screen(`<div class="big">🎉</div><h3>Gut gespielt!</h3><p>Du hast eine Party-Runde beendet.</p>${btn('Weiter spielen ↻',"openGame('truth')")}`)}
-
-/* SNAKE – Pfeiltasten, Bildschirmtasten und Wischsteuerung */
-function startSnake(){
- state={size:20,snake:[{x:8,y:10},{x:7,y:10},{x:6,y:10}],dir:{x:1,y:0},next:{x:1,y:0},score:0,alive:true,started:false};
- screen(`<p>🐍 Sammle die leuchtenden Sterne. Wische auf dem Spielfeld in die gewünschte Richtung oder nutze die Tasten.</p><div class="big" id="snakeScore">⭐ 0</div><canvas id="snakeCanvas" class="arcade-canvas" width="400" height="400" style="height:auto;aspect-ratio:1;touch-action:none"></canvas><div class="dpad"><span></span><button onclick="snakeDir(0,-1)">⬆️</button><span></span><button onclick="snakeDir(-1,0)">⬅️</button><button onclick="snakeDir(0,1)">⬇️</button><button onclick="snakeDir(1,0)">➡️</button></div><p id="snakeMsg" class="muted">Wische auf dem Spielfeld, um die Richtung zu ändern.</p>${btn('Neu starten ↻',"openGame('snake')",'secondary')}`);
- state.food={x:14,y:10};state.canvas=$('snakeCanvas');state.ctx=state.canvas.getContext('2d');drawSnake();
- let c=state.canvas,start=null;
- c.onpointerdown=e=>{start={x:e.clientX,y:e.clientY};c.setPointerCapture(e.pointerId)};
- c.onpointerup=e=>{if(!start)return;let dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.max(Math.abs(dx),Math.abs(dy))>18){if(Math.abs(dx)>Math.abs(dy))snakeDir(dx>0?1:-1,0);else snakeDir(0,dy>0?1:-1)}start=null};
- state.keyHandler=e=>{let map={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};if(map[e.key]&&currentGame==='snake'){e.preventDefault();snakeDir(...map[e.key])}};
- document.addEventListener('keydown',state.keyHandler);
- every(snakeStep,135);
-}
-function snakeDir(x,y){if(!state.alive||!state.snake)return;if(x===-state.dir.x&&y===-state.dir.y)return;state.next={x,y}}
-function drawSnake(){if(!state.ctx)return;let c=state.ctx,n=state.size,cell=400/n;c.fillStyle='#070c1c';c.fillRect(0,0,400,400);c.strokeStyle='#192445';for(let i=0;i<=n;i++){c.beginPath();c.moveTo(i*cell,0);c.lineTo(i*cell,400);c.stroke();c.beginPath();c.moveTo(0,i*cell);c.lineTo(400,i*cell);c.stroke()}c.shadowBlur=16;c.shadowColor='#ff5ac8';c.fillStyle='#ff5ac8';c.beginPath();c.arc((state.food.x+.5)*cell,(state.food.y+.5)*cell,cell*.32,0,Math.PI*2);c.fill();c.shadowBlur=0;state.snake.forEach((p,i)=>{c.fillStyle=i===0?'#31d8f3':'#8b6cff';c.shadowBlur=i===0?14:4;c.shadowColor=c.fillStyle;c.beginPath();c.roundRect(p.x*cell+2,p.y*cell+2,cell-4,cell-4,5);c.fill()});c.shadowBlur=0}
-function snakeStep(){if(currentGame!=='snake'||!state.alive)return;state.dir=state.next;let h={x:state.snake[0].x+state.dir.x,y:state.snake[0].y+state.dir.y};if(h.x<0||h.y<0||h.x>=state.size||h.y>=state.size||state.snake.some(p=>p.x===h.x&&p.y===h.y)){state.alive=false;$('snakeMsg').textContent='💥 Spiel vorbei! Du hast '+state.score+' Sterne gesammelt.';reward(Math.max(10,state.score*5));return}state.snake.unshift(h);if(h.x===state.food.x&&h.y===state.food.y){state.score++;$('snakeScore').textContent='⭐ '+state.score;do{state.food={x:Math.floor(Math.random()*state.size),y:Math.floor(Math.random()*state.size)}}while(state.snake.some(p=>p.x===state.food.x&&p.y===state.food.y))}else state.snake.pop();drawSnake()}
-
-/* DODGE – Hindernisse werden stetig schneller, Sterne sind heller */
-function startDodge(){
- state={player:.5,objects:[],score:0,alive:true,tick:0,speed:2.4};
- screen(`<p>🚀 Bewege dein Schiff nach links und rechts. Weiche den roten Hindernissen aus und sammle Sterne!</p><div class="big" id="dodgeScore">⭐ 0</div><canvas id="dodgeCanvas" class="arcade-canvas" width="600" height="420" style="height:auto;aspect-ratio:10/7"></canvas><div class="row"><button onpointerdown="dodgeMove(-1)" onpointerup="dodgeStop()" onpointercancel="dodgeStop()">⬅️ Links</button><button onpointerdown="dodgeMove(1)" onpointerup="dodgeStop()" onpointercancel="dodgeStop()">Rechts ➡️</button></div><p id="dodgeMsg" class="muted">Je länger du überlebst, desto schneller wird es!</p>${btn('Neu starten ↻',"openGame('dodge')",'secondary')}`);
- state.canvas=$('dodgeCanvas');state.ctx=state.canvas.getContext('2d');state.keys={left:false,right:false};drawDodge();
- state.keyHandler=e=>{if(currentGame!=='dodge')return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();state.player=Math.max(.06,Math.min(.94,state.player+(e.key==='ArrowLeft'?-0.035:0.035)))}};
- document.addEventListener('keydown',state.keyHandler);
- every(dodgeStep,30);
-}
-function dodgeMove(dir){if(state.alive)state.player=Math.max(.06,Math.min(.94,state.player+dir*.09))}
-function dodgeStop(){}
-function drawDodge(){
- let c=state.ctx;if(!c)return;c.fillStyle='#070b1c';c.fillRect(0,0,600,420);
- for(let i=0;i<65;i++){let x=(i*97)%600,y=(i*53+state.tick*1.8)%420;c.fillStyle=i%4===0?'#b9f8ff':'#ffffff';c.globalAlpha=.25+(i%5)*.13;c.fillRect(x,y,i%4===0?2:1,i%4===0?3:1)}c.globalAlpha=1;
- state.objects.forEach(o=>{if(o.star){c.save();c.translate(o.x,o.y);c.rotate(state.tick*.035);c.shadowBlur=18;c.shadowColor='#ffe66d';c.fillStyle='#fff4a3';c.beginPath();for(let j=0;j<10;j++){let r=j%2?5:12,a=j*Math.PI/5-Math.PI/2;c.lineTo(Math.cos(a)*r,Math.sin(a)*r)}c.closePath();c.fill();c.restore()}else{c.shadowBlur=15;c.shadowColor='#ff477e';c.fillStyle='#ff477e';c.fillRect(o.x-12,o.y-10,24,20);c.shadowBlur=0}});
- c.save();c.translate(state.player*600,365);c.shadowBlur=22;c.shadowColor='#31d8f3';c.fillStyle='#31d8f3';c.beginPath();c.moveTo(0,-22);c.lineTo(17,16);c.lineTo(0,9);c.lineTo(-17,16);c.closePath();c.fill();c.fillStyle='#fff';c.beginPath();c.arc(0,-4,4,0,Math.PI*2);c.fill();c.restore();c.shadowBlur=0
-}
-function dodgeStep(){
- if(currentGame!=='dodge'||!state.alive)return;state.tick++;state.score++;state.speed=2.4+Math.min(8,state.tick/260);let c=state.ctx;
- if(state.tick%Math.max(8,Math.floor(25-state.speed*1.5))===0)state.objects.push({x:25+Math.random()*550,y:-15,star:Math.random()<.28});
- state.objects.forEach(o=>o.y+=state.speed*(o.star?.9:1));
- state.objects=state.objects.filter(o=>o.y<440);
- for(let o of state.objects){let dx=o.x-state.player*600,dy=o.y-365;if(Math.abs(dx)<(o.star?17:25)&&Math.abs(dy)<(o.star?19:26)){if(o.star){o.collected=true;state.score+=100}else{state.alive=false;$('dodgeMsg').textContent='💥 Treffer! Du hast '+state.score+' Punkte gesammelt.';reward(Math.max(10,Math.floor(state.score/8)));return}}}
- state.objects=state.objects.filter(o=>!o.collected);
- $('dodgeScore').textContent='⭐ '+state.score+' · Tempo '+state.speed.toFixed(1);drawDodge()
-}
-
-/* Animierter Sternenhimmel */
-(function stars(){
- let c=$('stars'),ctx=c.getContext('2d'),arr=[];
- function resize(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';arr=Array.from({length:Math.min(150,Math.floor(innerWidth/7))},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.6+.3,s:Math.random()*.35+.08,a:Math.random()}))}
- function frame(){ctx.clearRect(0,0,c.width,c.height);arr.forEach(p=>{p.y+=p.s*devicePixelRatio;p.a+=.025; if(p.y>c.height){p.y=0;p.x=Math.random()*c.width}ctx.globalAlpha=.35+Math.abs(Math.sin(p.a))*.65;ctx.fillStyle='#d7f9ff';ctx.shadowBlur=5*devicePixelRatio;ctx.shadowColor='#31d8f3';ctx.beginPath();ctx.arc(p.x,p.y,p.r*devicePixelRatio,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;ctx.shadowBlur=0;requestAnimationFrame(frame)}
- addEventListener('resize',resize);resize();frame()
-})();
-renderGames();updateStats();
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-(() => {
-  const SUPABASE_URL = 'https://qznkudfhmegfriwqdvmj.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_CPz52i2XcyThttYOrLkMAw_Pd3PYRmB';
-
-  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  let arcadeUser = null;
-  let arcadeProfile = null;
-  let arcadeIsAdmin = false;
-
-  const escapeHTML = value => String(value ?? '').replace(
-    /[&<>"']/g,
-    ch => ({
-      '&':'&amp;', '<':'&lt;', '>':'&gt;',
-      '"':'&quot;', "'":'&#39;'
-    }[ch])
-  );
-
-  function addArcadeStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-      .account-panel{background:linear-gradient(145deg,#171c3a,#0f1328);
-        border:1px solid #30385e;border-radius:20px;padding:20px;margin:16px 0}
-      .account-panel h2,.account-panel h3{margin-top:0}
-      .account-message{color:#31d8f3;font-size:13px;min-height:20px}
-      .admin-table-wrap{overflow-x:auto}
-      .admin-table{border-collapse:collapse;width:100%;font-size:13px}
-      .admin-table th,.admin-table td{padding:10px;border-bottom:1px solid #30385e;text-align:left}
-      .admin-table input{min-width:90px}
-      .account-actions{display:flex;gap:8px;flex-wrap:wrap}
-      .account-actions button{margin:4px 0}
-    `;
-    document.head.appendChild(style);
-  }
-
-  function createAccountPanel() {
-    const panel = document.createElement('section');
-    panel.className = 'account-panel';
-    panel.id = 'arcadeAccount';
-    panel.innerHTML = `
-      <h2>👤 Konto & Online-XP</h2>
-      <p class="muted">
-        Erstelle ein Konto, damit deine Punkte online gespeichert werden.
-        Verwende ein Passwort, das du nicht auf anderen Seiten benutzt.
-      </p>
-      <div id="accountSignedOut">
-        <label>Spielername</label>
-        <input id="accountUsername" maxlength="24" autocomplete="nickname"
-          placeholder="Dein Spielername">
-        <label>E-Mail</label>
-        <input id="accountEmail" type="email" autocomplete="email"
-          placeholder="name@beispiel.de">
-        <label>Passwort</label>
-        <input id="accountPassword" type="password"
-          autocomplete="current-password" minlength="8"
-          placeholder="Mindestens 8 Zeichen">
-        <div class="account-actions">
-          <button class="primary" id="accountRegister">Konto erstellen</button>
-          <button id="accountLogin">Anmelden</button>
-        </div>
-      </div>
-      <div id="accountSignedIn" hidden>
-        <p id="accountWelcome"></p>
-        <div class="account-actions">
-          <button id="accountRefresh">Punkte aktualisieren</button>
-          <button id="accountLogout">Abmelden</button>
-          <button id="accountAdminButton" hidden>🛡️ Admin-Bereich</button>
-        </div>
-      </div>
-      <p class="account-message" id="accountMessage" role="status"></p>
-      <div id="adminPanel" hidden>
-        <hr>
-        <h3>🛡️ Admin – Spielerverwaltung</h3>
-        <p class="muted">
-          Hier kannst du registrierte Arcade-Profile ansehen, XP ändern
-          und Konten für die Arcade sperren oder entsperren.
-        </p>
-        <button class="primary" id="adminReload">Spielerliste laden</button>
-        <p id="adminMessage" class="account-message" role="status"></p>
-        <div id="adminPlayers" class="admin-table-wrap"></div>
-      </div>
-    `;
-
-    const main = document.querySelector('main');
-    main.insertBefore(panel, main.firstChild);
-  }
-
-  function message(text) {
-    document.getElementById('accountMessage').textContent = text;
-  }
-
-  function adminMessage(text) {
-    document.getElementById('adminMessage').textContent = text;
-  }
-
-  async function getProfile() {
-    if (!arcadeUser) return null;
-
-    const { data, error } = await db
-      .from('arcade_player_data')
-      .select('user_id,username,xp,rounds,banned')
-      .eq('user_id', arcadeUser.id)
-      .maybeSingle();
-
-    if (error) throw error;
-    return data;
-  }
-
-  async function refreshAccount() {
-    if (!arcadeUser) return;
-
-    try {
-      arcadeProfile = await getProfile();
-
-      if (!arcadeProfile) {
-        message('Dein Profil fehlt. Bitte melde dich erneut an oder registriere dich neu.');
-        return;
-      }
-
-      if (arcadeProfile.banned) {
-        message('Dieses Arcade-Konto ist gesperrt. Bitte wende dich an die Administration.');
-        await db.auth.signOut();
-        return;
-      }
-
-      document.getElementById('accountWelcome').textContent =
-        'Angemeldet als ' + arcadeProfile.username;
-
-      document.getElementById('playerName').value = arcadeProfile.username;
-
-      // Online-Daten ersetzen die bisherigen lokalen Anzeigewerte.
-      xp = arcadeProfile.xp;
-      rounds = arcadeProfile.rounds;
-      updateStats();
-
-      // Admin-Rechte werden vom Server über die geschützte RPC geprüft.
-      const { error } = await db.rpc('arcade_admin_list_players');
-      arcadeIsAdmin = !error;
-      document.getElementById('accountAdminButton').hidden = !arcadeIsAdmin;
-    } catch (err) {
-      message(err.message || 'Die Kontodaten konnten nicht geladen werden.');
-    }
-  }
-
-  async function setSignedIn(user) {
-    arcadeUser = user || null;
-    arcadeProfile = null;
-    arcadeIsAdmin = false;
-
-    document.getElementById('accountSignedOut').hidden = !!user;
-    document.getElementById('accountSignedIn').hidden = !user;
-    document.getElementById('accountAdminButton').hidden = true;
-    document.getElementById('adminPanel').hidden = true;
-
-    if (user) await refreshAccount();
-    else message('Melde dich an, um Online-XP zu verwenden.');
-  }
-
-  async function register() {
-    const username = document.getElementById('accountUsername').value.trim();
-    const email = document.getElementById('accountEmail').value.trim();
-    const password = document.getElementById('accountPassword').value;
-
-    if (username.length < 2 || username.length > 24) {
-      message('Dein Spielername muss 2 bis 24 Zeichen haben.');
-      return;
-    }
-    if (!email || password.length < 8) {
-      message('Gib eine gültige E-Mail und ein Passwort mit mindestens 8 Zeichen ein.');
-      return;
-    }
-
-    message('Konto wird erstellt …');
-
-    const { data, error } = await db.auth.signUp({
-      email,
-      password,
-      options: { data: { username } }
-    });
-
-    if (error) {
-      message(error.message);
-      return;
-    }
-
-    if (data.session && data.user) {
-      const { error: profileError } = await db.rpc(
-        'arcade_register_profile',
-        { p_username: username }
-      );
-
-      if (profileError) {
-        message('Konto erstellt, aber das Profil konnte nicht angelegt werden: ' +
-          profileError.message);
-        return;
-      }
-
-      await setSignedIn(data.user);
-      message('Registrierung erfolgreich!');
-    } else {
-      message('Registrierung gestartet. Prüfe deine E-Mails und bestätige die Adresse. Melde dich danach an.');
-    }
-  }
-
-  async function login() {
-    const email = document.getElementById('accountEmail').value.trim();
-    const password = document.getElementById('accountPassword').value;
-
-    message('Anmeldung läuft …');
-
-    const { data, error } = await db.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) {
-      message('Anmeldung fehlgeschlagen: ' + error.message);
-      return;
-    }
-
-    await setSignedIn(data.user);
-    if (arcadeUser && arcadeProfile && !arcadeProfile.banned) {
-      message('Du bist angemeldet.');
-    }
-  }
-
-  async function logout() {
-    const { error } = await db.auth.signOut();
-    if (error) {
-      message(error.message);
-      return;
-    }
-    arcadeUser = null;
-    arcadeProfile = null;
-    arcadeIsAdmin = false;
-    document.getElementById('adminPlayers').innerHTML = '';
-    await setSignedIn(null);
-  }
-
-  async function loadAdminPlayers() {
-    if (!arcadeUser || !arcadeIsAdmin) {
-      adminMessage('Keine Admin-Berechtigung.');
-      return;
-    }
-
-    adminMessage('Spielerliste wird geladen …');
-    document.getElementById('adminPlayers').innerHTML = '';
-
-    const { data, error } = await db.rpc('arcade_admin_list_players');
-
-    if (error) {
-      adminMessage('Fehler: ' + error.message);
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      document.getElementById('adminPlayers').textContent =
-        'Noch keine Arcade-Profile vorhanden.';
-      adminMessage('');
-      return;
-    }
-
-    const table = document.createElement('table');
-    table.className = 'admin-table';
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>Spieler</th>
-          <th>XP</th>
-          <th>Runden</th>
-          <th>Status</th>
-          <th>Aktionen</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    `;
-
-    const tbody = table.querySelector('tbody');
-
-    data.forEach(player => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>
-          <b>${escapeHTML(player.username)}</b>
-          <div class="muted">${escapeHTML(player.user_id)}</div>
-        </td>
-        <td><input type="number" min="0" max="100000000"
-          value="${Number(player.xp)}" aria-label="XP für ${escapeHTML(player.username)}"></td>
-        <td>${Number(player.rounds)}</td>
-        <td>${player.banned ? '🔒 Gesperrt' : '🟢 Aktiv'}</td>
-        <td>
-          <button class="saveXP">XP speichern</button>
-          <button class="toggleBan">${player.banned ? 'Entsperren' : 'Sperren'}</button>
-        </td>
-      `;
-
-      tr.querySelector('.saveXP').addEventListener('click', async () => {
-        const newXP = Number(tr.querySelector('input').value);
-
-        if (!Number.isInteger(newXP) || newXP < 0 || newXP > 100000000) {
-          adminMessage('Bitte gib eine gültige XP-Zahl ein.');
-          return;
-        }
-
-        const { error } = await db.rpc('arcade_admin_set_xp', {
-          p_user_id: player.user_id,
-          p_xp: newXP
-        });
-
-        if (error) {
-          adminMessage(error.message);
-          return;
-        }
-
-        adminMessage('XP für ' + player.username + ' gespeichert.');
-        await loadAdminPlayers();
-        if (player.user_id === arcadeUser.id) await refreshAccount();
-      });
-
-      tr.querySelector('.toggleBan').addEventListener('click', async () => {
-        const newBanned = !player.banned;
-
-        if (!confirm(
-          player.username + (newBanned
-            ? ' wirklich für die Arcade sperren?'
-            : ' wieder für die Arcade freigeben?')
-        )) return;
-
-        const { error } = await db.rpc('arcade_admin_set_banned', {
-          p_user_id: player.user_id,
-          p_banned: newBanned
-        });
-
-        if (error) {
-          adminMessage(error.message);
-          return;
-        }
-
-        adminMessage('Spielerstatus aktualisiert.');
-        await loadAdminPlayers();
-      });
-
-      tbody.appendChild(tr);
-    });
-
-    document.getElementById('adminPlayers').appendChild(table);
-    adminMessage(data.length + ' Spieler geladen.');
-  }
-
-  // Spielstände aus der vorhandenen Spielelogik online speichern.
-  const originalReward = reward;
-  reward = function(amount = 20) {
-    if (arcadeUser) {
-      if (!arcadeProfile || arcadeProfile.banned) {
-        message('Bitte melde dich an, um Punkte zu sammeln.');
-        return;
-      }
-
-      // Die XP-Menge wird vom Server begrenzt und geprüft.
-      const safeAmount = Math.max(0, Math.min(100, Math.floor(amount)));
-
-      db.rpc('arcade_award_xp', { p_amount: safeAmount })
-        .then(async ({ error }) => {
-          if (error) {
-            message(error.message);
-            return;
-          }
-          await refreshAccount();
-        });
-
-      return;
-    }
-
-    // Offline-Modus bleibt verfügbar, wenn man nicht angemeldet ist.
-    originalReward(amount);
+const originalClose=closeGame;
+closeGame=function(hide=true){
+  originalClose(hide);
+  if(hide){$("game").style.display="none";$("game").classList.remove("fullscreen");}
+};
+const content=html=>{$("gameContent").innerHTML=html;};
+const msg=t=>{const e=$("result");if(e)e.textContent=t;};
+const handlers={};
+
+/* 1. IMPOSTOR */
+handlers.impostor=()=>{
+ const words=["Pizza","Mond","Dinosaurier","Schokolade","Fußball","Elefant","Schule","Achterbahn","Roboter","Sonnenbrille"];
+ const word=words[Math.floor(Math.random()*words.length)];
+ content(`<h2>🕵️ Impostor</h2><p>Spielt mit mindestens 3 Personen. Gebt das Gerät herum und zeigt jedem einzeln seine Rolle.</p>
+ <label>Anzahl Spieler</label><input id="players" type="number" min="3" max="12" value="5">
+ <label>Anzahl Impostor</label><input id="imps" type="number" min="1" max="3" value="1">
+ <button class="primary" onclick="startImpostor()">Rollen verteilen</button><div id="roleArea"></div>`);
+ window.startImpostor=()=>{
+  const n=Math.max(3,Math.min(12,parseInt($("players").value)||5));
+  const ni=Math.max(1,Math.min(n-1,parseInt($("imps").value)||1));
+  const impostors=new Set();
+  while(impostors.size<ni)impostors.add(Math.floor(Math.random()*n));
+  let i=0;
+  const show=()=>{
+   if(i>=n){$("roleArea").innerHTML=`<h3>Alle Rollen gesehen!</h3><p>Redet miteinander und stimmt ab, wer der Impostor ist.</p><button onclick="openGame('impostor')">Neue Runde</button>`;award(5);return;}
+   $("roleArea").innerHTML=`<hr><h3>Spieler ${i+1}</h3><p>Gib das Gerät nur dieser Person.</p><button class="primary" id="revealRole">Meine Rolle zeigen</button><div id="myRole"></div>`;
+   $("revealRole").onclick=()=>{
+    $("myRole").innerHTML=`<h2>${impostors.has(i)?"🕵️ DU BIST IMPOSTOR!":"✅ Wort: "+safe(word)}</h2><p>${impostors.has(i)?"Finde unauffällig heraus, welches Wort gemeint ist.":"Beschreibe das Wort, ohne es direkt zu verraten."}</p><button onclick="nextRole()">Verstanden – weiter</button>`;
+    $("revealRole").disabled=true;
+   };
   };
+  window.nextRole=()=>{i++;show();};
+  show();
+ };
+};
 
-  async function start() {
-    addArcadeStyles();
-    createAccountPanel();
+/* 2. WERWOLF */
+handlers.werwolf=()=>{
+ content(`<h2>🐺 Werwolf</h2><p>Offline-Rollenspiel für 4–12 Personen. Jede Person sieht ihre Rolle einzeln.</p>
+ <label>Spieleranzahl</label><input id="wolfN" type="number" min="4" max="12" value="6">
+ <button class="primary" onclick="startWolves()">Rollen verteilen</button><div id="wolfArea"></div>`);
+ window.startWolves=()=>{
+  let n=Math.max(4,Math.min(12,+$("wolfN").value||6));
+  let roles=Array(n).fill("Dorfbewohner");
+  roles[0]="Werwolf";roles[1]="Seher";
+  for(let i=2;i<Math.max(2,Math.floor(n/3));i++)roles[i]="Werwolf";
+  roles.sort(()=>Math.random()-.5);
+  let i=0;
+  const show=()=>{
+   if(i>=n){$("wolfArea").innerHTML="<h3>Alle Rollen verteilt!</h3><p>Startet die Nacht: Werwölfe wählen heimlich, der Seher prüft eine Person. Tagsüber diskutiert das Dorf und stimmt ab.</p>";award(5);return;}
+   $("wolfArea").innerHTML=`<hr><h3>Spieler ${i+1}</h3><button class="primary" id="revealWolf">Rolle anzeigen</button><div id="wolfRole"></div>`;
+   $("revealWolf").onclick=()=>{
+    $("wolfRole").innerHTML=`<h2>${roles[i]}</h2><button onclick="nextWolf()">Verstanden – weiter</button>`;
+    $("revealWolf").disabled=true;
+   };
+  };
+  window.nextWolf=()=>{i++;show();};show();
+ };
+};
 
-    document.getElementById('accountRegister').addEventListener('click', register);
-    document.getElementById('accountLogin').addEventListener('click', login);
-    document.getElementById('accountLogout').addEventListener('click', logout);
-    document.getElementById('accountRefresh').addEventListener('click', refreshAccount);
-    document.getElementById('adminReload').addEventListener('click', loadAdminPlayers);
+/* 3. TIC-TAC-TOE */
+handlers.ttt=()=>{
+ let board=Array(9).fill(""),over=false;
+ content(`<h2>❎ Tic-Tac-Toe</h2><p>Du bist X. Der Computer ist O.</p><div class="board" id="tttBoard"></div><div class="result" id="result">Dein Zug!</div><button onclick="openGame('ttt')">Neustart</button>`);
+ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+ function winner(){for(const w of wins)if(board[w[0]]&&board[w[0]]===board[w[1]]&&board[w[1]]===board[w[2]])return board[w[0]];if(board.every(Boolean))return "draw";return null;}
+ function draw(){
+  $("tttBoard").innerHTML=board.map((v,i)=>`<button class="cell" data-i="${i}">${v}</button>`).join("");
+  $("tttBoard").querySelectorAll("button").forEach(b=>b.onclick=()=>play(+b.dataset.i));
+ }
+ function finish(w){
+  over=true;msg(w==="X"?"Du gewinnst! +15 XP":w==="O"?"Der Computer gewinnt. Nochmal?":"Unentschieden!");
+  if(w==="X")award(15);else if(w==="draw")award(5);
+ }
+ function play(i){
+  if(over||board[i])return;
+  board[i]="X";let w=winner();draw();
+  if(w){finish(w);return;}
+  let free=board.map((v,i)=>v?null:i).filter(v=>v!==null);
+  let move=free.find(i=>{board[i]="O";let win=winner()==="O";board[i]="";return win;});
+  if(move===undefined)move=free.find(i=>{board[i]="X";let win=winner()==="X";board[i]="";return win;});
+  if(move===undefined)move=free[Math.floor(Math.random()*free.length)];
+  board[move]="O";w=winner();draw();if(w)finish(w);else msg("Dein Zug!");
+ }
+ draw();
+};
 
-    document.getElementById('accountAdminButton').addEventListener('click', () => {
-      if (!arcadeIsAdmin) return;
-      const panel = document.getElementById('adminPanel');
-      panel.hidden = !panel.hidden;
-      if (!panel.hidden) loadAdminPlayers();
-    });
-
-    const { data } = await db.auth.getSession();
-    await setSignedIn(data.session?.user || null);
-
-    db.auth.onAuthStateChange((_event, session) => {
-      // Supabase-Callbacks nicht mit zusätzlichen Auth-Aufrufen blockieren.
-      setTimeout(() => setSignedIn(session?.user || null), 0);
-    });
-  }
-
-  start().catch(err => {
-    console.error(err);
-    const panel = document.getElementById('arcadeAccount');
-    if (panel) message('Supabase konnte nicht gestartet werden: ' + err.message);
+/* 4. QUIZ */
+handlers.quiz=()=>{
+ const qs=[
+ ["Wie viele Planeten hat unser Sonnensystem?",["7","8","9"],1],
+ ["Welche Farbe entsteht aus Blau und Gelb?",["Grün","Orange","Lila"],0],
+ ["Was ist die Hauptstadt von Frankreich?",["Rom","Paris","Madrid"],1],
+ ["Wie viel ist 9 × 7?",["56","63","72"],1],
+ ["Welches Tier ist ein Säugetier?",["Hai","Delfin","Forelle"],1],
+ ["Welcher Planet ist der Sonne am nächsten?",["Merkur","Mars","Venus"],0],
+ ["Wie viele Minuten hat eine Stunde?",["50","60","100"],1],
+ ["Welches Gas brauchen Menschen zum Atmen?",["Sauerstoff","Helium","Wasserstoff"],0],
+ ["Wie heißt gefrorenes Wasser?",["Dampf","Eis","Nebel"],1],
+ ["Wie viele Seiten hat ein Hexagon?",["5","6","8"],1]
+ ];
+ let i=0,score=0;
+ const show=()=>{
+  if(i>=qs.length){content(`<h2>Quiz beendet!</h2><div class="big">${score}/${qs.length}</div><p>${score>=8?"Starkes Wissen!":score>=5?"Gut gemacht!":"Übung macht den Meister!"}</p><button class="primary" onclick="openGame('quiz')">Nochmal spielen</button>`);award(score*2+5);return;}
+  const q=qs[i];
+  content(`<h2>🧠 Quiz Battle</h2><p>Frage ${i+1} von ${qs.length}</p><h3>${q[0]}</h3><div class="choices">${q[1].map((a,j)=>`<button data-a="${j}">${a}</button>`).join("")}</div><div class="result" id="result"></div>`);
+  $("gameContent").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{
+   const buttons=$("gameContent").querySelectorAll("[data-a]");
+   buttons.forEach(x=>x.disabled=true);
+   if(+b.dataset.a===q[2]){score++;msg("Richtig!");}else msg("Leider falsch. Richtig: "+q[1][q[2]]);
+   const next=document.createElement("button");next.textContent="Nächste Frage →";next.className="primary";next.onclick=()=>{i++;show();};
+   $("gameContent").append(next);
   });
+ };
+ show();
+};
+
+/* 5. ZEICHNEN */
+handlers.draw=()=>{
+ content(`<h2>🎨 Zeichnen & Raten</h2><p>Zeichne etwas und lass Freunde raten!</p><p id="drawWord"></p>
+ <canvas id="drawCanvas" width="480" height="320"></canvas>
+ <div class="choices"><button onclick="clearCanvas()">Leeren</button><button onclick="changeColor()">Farbe wechseln</button><button class="primary" onclick="revealDraw()">Wort anzeigen</button></div><div class="result" id="result"></div>`);
+ const canvas=$("drawCanvas"),ctx=canvas.getContext("2d");
+ ctx.fillStyle="white";ctx.fillRect(0,0,480,320);
+ ctx.lineWidth=5;ctx.lineCap="round";ctx.strokeStyle="#16172b";
+ let drawing=false,last=null,color=0;
+ function pos(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};}
+ canvas.onpointerdown=e=>{drawing=true;last=pos(e);canvas.setPointerCapture(e.pointerId);};
+ canvas.onpointermove=e=>{if(!drawing)return;const p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;};
+ canvas.onpointerup=canvas.onpointercancel=()=>drawing=false;
+ const words=["Katze","Rakete","Pizza","Sonne","Krone","Fahrrad","Drachen","Eiscreme","Roboter"];
+ const secret=words[Math.floor(Math.random()*words.length)];
+ window.clearCanvas=()=>{ctx.fillStyle="white";ctx.fillRect(0,0,480,320);};
+ window.changeColor=()=>{color=(color+1)%4;ctx.strokeStyle=["#16172b","#f02489","#1478d4","#2a9e63"][color];};
+ window.revealDraw=()=>{msg("Das Wort war: "+secret);award(10);};
+};
+
+/* 6. MEMORY */
+handlers.memory=()=>{
+ const symbols=["🚀","🌙","👾","💎","🎮","⭐","🪐","🔥"];
+ let cards=[...symbols,...symbols].sort(()=>Math.random()-.5);
+ let opened=[],matched=new Set(),lock=false,moves=0;
+ content(`<h2>🧩 Memory Clash</h2><p>Finde alle acht Paare.</p><p id="memMoves">Züge: 0</p><div class="memory-grid" id="memGrid"></div><div class="result" id="result"></div><button onclick="openGame('memory')">Neues Spiel</button>`);
+ const draw=()=>{
+  $("memGrid").innerHTML=cards.map((c,i)=>`<button class="mem" data-i="${i}">${matched.has(i)||opened.includes(i)?c:"?"}</button>`).join("");
+  $("memGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>flip(+b.dataset.i));
+ };
+ function flip(i){
+  if(lock||matched.has(i)||opened.includes(i))return;
+  opened.push(i);draw();
+  if(opened.length===2){
+   moves++;$("memMoves").textContent="Züge: "+moves;
+   if(cards[opened[0]]===cards[opened[1]]){
+    opened.forEach(x=>matched.add(x));opened=[];
+    if(matched.size===cards.length){msg("Alle Paare gefunden!");award(Math.max(10,40-moves));}
+    draw();
+   }else{
+    lock=true;setTimeout(()=>{opened=[];lock=false;draw();},750);
+   }
+  }
+ }
+ draw();
+};
+
+/* 7. SCHERE STEIN PAPIER */
+handlers.rps=()=>{
+ content(`<h2>✊ Schere-Stein-Papier</h2><p>Kannst du den Computer schlagen?</p><div class="choices"><button onclick="rps('Schere')">✂️ Schere</button><button onclick="rps('Stein')">🪨 Stein</button><button onclick="rps('Papier')">📄 Papier</button></div><div class="big" id="rpsBig">❔</div><div class="result" id="result"></div><button onclick="openGame('rps')">Neustart</button>`);
+ window.rps=pick=>{
+  const options=["Schere","Stein","Papier"],bot=options[Math.floor(Math.random()*3)];
+  const emoji={Schere:"✂️",Stein:"🪨",Papier:"📄"};
+  $("rpsBig").textContent=emoji[pick]+" vs "+emoji[bot];
+  if(pick===bot)msg("Unentschieden!");
+  else if((pick==="Schere"&&bot==="Papier")||(pick==="Stein"&&bot==="Schere")||(pick==="Papier"&&bot==="Stein")){msg("Du gewinnst! +10 XP");award(10);}
+  else{msg("Der Computer gewinnt. Versuch's nochmal!");}
+ };
+};
+
+/* 8. WORTRATEN */
+handlers.word=()=>{
+ const words=["ARCADE","NEON","GALAXIE","ROBOTER","KOMET","PIXEL","DRACHE","PLANET"];
+ const secret=words[Math.floor(Math.random()*words.length)];
+ let guessed=new Set(),tries=7,done=false;
+ content(`<h2>🔤 Wortraten</h2><p>Errate das Wort. Du hast sieben Fehlversuche.</p><div class="word" id="wordDisplay"></div><p id="tries"></p><div class="choices" id="letters"></div><div class="result" id="result"></div><button onclick="openGame('word')">Neues Wort</button>`);
+ function draw(){
+  $("wordDisplay").textContent=[...secret].map(c=>guessed.has(c)?c:"_").join(" ");
+  $("tries").textContent="Fehlversuche übrig: "+tries;
+  $("letters").innerHTML="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(c=>`<button data-letter="${c}" ${guessed.has(c)||done?"disabled":""}>${c}</button>`).join("");
+  $("letters").querySelectorAll("button").forEach(b=>b.onclick=()=>guess(b.dataset.letter));
+ }
+ function guess(c){
+  if(done||guessed.has(c))return;
+  guessed.add(c);
+  if(!secret.includes(c))tries--;
+  if([...secret].every(x=>guessed.has(x))){done=true;msg("Richtig! Du hast das Wort gefunden.");award(15);}
+  else if(tries<=0){done=true;msg("Das Wort war "+secret+".");}
+  draw();
+ }
+ draw();
+};
+
+/* 9. PARTY FRAGEN */
+handlers.party=()=>{
+ const questions=[
+ "Wer würde am ehesten auf dem Mond Urlaub machen?",
+ "Welche Superkraft wäre im Alltag am nützlichsten?",
+ "Wer könnte am längsten ohne Handy auskommen?",
+ "Was war dein lustigster Gaming-Moment?",
+ "Wenn du ein Tier sein könntest, welches wäre es?",
+ "Welche drei Dinge würdest du auf eine einsame Insel mitnehmen?",
+ "Wer würde in einer Zombie-Komödie die Hauptrolle spielen?",
+ "Was ist die unnötigste Erfindung, die du dir vorstellen kannst?",
+ "Welche Fähigkeit würdest du sofort lernen wollen?",
+ "Was wäre dein Künstlername?",
+ "Welche Spielwelt würdest du gerne besuchen?",
+ "Wer aus der Gruppe würde eine Alien-Invasion zuerst bemerken?",
+ "Was ist dein perfekter freier Tag?",
+ "Welche fiktive Figur wäre ein guter Mitbewohner?",
+ "Erfinde einen neuen Feiertag und erkläre ihn."
+ ];
+ let used=[];
+ content(`<h2>🎉 Party Fragen</h2><p>Für Freunde, Familie oder Spieleabende.</p><div class="big">🎲</div><h3 id="partyQ">Drücke den Knopf für eine Frage!</h3><button class="primary" onclick="nextParty()">Nächste Frage</button><div class="result" id="result"></div>`);
+ window.nextParty=()=>{
+  if(used.length===questions.length)used=[];
+  let available=questions.map((q,i)=>i).filter(i=>!used.includes(i));
+  const i=available[Math.floor(Math.random()*available.length)];used.push(i);
+  $("partyQ").textContent=questions[i];award(1);
+ };
+};
+
+/* 10. SNAKE */
+handlers.snake=()=>{
+ content(`<h2>🐍 Snake</h2><p>Sammle Sterne. Steuerung mit Pfeiltasten oder den Knöpfen.</p><canvas id="snakeCanvas" width="300" height="300" style="width:min(90vw,300px);background:#050a16;border:1px solid #344366;border-radius:12px"></canvas><h3 id="snakeScore">Punkte: 0</h3><div class="choices"><button onclick="snakeDir(0,-1)">⬆️</button></div><div class="choices"><button onclick="snakeDir(-1,0)">⬅️</button><button onclick="snakeDir(0,1)">⬇️</button><button onclick="snakeDir(1,0)">➡️</button></div><div class="result" id="result"></div><button class="primary" onclick="openGame('snake')">Neu starten</button>`);
+ const c=$("snakeCanvas"),ctx=c.getContext("2d"),cell=15,n=20;
+ let snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}],dir={x:1,y:0},food={x:15,y:10},score=0,dead=false;
+ function newFood(){do{food={x:Math.floor(Math.random()*n),y:Math.floor(Math.random()*n)}}while(snake.some(s=>s.x===food.x&&s.y===food.y));}
+ window.snakeDir=(x,y)=>{if(x!==-dir.x||y!==-dir.y)dir={x,y};};
+ const key=e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};if(m[e.key]){e.preventDefault();snakeDir(...m[e.key]);}};
+ window.addEventListener("keydown",key);
+ gameCleanup=()=>window.removeEventListener("keydown",key);
+ function tick(){
+  if(dead)return;
+  const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  if(h.x<0||h.y<0||h.x>=n||h.y>=n||snake.some(s=>s.x===h.x&&s.y===h.y)){dead=true;msg("Game Over! Punktzahl: "+score);stats.best=Math.max(stats.best,score);saveStats();award(score);return;}
+  snake.unshift(h);
+  if(h.x===food.x&&h.y===food.y){score+=10;newFood();$("snakeScore").textContent="Punkte: "+score;}else snake.pop();
+  ctx.fillStyle="#050a16";ctx.fillRect(0,0,300,300);
+  ctx.fillStyle="#ff4fd8";ctx.fillRect(food.x*cell,food.y*cell,cell-1,cell-1);
+  snake.forEach((s,i)=>{ctx.fillStyle=i?"#35bfcf":"#4dfcff";ctx.fillRect(s.x*cell,s.y*cell,cell-1,cell-1);});
+ }
+ const timer=setInterval(tick,125);
+ const prev=gameCleanup;gameCleanup=()=>{clearInterval(timer);window.removeEventListener("keydown",key);if(prev)prev();};
+ tick();
+};
+
+/* 11. STERNENFLUCHT */
+handlers.dodge=()=>{
+ content(`<h2>🚀 Sternenflucht</h2><p>Drücke den Knopf, wenn die Sterne erscheinen. Reagiere so schnell du kannst!</p><div class="big" id="dodgeIcon">🌌</div><h3 id="dodgeText">Bereit?</h3><button class="primary" id="dodgeBtn">Start</button><div class="result" id="result"></div>`);
+ let state="ready",timer=null,start=0;
+ const btn=$("dodgeBtn");
+ btn.onclick=()=>{
+  if(state==="ready"){
+   state="wait";btn.textContent="Warte …";$("dodgeIcon").textContent="🌑";$("dodgeText").textContent="Warte auf das Signal …";
+   timer=setTimeout(()=>{state="go";start=performance.now();$("dodgeIcon").textContent="⭐";$("dodgeText").textContent="JETZT!";btn.textContent="JETZT DRÜCKEN!";},1000+Math.random()*3500);
+  }else if(state==="wait"){
+   clearTimeout(timer);state="ready";$("dodgeText").textContent="Zu früh! Nochmal versuchen.";btn.textContent="Nochmal";
+  }else if(state==="go"){
+   const ms=Math.round(performance.now()-start);state="ready";$("dodgeText").textContent=ms+" ms";
+   msg(ms<250?"Blitzschnell!":ms<400?"Gute Reaktion!":"Versuche, schneller zu sein!");
+   award(ms<300?15:5);btn.textContent="Noch eine Runde";
+  }
+ };
+ gameCleanup=()=>clearTimeout(timer);
+};
+
+/* Bereits angemeldete Session wiederherstellen */
+(async()=>{
+ if(!db)return;
+ try{
+  const {data}=await db.auth.getSession();
+  if(data.session){
+   user=data.session.user;
+   username=user.user_metadata?.username||user.email?.split("@")[0]||"Player";
+   enterApp();
+  }
+ }catch(e){console.warn(e);}
 })();
 </script>
 </body>
