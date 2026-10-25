@@ -66,8 +66,10 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 .list-row:last-child{border-bottom:0}
 .chat-box{height:220px;overflow:auto;background:#090e20;border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0}
 .chat-msg{padding:8px 0;border-bottom:1px solid #273254;overflow-wrap:anywhere}
-.chat-msg small{color:var(--muted)}
 footer{text-align:center;color:#6f7898;padding:30px;font-size:12px}
+.admin-player-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.admin-player-actions button{margin:0}
+.admin-selected{border:1px solid var(--cyan);border-radius:12px;padding:14px;margin:15px 0;background:#090e20}
 @media(max-width:600px){header{padding:13px}.logo{font-size:18px}.wrap{padding:15px 12px}.panel{padding:15px}.stats{gap:6px}.stat{padding:9px}.game-card{min-height:200px}.game-content{margin:10px auto;padding:15px}.game-top{flex-wrap:wrap}}
 </style>
 </head>
@@ -168,6 +170,20 @@ footer{text-align:center;color:#6f7898;padding:30px;font-size:12px}
     <div id="adminMsg" class="result"></div>
     <h3>Spielerliste</h3>
     <div id="adminPlayers"></div>
+
+    <div id="adminSelectedPlayer" class="admin-selected hidden">
+      <h3>Ausgewählten Spieler verwalten</h3>
+      <p id="adminSelectedName" class="muted"></p>
+      <label for="adminPlayerXP">XP</label>
+      <input id="adminPlayerXP" type="number" min="0" step="1" value="0">
+      <label for="adminPlayerLevel">Level</label>
+      <input id="adminPlayerLevel" type="number" min="1" step="1" value="1">
+      <div class="choices">
+        <button class="primary" onclick="saveSelectedPlayer()">Änderungen speichern</button>
+        <button onclick="clearSelectedPlayer()">Abbrechen</button>
+      </div>
+    </div>
+
     <hr>
     <h3>Gruppen und Spielräume</h3>
     <div id="adminRooms"></div>
@@ -194,11 +210,12 @@ footer{text-align:center;color:#6f7898;padding:30px;font-size:12px}
 
 /* SUPABASE */
 const SUPABASE_URL="https://qznkudfhmegfriwqdvmj.supabase.co";
-const SUPABASE_KEY="sb_publishable_CPz52i2XcyThttYOrlKMAw_Pd3PYRmB";
+const SUPABASE_KEY="sb_publishable_CPz52i2XcyThttYOrLkKMAw_Pd3PYRmB";
 const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let user=null, username="Gast", isAdmin=false;
 let currentGame="", gameCleanup=null, activeRoom=null;
+let selectedAdminPlayer=null;
 let stats=loadStats();
 const $=id=>document.getElementById(id);
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -373,6 +390,7 @@ async function logout(){
   user=null;
   isAdmin=false;
   activeRoom=null;
+  selectedAdminPlayer=null;
   username="Gast";
 
   closeGame();
@@ -527,35 +545,101 @@ handlers.impostor=()=>{
  };
 };
 
-/* 2. WERWOLF */
+/* 2. WERWOLF — OHNE MODERATOR */
 handlers.werwolf=()=>{
- content(`<h2>🐺 Werwolf</h2><p>Offline-Rollenspiel für 4–12 Personen.</p><label>Spieleranzahl</label><input id="wolfN" type="number" min="4" max="12" value="6"><button class="primary" id="startWolves">Rollen verteilen</button><div id="wolfArea"></div>`);
+ content(`
+  <h2>🐺 Werwolf</h2>
+  <p>Offline-Rollenspiel für 5 bis 50 Personen. Es gibt keinen Moderator: Alle Mitspielenden erhalten eine Rolle.</p>
+  <label>Spieleranzahl</label>
+  <input id="wolfN" type="number" min="5" max="50" value="6">
+  <button class="primary" id="startWolves">Rollen verteilen</button>
+  <div id="wolfArea"></div>
+ `);
 
  $("startWolves").onclick=()=>{
-  const n=Math.max(4,Math.min(12,+$("wolfN").value||6));
-  const roles=Array(n).fill("Dorfbewohner");
+  const entered=Number.parseInt($("wolfN").value,10);
+  if(!Number.isInteger(entered)||entered<5||entered>50){
+   $("wolfArea").innerHTML="<p class='result'>Bitte eine Spielerzahl zwischen 5 und 50 eingeben.</p>";
+   return;
+  }
 
-  roles[0]="Werwolf";
-  if(n>=5)roles[1]="Seher";
+  const n=entered;
+  const roles=[];
 
-  for(let i=2;i<Math.floor(n/3);i++)roles[i]="Werwolf";
+  let werewolves=1;
+  let seer=true;
+  let witch=true;
+  let hunter=false;
+  let cupid=false;
 
-  roles.sort(()=>Math.random()-.5);
+  if(n>=7&&n<=8){
+   werewolves=2;
+  }else if(n>=9&&n<=10){
+   werewolves=2;
+   hunter=true;
+   cupid=true;
+  }else if(n>=11&&n<=13){
+   werewolves=3;
+   hunter=true;
+   cupid=true;
+  }else if(n>=14&&n<=16){
+   werewolves=4;
+   hunter=true;
+   cupid=true;
+  }else if(n>=17){
+   werewolves=5;
+   hunter=true;
+   cupid=true;
+  }
+
+  for(let i=0;i<werewolves;i++)roles.push("🐺 Werwolf");
+  if(seer)roles.push("🔮 Seher");
+  if(witch)roles.push("🧙 Hexe");
+  if(hunter)roles.push("🏹 Jäger");
+  if(cupid)roles.push("💘 Amor");
+
+  while(roles.length<n)roles.push("🏡 Dorfbewohner");
+
+  /* Fisher-Yates-Mischen */
+  for(let i=roles.length-1;i>0;i--){
+   const j=Math.floor(Math.random()*(i+1));
+   [roles[i],roles[j]]=[roles[j],roles[i]];
+  }
+
   let i=0;
 
   const show=()=>{
    if(i>=n){
-    $("wolfArea").innerHTML="<h3>Alle Rollen verteilt!</h3><p>Startet die Nacht, diskutiert am Tag und stimmt ab.</p>";
+    $("wolfArea").innerHTML=`
+     <hr>
+     <h3>Alle Rollen verteilt!</h3>
+     <p>Alle ${n} Personen haben ihre Rolle gesehen.</p>
+     <p>Startet die Nacht, diskutiert am Tag und stimmt ab.</p>
+     <button class="primary" id="newWolfRound">Neue Runde</button>
+    `;
+    $("newWolfRound").onclick=()=>handlers.werwolf();
     award(5);
     return;
    }
 
-   $("wolfArea").innerHTML=`<hr><h3>Spieler ${i+1}</h3><button class="primary" id="revealWolf">Rolle anzeigen</button><div id="wolfRole"></div>`;
+   $("wolfArea").innerHTML=`
+    <hr>
+    <h3>Spieler ${i+1} von ${n}</h3>
+    <p>Gib das Gerät weiter. Nur diese Person darf ihre Rolle sehen.</p>
+    <button class="primary" id="revealWolf">Rolle anzeigen</button>
+    <div id="wolfRole"></div>
+   `;
 
    $("revealWolf").onclick=()=>{
-    $("wolfRole").innerHTML=`<h2>${roles[i]}</h2><button id="nextWolf">Weitergeben</button>`;
+    $("wolfRole").innerHTML=`
+     <h2>${safe(roles[i])}</h2>
+     <button id="nextWolf">Verbergen und weitergeben</button>
+    `;
     $("revealWolf").disabled=true;
-    $("nextWolf").onclick=()=>{i++;show();};
+    $("nextWolf").onclick=()=>{
+     i++;
+     show();
+    };
    };
   };
 
@@ -1369,7 +1453,7 @@ async function loadAdmin(){
 
  const {data:players,error}=await db
   .from("arcade_player_data")
-  .select("user_id,username,xp,rounds,banned,created_at")
+  .select("user_id,username,xp,level,rounds,banned,created_at")
   .order("created_at",{ascending:false})
   .limit(200);
 
@@ -1386,24 +1470,36 @@ async function loadAdmin(){
   row.className="list-row";
 
   const title=document.createElement("strong");
-  title.textContent=p.username+" · "+p.xp+" XP";
+  title.textContent=(p.username||"Spieler")+" · "+(Number(p.xp)||0)+" XP";
 
   const detail=document.createElement("div");
   detail.className="muted";
-  detail.textContent="Runden: "+p.rounds+" · ID: "+p.user_id;
+  detail.textContent="Level: "+(Number(p.level)||1)+" · Runden: "+(Number(p.rounds)||0)+" · ID: "+p.user_id;
 
   const status=document.createElement("div");
   status.textContent=p.banned?"GESPERRT":"Aktiv";
 
   row.append(title,detail,status);
 
+  const actions=document.createElement("div");
+  actions.className="admin-player-actions";
+
+  const selectBtn=document.createElement("button");
+  selectBtn.textContent="Spieler auswählen";
+  selectBtn.onclick=()=>selectAdminPlayer(p);
+  actions.append(selectBtn);
+
+  /*
+   * Bestehende Sperren-/Entsperren-Funktion bleibt erhalten.
+   */
   if(p.user_id!==user.id){
    const btn=document.createElement("button");
    btn.textContent=p.banned?"Entsperren":"Sperren";
    btn.onclick=()=>toggleBan(p.user_id,!p.banned);
-   row.append(btn);
+   actions.append(btn);
   }
 
+  row.append(actions);
   list.append(row);
  }
 
@@ -1439,6 +1535,72 @@ async function loadAdmin(){
  say("adminMsg","Admin-Daten geladen.");
 }
 
+/* ADMIN: SPIELER AUSWÄHLEN */
+function selectAdminPlayer(player){
+ if(!isAdmin)return alert("Keine Adminrechte.");
+
+ selectedAdminPlayer={
+  user_id:player.user_id,
+  username:player.username||"Spieler"
+ };
+
+ $("adminSelectedPlayer").classList.remove("hidden");
+ $("adminSelectedName").textContent=
+  selectedAdminPlayer.username+" · "+selectedAdminPlayer.user_id;
+
+ $("adminPlayerXP").value=Math.max(0,Number(player.xp)||0);
+ $("adminPlayerLevel").value=Math.max(1,Number(player.level)||1);
+
+ $("adminSelectedPlayer").scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+/* ADMIN: AUSWAHL AUFHEBEN */
+function clearSelectedPlayer(){
+ selectedAdminPlayer=null;
+ $("adminSelectedPlayer").classList.add("hidden");
+ $("adminPlayerXP").value="0";
+ $("adminPlayerLevel").value="1";
+}
+
+/* ADMIN: XP UND LEVEL SPEICHERN */
+async function saveSelectedPlayer(){
+ if(!user||!db||!isAdmin)return alert("Keine Adminrechte.");
+ if(!selectedAdminPlayer)return alert("Bitte zuerst einen Spieler auswählen.");
+
+ const xpText=$("adminPlayerXP").value.trim();
+ const levelText=$("adminPlayerLevel").value.trim();
+ const xp=Number(xpText);
+ const level=Number(levelText);
+
+ if(xpText===""||!Number.isSafeInteger(xp)||xp<0){
+  return alert("Bitte eine gültige XP-Zahl ab 0 eingeben.");
+ }
+
+ if(levelText===""||!Number.isSafeInteger(level)||level<1){
+  return alert("Bitte ein gültiges Level ab 1 eingeben.");
+ }
+
+ const playerId=selectedAdminPlayer.user_id;
+
+ say("adminMsg","Spielerdaten werden gespeichert …");
+
+ const {error}=await db
+  .from("arcade_player_data")
+  .update({xp,level})
+  .eq("user_id",playerId);
+
+ if(error){
+  say("adminMsg","Spielerdaten konnten nicht gespeichert werden: "+error.message);
+  alert("Änderung fehlgeschlagen: "+error.message);
+  return;
+ }
+
+ say("adminMsg","XP und Level wurden aktualisiert.");
+ clearSelectedPlayer();
+ await loadAdmin();
+}
+
+/* BESTEHENDE SPERREN-/ENTSPERREN-FUNKTION */
 async function toggleBan(id,banned){
  if(!isAdmin)return alert("Keine Adminrechte.");
 
